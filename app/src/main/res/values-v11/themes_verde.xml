@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="Verde" parent="@style/_Verde"/>
+
+  <style name="_Verde" parent="Theme.AppCompat.Light">
+
+    <item name="android:editTextBackground">@drawable/verde_edit_text_holo_light</item>
+
+    <item name="android:textColorHighlight">#99669900</item>
+    <item name="android:textSelectHandleLeft">@drawable/verde_text_select_handle_left</item>
+    <item name="android:textSelectHandleRight">@drawable/verde_text_select_handle_right</item>
+    <item name="android:textSelectHandle">@drawable/verde_text_select_handle_middle</item>
+
+    <item name="android:autoCompleteTextViewStyle">@style/AutoCompleteTextViewVerde</item>
+
+    <item name="android:listChoiceIndicatorMultiple">@drawable/verde_btn_check_holo_light</item>
+
+    <item name="android:listChoiceIndicatorSingle">@drawable/verde_btn_radio_holo_light</item>
+
+    <item name="android:buttonStyle">@style/ButtonVerde</item>
+
+    <item name="android:imageButtonStyle">@style/ImageButtonVerde</item>
+
+    <item name="android:dropDownSpinnerStyle">@style/SpinnerVerde</item>
+
+    <item name="android:progressBarStyleHorizontal">@style/ProgressBarVerde</item>
+
+    <item name="android:seekBarStyle">@style/SeekBarVerde</item>
+
+    <item name="android:ratingBarStyle">@style/RatingBarVerde</item>
+
+    <item name="android:ratingBarStyleIndicator">@style/RatingBarBigVerde</item>
+
+    <item name="android:ratingBarStyleSmall">@style/RatingBarSmallVerde</item>
+
+    <item name="android:buttonStyleToggle">@style/ToggleVerde</item>
+
+    <item name="android:fastScrollThumbDrawable">@drawable/verde_fastscroll_thumb_holo</item>
+
+  </style>
+
+</resources>
