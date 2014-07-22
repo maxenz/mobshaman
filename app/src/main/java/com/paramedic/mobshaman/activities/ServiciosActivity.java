@@ -1,10 +1,12 @@
-package com.paramedic.mobshaman;
+package com.paramedic.mobshaman.activities;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.paramedic.mobshaman.R;
 
 
 public class ServiciosActivity extends ActionBarActivity {
@@ -15,6 +17,8 @@ public class ServiciosActivity extends ActionBarActivity {
 //        getSupportActionBar().setHomeButtonEnabled(true);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_servicios);
+        getSupportActionBar().setIcon(android.R.color.transparent);
+
     }
 
 
@@ -32,7 +36,7 @@ public class ServiciosActivity extends ActionBarActivity {
 
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(this,DetalleServicioActivity.class);
+            Intent intent = new Intent(this,pruebaActivity.class);
             startActivity(intent);
         }
         //return super.onOptionsItemSelected(item);

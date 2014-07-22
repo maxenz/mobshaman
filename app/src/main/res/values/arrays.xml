@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="course_titles" >
+        <item>@string/android_fragments_title</item>
+        <item>@string/android_intents_title</item>
+        <item>@string/android_fragments_title</item>
+        <item>@string/android_intents_title</item>
+        <item>@string/android_fragments_title</item>
+        <item>@string/android_intents_title</item>
+    </string-array>
+    <string name="android_fragments_title">Titulo de fragmento</string>
+    <string name="android_intents_title">Titulo de intent</string>
+</resources>

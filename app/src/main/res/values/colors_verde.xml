@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="verde_color">#669900</color>
+    <color name="blanco">#FFFFFF</color>
 </resources>

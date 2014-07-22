@@ -1,4 +1,4 @@
-package com.paramedic.mobshaman;
+package com.paramedic.mobshaman.application;
 
 import android.app.Application;
 
