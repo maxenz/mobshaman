@@ -5,9 +5,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import com.paramedic.mobshaman.R;
-
 
 public class ServiciosActivity extends ActionBarActivity {
 
@@ -21,7 +19,6 @@ public class ServiciosActivity extends ActionBarActivity {
 
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -33,13 +30,23 @@ public class ServiciosActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         boolean handled = true;
-
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            Intent intent = new Intent(this,pruebaActivity.class);
-            startActivity(intent);
+
+        switch (id) {
+            case R.id.action_settings:
+                Intent intent = new Intent(this,pruebaActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.action_refresh:
+                // --> Paso false para poder redefinirlo desde el fragment
+                handled = false;
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        //return super.onOptionsItemSelected(item);
-        return true;
+
+        return handled;
+
     }
+
 }
