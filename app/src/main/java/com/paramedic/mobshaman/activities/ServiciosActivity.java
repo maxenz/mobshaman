@@ -15,7 +15,7 @@ public class ServiciosActivity extends ActionBarActivity {
 //        getSupportActionBar().setHomeButtonEnabled(true);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_servicios);
-        getSupportActionBar().setIcon(android.R.color.transparent);
+        //getSupportActionBar().setIcon(android.R.color.transparent);
 
     }
 
@@ -34,8 +34,8 @@ public class ServiciosActivity extends ActionBarActivity {
 
         switch (id) {
             case R.id.action_settings:
-                Intent intent = new Intent(this,pruebaActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(this,pruebaActivity.class);
+//                startActivity(intent);
                 break;
             case R.id.action_refresh:
                 // --> Paso false para poder redefinirlo desde el fragment

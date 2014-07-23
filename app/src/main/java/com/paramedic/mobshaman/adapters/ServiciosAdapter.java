@@ -1,14 +1,17 @@
 package com.paramedic.mobshaman.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.paramedic.mobshaman.R;
+import com.paramedic.mobshaman.activities.DetalleServicioActivity;
 import com.paramedic.mobshaman.models.Servicio;
 
 import java.util.ArrayList;
@@ -33,40 +36,42 @@ public class ServiciosAdapter extends ArrayAdapter<Servicio> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        // 1. Create inflater
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        // 2. Get rowView from inflater
-        View rowView = inflater.inflate(R.layout.rowlayout, parent, false);
+        final View rowView = inflater.inflate(R.layout.rowlayout, parent, false);
 
-        // 3. Get the two text view from the rowView
         TextView tvDatosGrales = (TextView) rowView.findViewById(R.id.datosGrales);
         TextView tvDomicilio = (TextView) rowView.findViewById(R.id.domicilio);
         TextView tvHorario = (TextView) rowView.findViewById(R.id.horario);
-
         ImageView ivGrado = (ImageView) rowView.findViewById(R.id.imgGrado);
 
-        // 4. Set the text for textView
-        tvDatosGrales.setText(formatDatosGrales(serviciosArrayList.get(position)));
-        tvDomicilio.setText(serviciosArrayList.get(position).getDomicilio());
-        tvHorario.setText(serviciosArrayList.get(position).getHorario());
+        Servicio serv = serviciosArrayList.get(position);
 
-        ivGrado.setImageDrawable(context.getResources().getDrawable(R.drawable.shapes));
+        tvDatosGrales.setText(serv.getDatosGrales());
+        tvDomicilio.setText(serv.getDomicilio());
+        tvHorario.setText(serv.getHorario());
 
+        int shapeGrado = serv.getGradoDrawable();
 
-        // 5. retrn rowView
+        ivGrado.setImageDrawable(context.getResources().getDrawable(shapeGrado));
+
+        rowView.setId(serv.getId());
+
+        rowView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+//                String idRow = "El id es:" + v.getId();
+//                Toast.makeText(context.getApplicationContext(),
+//                        idRow, Toast.LENGTH_SHORT).show();
+                  Intent intent = new Intent(context, DetalleServicioActivity.class);
+                  context.startActivity(intent);
+            }
+        });
+
         return rowView;
-    }
-
-    private String formatDatosGrales(Servicio serv) {
-
-        String cliente = serv.getCliente();
-        String nroIncidente = serv.getNroIncidente();
-        String sexoEdad = serv.getSexoEdad();
-
-        return cliente + " / " + nroIncidente + " / " + sexoEdad;
-
     }
 
 }

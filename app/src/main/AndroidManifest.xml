@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.paramedic.mobshaman" >
+
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".application.MobShamanApplication"
         android:allowBackup="true"
@@ -19,8 +21,8 @@
         </activity>
 
         <activity
-            android:name=".activities.pruebaActivity"
-            android:label="@string/title_activity_prueba" >
+            android:name=".activities.DetalleServicioActivity"
+            android:label="Detalles" >
         </activity>
     </application>
 

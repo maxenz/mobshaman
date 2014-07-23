@@ -32,8 +32,9 @@ public class ServiciosFragment extends ListFragment {
     ListView listView;
     private ProgressDialog pDialog;
     private AsyncRefreshServices refreshServices;
-    private String[] clientes;
+    private ArrayList<Servicio> servicios;
     private ServiciosAdapter servAdapter;
+    public final static String URL_REST_SERVICIOS = "http://paramedicapps.com.ar:58887/api/servicios";
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -43,31 +44,17 @@ public class ServiciosFragment extends ListFragment {
         // --> Uso comportamiento de la action bar desde el fragment
         setHasOptionsMenu(true);
 
+        servicios = new ArrayList<Servicio>();
+
         // --> Redefino el estilo de la listview que usa el fragment
         listView = getListView();
         ColorDrawable divider = new ColorDrawable(this.getResources().getColor(R.color.verde_color));
         listView.setDivider(divider);
         listView.setDividerHeight(1);
 
-        servAdapter = new ServiciosAdapter(this.getActivity(), generateData());
-        setListAdapter(servAdapter);
+        // --> Busco servicios en el servicio REST
+        callAsyncServices();
 
-    }
-
-    public ArrayList<Servicio> generateData() {
-        ArrayList<Servicio> lstServ = new ArrayList<Servicio>();
-        lstServ.add(new Servicio("OSDE","ROJO","K4L","Av. Alvarez Thomas 1544","M","11","15:01"));
-        lstServ.add(new Servicio("OSDE","ROJO","K4L","Av. Alvarez Thomas 1544","M","11","15:01"));
-        lstServ.add(new Servicio("OSDE","ROJO","K4L","Av. Alvarez Thomas 1544","M","11","15:01"));
-        lstServ.add(new Servicio("OSDE","ROJO","K4L","Av. Alvarez Thomas 1544","M","11","15:01"));
-        lstServ.add(new Servicio("OSDE","ROJO","K4L","Av. Alvarez Thomas 1544","M","11","15:01"));
-        lstServ.add(new Servicio("OSDE","ROJO","K4L","Av. Alvarez Thomas 1544","M","11","15:01"));
-        lstServ.add(new Servicio("OSDE","ROJO","K4L","Av. Alvarez Thomas 1544","M","11","15:01"));
-        lstServ.add(new Servicio("OSDE","ROJO","K4L","Av. Alvarez Thomas 1544","M","11","15:01"));
-        lstServ.add(new Servicio("OSDE","ROJO","K4L","Av. Alvarez Thomas 1544","M","11","15:01"));
-        lstServ.add(new Servicio("OSDE","ROJO","K4L","Av. Alvarez Thomas 1544","M","11","15:01"));
-
-        return lstServ;
     }
 
     @Override
@@ -80,21 +67,26 @@ public class ServiciosFragment extends ListFragment {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_refresh:
-                // --> Creo un nuevo progressDialog para mostrar que estoy actualizando
-                pDialog = new ProgressDialog(getActivity());
-                pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                pDialog.setMessage("Actualizando Servicios...");
-                pDialog.setCancelable(true);
-                // --> Llamo a la tarea asincronica que busca servicios desde el servicio REST
-                refreshServices = new AsyncRefreshServices();
-                refreshServices.execute();
-
+                callAsyncServices();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
         }
 
         return handled;
+    }
+
+    private void callAsyncServices() {
+
+        // --> Creo un nuevo progressDialog para mostrar que estoy actualizando
+        pDialog = new ProgressDialog(getActivity());
+        pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        pDialog.setMessage("Actualizando Servicios...");
+        pDialog.setCancelable(true);
+        // --> Llamo a la tarea asincronica que busca servicios desde el servicio REST
+        refreshServices = new AsyncRefreshServices();
+        refreshServices.execute();
+
     }
 
     private class AsyncRefreshServices extends AsyncTask<Void, Integer, Boolean> {
@@ -111,7 +103,7 @@ public class ServiciosFragment extends ListFragment {
             HttpClient httpClient = new DefaultHttpClient();
 
             HttpGet del =
-                    new HttpGet("http://jsonplaceholder.typicode.com/todos");
+                    new HttpGet(URL_REST_SERVICIOS);
 
             del.setHeader("content-type", "application/json");
 
@@ -123,17 +115,17 @@ public class ServiciosFragment extends ListFragment {
 
                 JSONArray respJSON = new JSONArray(respStr);
 
-                clientes = new String[respJSON.length()];
+                servicios.clear();
 
                 for(int i=0; i<respJSON.length(); i++)
                 {
                     JSONObject obj = respJSON.getJSONObject(i);
+                    Servicio serv = new Servicio(obj.getInt("IdServicio"),obj.getString("Cliente"),
+                            obj.getInt("Grado"), obj.getString("NroServicio"),
+                            obj.getString("Domicilio"),obj.getString("Sexo"),
+                            obj.getString("Edad"),obj.getString("Horario"));
+                    servicios.add(serv);
 
-                    int idCli = obj.getInt("id");
-                    String nombCli = obj.getString("title");
-                    String telefCli = obj.getString("completed");
-
-                    clientes[i] = "" + idCli + "-" + nombCli + "-" + telefCli;
                 }
 
                 return true;
@@ -171,7 +163,9 @@ public class ServiciosFragment extends ListFragment {
             pDialog.dismiss();
             if(result)
             {
-                Toast.makeText(getActivity().getApplicationContext(), clientes[0], Toast.LENGTH_SHORT).show();
+                servAdapter = new ServiciosAdapter(getActivity(), servicios);
+                setListAdapter(servAdapter);
+               // Toast.makeText(getActivity().getApplicationContext(), clientes[0], Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getActivity().getApplicationContext(),
                         "Hubo un problema. Vuelva a intentarlo", Toast.LENGTH_SHORT).show();
