@@ -27,7 +27,7 @@ public class DetalleServicioFragment extends Fragment {
 
     private void displayValues(View myView) {
 
-        TextView txtIdServicio = (TextView) myView.findViewById(R.id.idServicio);
+        //TextView txtIdServicio = (TextView) myView.findViewById(R.id.idServicio);
 
         //txtIdServicio.setText("OLA K ASE");
 

@@ -4,20 +4,220 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+<!-- Empieza titulo de detalle -->
+
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Detalles del incidente"
+        android:text="Datos del Servicio YK4"
         android:textStyle="bold"
         android:typeface="sans"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:id="@+id/idServicio"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="10dp"
+        android:id="@+id/nroServicio"
+        android:background="@drawable/fondo_gris_gradient"
         android:layout_gravity="left" />
 
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:background="@color/verde_color"/>
+        android:background="@color/verde_color"
+        android:layout_marginBottom="8dp"/>
+
+<!-- Termina titulo de detalle -->
+
+<!-- Empieza relative layout de detalle -->
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <!-- Empieza Cliente -->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/imgClienteServicio"
+            android:gravity="center"
+            android:src="@drawable/ic_action_navigation_accept"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="Cliente:"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_toRightOf="@id/imgClienteServicio"
+            android:layout_marginLeft="7dp"
+            android:id="@+id/titleClienteServicio"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="OSDE"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/titleClienteServicio"
+            android:id="@+id/txtClienteServicio"/>
+
+        <!-- Termina cliente -->
+
+        <!-- Empieza Grado -->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@id/imgClienteServicio"
+            android:id="@+id/imgGradoServicio"
+            android:gravity="center"
+            android:src="@drawable/ic_action_navigation_accept"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="Grado:"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_toRightOf="@id/imgGradoServicio"
+            android:layout_below="@id/titleClienteServicio"
+            android:layout_marginLeft="7dp"
+            android:id="@+id/titleGradoServicio"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="ROJO"
+            android:typeface="sans"
+            android:textStyle="bold"
+            android:textColor="#e9594a"
+            android:gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/titleGradoServicio"
+            android:layout_below="@id/txtClienteServicio"
+            android:id="@+id/txtGradoServicio"/>
+
+        <!-- Termina grado-->
+
+        <!-- Empieza Domicilio -->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@id/imgGradoServicio"
+            android:id="@+id/imgDomicilioServicio"
+            android:gravity="center"
+            android:src="@drawable/ic_action_navigation_accept"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="Domicilio:"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_toRightOf="@id/imgDomicilioServicio"
+            android:layout_below="@id/titleGradoServicio"
+            android:layout_marginLeft="7dp"
+            android:id="@+id/titleDomicilioServicio"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="AV. ALVAREZ THOMAS 1658 1 B"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/titleDomicilioServicio"
+            android:layout_below="@id/txtGradoServicio"
+            android:id="@+id/txtDomicilioServicio"/>
+
+        <!-- Termina grado-->
+
+        <!-- Empieza Sexo -->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@id/imgDomicilioServicio"
+            android:id="@+id/imgSexoServicio"
+            android:gravity="center"
+            android:src="@drawable/ic_action_navigation_accept"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="Sexo:"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_toRightOf="@id/imgSexoServicio"
+            android:layout_below="@id/titleDomicilioServicio"
+            android:layout_marginLeft="7dp"
+            android:id="@+id/titleSexoServicio"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="MASCULINO"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/titleSexoServicio"
+            android:layout_below="@id/txtDomicilioServicio"
+            android:id="@+id/txtSexoServicio"/>
+
+        <!-- Termina sexo -->
+
+        <!-- Empieza Edad -->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@id/imgSexoServicio"
+            android:id="@+id/imgEdadServicio"
+            android:gravity="center"
+            android:src="@drawable/ic_action_navigation_accept"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="Edad:"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_toRightOf="@id/imgEdadServicio"
+            android:layout_below="@id/titleSexoServicio"
+            android:layout_marginLeft="7dp"
+            android:id="@+id/titleEdadServicio"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="16"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/titleEdadServicio"
+            android:layout_below="@id/txtSexoServicio"
+            android:id="@+id/txtEdadServicio"/>
+
+        <!-- Termina edad -->
+
+
+
+        </RelativeLayout>
+
 
 </LinearLayout>

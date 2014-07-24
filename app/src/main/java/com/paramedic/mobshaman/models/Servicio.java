@@ -4,10 +4,12 @@ import android.graphics.drawable.Drawable;
 
 import com.paramedic.mobshaman.R;
 
+import java.io.Serializable;
+
 /**
  * Created by maxo on 22/07/14.
  */
-public class Servicio {
+public class Servicio implements Serializable{
 
     private int id;
     private String cliente;

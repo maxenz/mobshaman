@@ -2,4 +2,6 @@
 <resources>
     <color name="verde_color">#669900</color>
     <color name="blanco">#FFFFFF</color>
+    <color name="greyMed">#C9C9C9</color>
+    <color name="greyLgt">#ECECEC</color>
 </resources>

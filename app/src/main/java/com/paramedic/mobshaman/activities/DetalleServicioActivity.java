@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.adapters.DetalleServicioPagerAdapter;
+import com.paramedic.mobshaman.models.Servicio;
 
 public class DetalleServicioActivity extends ActionBarActivity {
 
@@ -36,6 +38,7 @@ public class DetalleServicioActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_detalle_servicio);
 
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
        // mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -44,6 +47,12 @@ public class DetalleServicioActivity extends ActionBarActivity {
         mViewPager = (ViewPager) findViewById(R.id.pager);
        // mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setAdapter(mDetalleServicioPagerAdapter);
+
+        Intent intent = getIntent();
+
+        Servicio serv = (Servicio) intent.getSerializableExtra("Servicio");
+
+        Toast.makeText(this,serv.getCliente(),Toast.LENGTH_LONG).show();
 
     }
 

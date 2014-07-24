@@ -1,27 +1,25 @@
 package com.paramedic.mobshaman.fragments;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import com.paramedic.mobshaman.R;
+import com.paramedic.mobshaman.activities.DetalleServicioActivity;
 import com.paramedic.mobshaman.adapters.ServiciosAdapter;
+import com.paramedic.mobshaman.handlers.HttpHandler;
+import com.paramedic.mobshaman.helpers.ServiciosHelper;
 import com.paramedic.mobshaman.models.Servicio;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 /**
@@ -31,20 +29,24 @@ public class ServiciosFragment extends ListFragment {
 
     ListView listView;
     private ProgressDialog pDialog;
-    private AsyncRefreshServices refreshServices;
-    private ArrayList<Servicio> servicios;
     private ServiciosAdapter servAdapter;
     public final static String URL_REST_SERVICIOS = "http://paramedicapps.com.ar:58887/api/servicios";
+    public int ID_SERVICIO_SELECCIONADO = 0;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
 
         super.onActivityCreated(savedInstanceState);
 
-        // --> Uso comportamiento de la action bar desde el fragment
         setHasOptionsMenu(true);
 
-        servicios = new ArrayList<Servicio>();
+        initializeComponents();
+
+        getListadoServicios();
+
+    }
+
+    private void initializeComponents() {
 
         // --> Redefino el estilo de la listview que usa el fragment
         listView = getListView();
@@ -52,9 +54,9 @@ public class ServiciosFragment extends ListFragment {
         listView.setDivider(divider);
         listView.setDividerHeight(1);
 
-        // --> Busco servicios en el servicio REST
-        callAsyncServices();
-
+        pDialog = new ProgressDialog(getActivity());
+        pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        pDialog.setCancelable(true);
     }
 
     @Override
@@ -67,7 +69,7 @@ public class ServiciosFragment extends ListFragment {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_refresh:
-                callAsyncServices();
+                getListadoServicios();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -76,105 +78,98 @@ public class ServiciosFragment extends ListFragment {
         return handled;
     }
 
-    private void callAsyncServices() {
 
-        // --> Creo un nuevo progressDialog para mostrar que estoy actualizando
-        pDialog = new ProgressDialog(getActivity());
-        pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+    public void getListadoServicios() {
+
         pDialog.setMessage("Actualizando Servicios...");
-        pDialog.setCancelable(true);
-        // --> Llamo a la tarea asincronica que busca servicios desde el servicio REST
-        refreshServices = new AsyncRefreshServices();
-        refreshServices.execute();
+        pDialog.show();
+
+        new HttpHandler() {
+            @Override
+            public HttpUriRequest getHttpRequestMethod() {
+
+                HttpGet hgServicios = new HttpGet(URL_REST_SERVICIOS);
+
+                hgServicios.setHeader("content-type", "application/json");
+
+                return hgServicios;
+
+            }
+            @Override
+            public void onResponse(String result) {
+
+                if (result == "") {
+
+                    Toast.makeText(getActivity(),"Error en la red. Intente nuevamente",Toast.LENGTH_LONG).show();
+
+                } else {
+
+                    ArrayList<Servicio> servicios = new ServiciosHelper().stringToListServicios(result);
+
+                    servAdapter = new ServiciosAdapter(getActivity(), servicios, ServiciosFragment.this);
+                    setListAdapter(servAdapter);
+                }
+
+                pDialog.dismiss();
+
+            }
+
+        }.execute();
 
     }
 
-    private class AsyncRefreshServices extends AsyncTask<Void, Integer, Boolean> {
+    public void getDetalleServicio() {
 
-        @Override
-        protected Boolean doInBackground(Void... params) {
+        pDialog.setMessage("Cargando Servicio...");
+        pDialog.show();
 
-            return getServicios();
+        new HttpHandler() {
+            @Override
+            public HttpUriRequest getHttpRequestMethod() {
 
-        }
+                String urlFinal = URL_REST_SERVICIOS + "/" + ID_SERVICIO_SELECCIONADO;
 
-        private boolean getServicios(){
+                HttpGet hgServicios = new HttpGet(urlFinal);
 
-            HttpClient httpClient = new DefaultHttpClient();
+                hgServicios.setHeader("content-type", "application/json");
 
-            HttpGet del =
-                    new HttpGet(URL_REST_SERVICIOS);
+                return hgServicios;
 
-            del.setHeader("content-type", "application/json");
+            }
+            @Override
+            public void onResponse(String result) {
 
-            try
-            {
-                HttpResponse resp = httpClient.execute(del);
+                if (result == "") {
 
-                String respStr = EntityUtils.toString(resp.getEntity());
+                    Toast.makeText(getActivity(),"Error en la red. Intente nuevamente",Toast.LENGTH_LONG).show();
 
-                JSONArray respJSON = new JSONArray(respStr);
+                } else {
 
-                servicios.clear();
+                    try {
 
-                for(int i=0; i<respJSON.length(); i++)
-                {
-                    JSONObject obj = respJSON.getJSONObject(i);
-                    Servicio serv = new Servicio(obj.getInt("IdServicio"),obj.getString("Cliente"),
-                            obj.getInt("Grado"), obj.getString("NroServicio"),
-                            obj.getString("Domicilio"),obj.getString("Sexo"),
-                            obj.getString("Edad"),obj.getString("Horario"));
-                    servicios.add(serv);
+                        JSONObject jServ = new JSONObject(result);
+
+                        Servicio servDetalle = new ServiciosHelper().jsonToServicio(jServ);
+
+                        pDialog.dismiss();
+
+                        Intent intent = new Intent(getActivity(), DetalleServicioActivity.class);
+                        intent.putExtra("Servicio", servDetalle);
+                        startActivity(intent);
+
+
+                    } catch (JSONException e) {
+
+                        e.printStackTrace();
+
+                    }
 
                 }
 
-                return true;
-
             }
-            catch(Exception ex)
-            {
-                Log.e("ServicioRest", "Error!", ex);
-                return false;
-            }
-        }
 
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            int progreso = values[0].intValue();
+        }.execute();
 
-            pDialog.setProgress(progreso);
-        }
-
-        @Override
-        protected void onPreExecute() {
-
-            pDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    AsyncRefreshServices.this.cancel(true);
-                }
-            });
-
-            pDialog.show();
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            pDialog.dismiss();
-            if(result)
-            {
-                servAdapter = new ServiciosAdapter(getActivity(), servicios);
-                setListAdapter(servAdapter);
-               // Toast.makeText(getActivity().getApplicationContext(), clientes[0], Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getActivity().getApplicationContext(),
-                        "Hubo un problema. Vuelva a intentarlo", Toast.LENGTH_SHORT).show();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            Toast.makeText(getActivity().getApplicationContext(), "Tarea cancelada!", Toast.LENGTH_SHORT).show();
-        }
     }
+
 }

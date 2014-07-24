@@ -2,6 +2,7 @@ package com.paramedic.mobshaman.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,12 @@ import android.widget.Toast;
 
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.activities.DetalleServicioActivity;
+import com.paramedic.mobshaman.fragments.ServiciosFragment;
+import com.paramedic.mobshaman.handlers.HttpHandler;
 import com.paramedic.mobshaman.models.Servicio;
+
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
 
 import java.util.ArrayList;
 
@@ -24,17 +30,21 @@ public class ServiciosAdapter extends ArrayAdapter<Servicio> {
 
     private final Context context;
     private final ArrayList<Servicio> serviciosArrayList;
+    private final ServiciosFragment fragment;
 
-    public ServiciosAdapter(Context context, ArrayList<Servicio> serviciosArrayList) {
+    public ServiciosAdapter(Context context, ArrayList<Servicio> serviciosArrayList, ServiciosFragment fragment) {
 
         super(context, R.layout.rowlayout, serviciosArrayList);
 
         this.context = context;
         this.serviciosArrayList = serviciosArrayList;
+        this.fragment = fragment;
+
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
 
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -63,11 +73,10 @@ public class ServiciosAdapter extends ArrayAdapter<Servicio> {
             @Override
             public void onClick(View v)
             {
-//                String idRow = "El id es:" + v.getId();
-//                Toast.makeText(context.getApplicationContext(),
-//                        idRow, Toast.LENGTH_SHORT).show();
-                  Intent intent = new Intent(context, DetalleServicioActivity.class);
-                  context.startActivity(intent);
+
+             fragment.ID_SERVICIO_SELECCIONADO = v.getId();
+             fragment.getDetalleServicio();
+
             }
         });
 
