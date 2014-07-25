@@ -1,6 +1,7 @@
 package com.paramedic.mobshaman.activities;
 
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
@@ -48,14 +49,9 @@ public class DetalleServicioActivity extends ActionBarActivity {
        // mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setAdapter(mDetalleServicioPagerAdapter);
 
-        Intent intent = getIntent();
-
-        Servicio serv = (Servicio) intent.getSerializableExtra("Servicio");
-
-        Toast.makeText(this,serv.getCliente(),Toast.LENGTH_LONG).show();
+        //Toast.makeText(this,serv.getCliente(),Toast.LENGTH_LONG).show();
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

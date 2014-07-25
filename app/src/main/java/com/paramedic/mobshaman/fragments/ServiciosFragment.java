@@ -30,7 +30,8 @@ public class ServiciosFragment extends ListFragment {
     ListView listView;
     private ProgressDialog pDialog;
     private ServiciosAdapter servAdapter;
-    public final static String URL_REST_SERVICIOS = "http://paramedicapps.com.ar:58887/api/servicios";
+    public final static String URL_REST_SERVICIOS = "http://paramedicapps.com.ar:58887/api/servicios?idMovil=23";
+    public final static String URL_REST_SERVICIO_DETALLE = "http://paramedicapps.com.ar:58887/api/servicios";
     public int ID_SERVICIO_SELECCIONADO = 0;
 
     @Override
@@ -104,7 +105,7 @@ public class ServiciosFragment extends ListFragment {
 
                 } else {
 
-                    ArrayList<Servicio> servicios = new ServiciosHelper().stringToListServicios(result);
+                    ArrayList<Servicio> servicios = new ServiciosHelper().stringToListServicios(result,0);
 
                     servAdapter = new ServiciosAdapter(getActivity(), servicios, ServiciosFragment.this);
                     setListAdapter(servAdapter);
@@ -127,7 +128,7 @@ public class ServiciosFragment extends ListFragment {
             @Override
             public HttpUriRequest getHttpRequestMethod() {
 
-                String urlFinal = URL_REST_SERVICIOS + "/" + ID_SERVICIO_SELECCIONADO;
+                String urlFinal = URL_REST_SERVICIO_DETALLE + "/" + ID_SERVICIO_SELECCIONADO;
 
                 HttpGet hgServicios = new HttpGet(urlFinal);
 
@@ -149,7 +150,7 @@ public class ServiciosFragment extends ListFragment {
 
                         JSONObject jServ = new JSONObject(result);
 
-                        Servicio servDetalle = new ServiciosHelper().jsonToServicio(jServ);
+                        Servicio servDetalle = new ServiciosHelper().jsonToServicio(jServ,1);
 
                         pDialog.dismiss();
 

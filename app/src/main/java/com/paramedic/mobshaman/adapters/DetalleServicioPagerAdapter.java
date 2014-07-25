@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.fragments.AccionesDetalleServicioFragment;
 import com.paramedic.mobshaman.fragments.DetalleServicioFragment;
+import com.paramedic.mobshaman.fragments.GeoServicioFragment;
 
 /**
  * Created by soporte on 23/07/2014.
@@ -35,6 +36,9 @@ public class DetalleServicioPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 AccionesDetalleServicioFragment acDsFragment = new AccionesDetalleServicioFragment();
                 return acDsFragment;
+            case 2:
+                GeoServicioFragment geoDsFragment = new GeoServicioFragment();
+                return geoDsFragment;
             default:
                 return null;
         }

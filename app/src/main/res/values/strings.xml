@@ -8,5 +8,6 @@
     <string name="action_refresh">Actualizar</string>
     <string name="detalle_servicio">Detalle</string>
     <string name="acciones_servicio">Acciones</string>
+    <string name="geo_servicio">Ubicación</string>
 
 </resources>
