@@ -3,8 +3,5 @@
     <string-array name="detalle_servicios_titulos" >
         <item>@string/detalle_servicio</item>
         <item>@string/acciones_servicio</item>
-        <item>@string/geo_servicio</item>
     </string-array>
-
-
-    </resources>
+</resources>

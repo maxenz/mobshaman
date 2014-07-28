@@ -9,5 +9,11 @@
     <string name="detalle_servicio">Detalle</string>
     <string name="acciones_servicio">Acciones</string>
     <string name="geo_servicio">Ubicación</string>
+    <string name="action_ubicacion">Ubicación</string>
+    <string name="title_activity_mapa_servicio">MapaServicioActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_config_general">ConfigGeneralActivity</string>
+    <string name="action_configuracion_general">Configuración</string>
 
 </resources>

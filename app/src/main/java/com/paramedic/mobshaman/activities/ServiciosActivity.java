@@ -1,21 +1,26 @@
 package com.paramedic.mobshaman.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+
 import com.paramedic.mobshaman.R;
 
 public class ServiciosActivity extends ActionBarActivity {
 
+    final EditText iptConfigGeneral = new EditText(this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        getSupportActionBar().setHomeButtonEnabled(true);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         setContentView(R.layout.activity_servicios);
-        //getSupportActionBar().setIcon(android.R.color.transparent);
 
     }
 
@@ -34,8 +39,7 @@ public class ServiciosActivity extends ActionBarActivity {
 
         switch (id) {
             case R.id.action_settings:
-//                Intent intent = new Intent(this,pruebaActivity.class);
-//                startActivity(intent);
+                startActivity(new Intent(this,ConfigGeneralActivity.class));
                 break;
             case R.id.action_refresh:
                 // --> Paso false para poder redefinirlo desde el fragment

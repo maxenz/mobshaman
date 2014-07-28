@@ -39,7 +39,6 @@ public class DetalleServicioActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_detalle_servicio);
 
-
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
        // mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -56,7 +55,7 @@ public class DetalleServicioActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.detalle_servicio_incidente, menu);
+        getMenuInflater().inflate(R.menu.detalle_servicio, menu);
         return true;
     }
 
@@ -71,7 +70,6 @@ public class DetalleServicioActivity extends ActionBarActivity {
             case R.id.action_settings:
                 return true;
             case android.R.id.home:
-//                startActivity(new Intent(this,ServiciosActivity.class));
                 finish();
                 break;
         }
