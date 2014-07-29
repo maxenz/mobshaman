@@ -84,6 +84,10 @@
             android:name=".activities.ConfigGeneralActivity"
             android:label="@string/title_activity_config_general" >
         </activity>
+        <activity
+            android:name=".activities.FirstUseActivity"
+            android:label="@string/title_activity_first_use" >
+        </activity>
     </application>
 
 </manifest>

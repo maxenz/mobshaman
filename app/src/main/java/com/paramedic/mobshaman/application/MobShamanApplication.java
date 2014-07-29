@@ -19,8 +19,7 @@ public class MobShamanApplication extends Application {
 
         Parse.initialize(this, "Yu5MsVhQi7ih2ltKlNrQcrpFfvRlexZnGiecJZHd", "oNEoeZZYe5JcfNwnSSBWGNc93uGxIkd5Kcl5gts4");
 
-        PushService.setDefaultPushCallback(this, ServiciosActivity.class);
-        ParseInstallation.getCurrentInstallation().saveInBackground();
+
         
     }
 }

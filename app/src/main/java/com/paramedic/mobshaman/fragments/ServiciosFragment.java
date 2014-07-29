@@ -1,7 +1,9 @@
 package com.paramedic.mobshaman.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -30,8 +32,7 @@ public class ServiciosFragment extends ListFragment {
     ListView listView;
     private ProgressDialog pDialog;
     private ServiciosAdapter servAdapter;
-    public final static String URL_REST_SERVICIOS = "http://paramedicapps.com.ar:58887/api/servicios?idMovil=23";
-    public final static String URL_REST_SERVICIO_DETALLE = "http://paramedicapps.com.ar:58887/api/servicios";
+    private String NRO_MOVIL, URL_REST_SERVICIOS;
     public int ID_SERVICIO_SELECCIONADO = 0;
 
     @Override
@@ -58,6 +59,10 @@ public class ServiciosFragment extends ListFragment {
         pDialog = new ProgressDialog(getActivity());
         pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         pDialog.setCancelable(true);
+
+        SharedPreferences sp = getActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
+        NRO_MOVIL = sp.getString("nroMovil","");
+        URL_REST_SERVICIOS = sp.getString("urlREST","");
     }
 
     @Override
@@ -82,6 +87,11 @@ public class ServiciosFragment extends ListFragment {
 
     public void getListadoServicios() {
 
+        if (NRO_MOVIL == "") {
+            Toast.makeText(getActivity(),"La aplicación no fue configurada para su uso.",Toast.LENGTH_LONG).show();
+            return;
+        }
+
         pDialog.setMessage("Actualizando Servicios...");
         pDialog.show();
 
@@ -89,7 +99,7 @@ public class ServiciosFragment extends ListFragment {
             @Override
             public HttpUriRequest getHttpRequestMethod() {
 
-                HttpGet hgServicios = new HttpGet(URL_REST_SERVICIOS);
+                HttpGet hgServicios = new HttpGet(URL_REST_SERVICIOS + "?idMovil=" + NRO_MOVIL);
 
                 hgServicios.setHeader("content-type", "application/json");
 
@@ -128,7 +138,7 @@ public class ServiciosFragment extends ListFragment {
             @Override
             public HttpUriRequest getHttpRequestMethod() {
 
-                String urlFinal = URL_REST_SERVICIO_DETALLE + "/" + ID_SERVICIO_SELECCIONADO;
+                String urlFinal = URL_REST_SERVICIOS + "/" + ID_SERVICIO_SELECCIONADO;
 
                 HttpGet hgServicios = new HttpGet(urlFinal);
 
