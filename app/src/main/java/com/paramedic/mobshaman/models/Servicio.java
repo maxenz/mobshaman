@@ -1,7 +1,5 @@
 package com.paramedic.mobshaman.models;
 
-import android.graphics.drawable.Drawable;
-
 import com.paramedic.mobshaman.R;
 
 import java.io.Serializable;

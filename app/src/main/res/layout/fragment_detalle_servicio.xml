@@ -38,84 +38,46 @@
         android:layout_gravity="center"
         android:gravity="left">
 
-        <!-- Empieza Cliente -->
+        <!-- Empieza Localidad -->
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_marginLeft="5dp"
-            android:id="@+id/imgClienteServicio"
+            android:id="@+id/imgLocalidadServicio"
             android:gravity="center"
             android:src="@drawable/ic_action_navigation_accept"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="45dp"
-            android:text="Cliente:"
+            android:text="Localidad:"
             android:textStyle="bold"
             android:typeface="sans"
             android:gravity="center"
-            android:layout_toRightOf="@id/imgClienteServicio"
+            android:layout_toRightOf="@id/imgLocalidadServicio"
             android:layout_marginLeft="7dp"
-            android:id="@+id/titleClienteServicio"/>
+            android:id="@+id/titleLocalidadServicio"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="45dp"
-            android:text="OSDE"
+            android:text="MASCULINO"
             android:typeface="sans"
             android:gravity="center"
             android:layout_marginLeft="8dp"
-            android:layout_toRightOf="@id/titleClienteServicio"
-            android:id="@+id/txtClienteServicio"/>
+            android:layout_toRightOf="@id/titleLocalidadServicio"
+            android:id="@+id/txtLocalidadServicio"/>
 
-        <!-- Termina cliente -->
+        <!-- Termina localidad -->
 
-        <!-- Empieza Grado -->
+        <!-- Empieza domicilio -->
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_marginLeft="5dp"
-            android:layout_below="@id/imgClienteServicio"
-            android:id="@+id/imgGradoServicio"
-            android:gravity="center"
-            android:src="@drawable/ic_action_navigation_accept"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
-            android:text="Grado:"
-            android:textStyle="bold"
-            android:typeface="sans"
-            android:gravity="center"
-            android:layout_toRightOf="@id/imgGradoServicio"
-            android:layout_below="@id/titleClienteServicio"
-            android:layout_marginLeft="7dp"
-            android:id="@+id/titleGradoServicio"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
-            android:text="ROJO"
-            android:typeface="sans"
-            android:textStyle="bold"
-            android:textColor="#e9594a"
-            android:gravity="center"
-            android:layout_marginLeft="8dp"
-            android:layout_toRightOf="@id/titleGradoServicio"
-            android:layout_below="@id/txtClienteServicio"
-            android:id="@+id/txtGradoServicio"/>
-
-        <!-- Termina grado-->
-
-        <!-- Empieza Domicilio -->
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
-            android:layout_marginLeft="5dp"
-            android:layout_below="@id/imgGradoServicio"
+            android:layout_below="@id/imgLocalidadServicio"
             android:id="@+id/imgDomicilioServicio"
             android:gravity="center"
             android:src="@drawable/ic_action_navigation_accept"/>
@@ -128,22 +90,274 @@
             android:typeface="sans"
             android:gravity="center"
             android:layout_toRightOf="@id/imgDomicilioServicio"
-            android:layout_below="@id/titleGradoServicio"
+            android:layout_below="@id/titleLocalidadServicio"
             android:layout_marginLeft="7dp"
             android:id="@+id/titleDomicilioServicio"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="45dp"
-            android:text="AV. ALVAREZ THOMAS 1658 1 B"
+            android:text="16"
             android:typeface="sans"
             android:gravity="center"
             android:layout_marginLeft="8dp"
             android:layout_toRightOf="@id/titleDomicilioServicio"
-            android:layout_below="@id/txtGradoServicio"
+            android:layout_below="@id/txtLocalidadServicio"
             android:id="@+id/txtDomicilioServicio"/>
 
-        <!-- Termina grado-->
+        <!-- Termina domicilio -->
+
+        <!-- Empieza Entre Calle 1 -->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@id/imgDomicilioServicio"
+            android:id="@+id/imgEntreCalle1Servicio"
+            android:gravity="center"
+            android:src="@drawable/ic_action_navigation_accept"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="Entre Calle 1:"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_toRightOf="@id/imgEntreCalle1Servicio"
+            android:layout_below="@id/titleDomicilioServicio"
+            android:layout_marginLeft="7dp"
+            android:id="@+id/titleEntreCalle1Servicio"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="16"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/titleEntreCalle1Servicio"
+            android:layout_below="@id/txtDomicilioServicio"
+            android:id="@+id/txtEntreCalle1Servicio"/>
+
+        <!-- Termina Entre Calle 1 -->
+
+        <!-- Empieza Entre Calle 2 -->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@id/imgEntreCalle1Servicio"
+            android:id="@+id/imgEntreCalle2Servicio"
+            android:gravity="center"
+            android:src="@drawable/ic_action_navigation_accept"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="Entre Calle 2:"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_toRightOf="@id/imgEntreCalle2Servicio"
+            android:layout_below="@id/titleEntreCalle1Servicio"
+            android:layout_marginLeft="7dp"
+            android:id="@+id/titleEntreCalle2Servicio"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="16"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/titleEntreCalle2Servicio"
+            android:layout_below="@id/txtEntreCalle1Servicio"
+            android:id="@+id/txtEntreCalle2Servicio"/>
+
+        <!-- Termina Entre Calle 2 -->
+
+        <!-- Empieza Referencias -->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@id/imgEntreCalle2Servicio"
+            android:id="@+id/imgReferenciasServicio"
+            android:gravity="center"
+            android:src="@drawable/ic_action_navigation_accept"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="Referencias:"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_toRightOf="@id/imgReferenciasServicio"
+            android:layout_below="@id/titleEntreCalle2Servicio"
+            android:layout_marginLeft="7dp"
+            android:id="@+id/titleReferenciasServicio"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="16"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/titleReferenciasServicio"
+            android:layout_below="@id/txtEntreCalle2Servicio"
+            android:id="@+id/txtReferenciasServicio"/>
+
+        <!-- Termina Referencias -->
+
+        <!-- Empieza Síntomas -->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@id/imgReferenciasServicio"
+            android:id="@+id/imgSintomasServicio"
+            android:gravity="center"
+            android:src="@drawable/ic_action_navigation_accept"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="Síntomas:"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_toRightOf="@id/imgSintomasServicio"
+            android:layout_below="@id/titleReferenciasServicio"
+            android:layout_marginLeft="7dp"
+            android:id="@+id/titleSintomasServicio"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="16"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/titleSintomasServicio"
+            android:layout_below="@id/txtReferenciasServicio"
+            android:id="@+id/txtSintomasServicio"/>
+
+        <!-- Termina Síntomas -->
+
+        <!-- Empieza Grado -->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@id/imgSintomasServicio"
+            android:id="@+id/imgGradoServicio"
+            android:gravity="center"
+            android:src="@drawable/ic_action_navigation_accept"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="Grado:"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_toRightOf="@id/imgGradoServicio"
+            android:layout_below="@id/titleSintomasServicio"
+            android:layout_marginLeft="7dp"
+            android:id="@+id/titleGradoServicio"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="16"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/titleGradoServicio"
+            android:layout_below="@id/txtSintomasServicio"
+            android:id="@+id/txtGradoServicio"/>
+
+        <!-- Termina Grado -->
+
+        <!-- Empieza Aviso -->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@id/imgGradoServicio"
+            android:id="@+id/imgAvisoServicio"
+            android:gravity="center"
+            android:src="@drawable/ic_action_navigation_accept"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="Aviso:"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_toRightOf="@id/imgAvisoServicio"
+            android:layout_below="@id/titleGradoServicio"
+            android:layout_marginLeft="7dp"
+            android:id="@+id/titleAvisoServicio"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="16"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/titleAvisoServicio"
+            android:layout_below="@id/txtGradoServicio"
+            android:id="@+id/txtAvisoServicio"/>
+
+        <!-- Termina Aviso -->
+
+        <!-- Empieza Paciente -->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@id/imgAvisoServicio"
+            android:id="@+id/imgPacienteServicio"
+            android:gravity="center"
+            android:src="@drawable/ic_action_navigation_accept"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="Paciente:"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_toRightOf="@id/imgPacienteServicio"
+            android:layout_below="@id/titleAvisoServicio"
+            android:layout_marginLeft="7dp"
+            android:id="@+id/titlePacienteServicio"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="16"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/titlePacienteServicio"
+            android:layout_below="@id/txtAvisoServicio"
+            android:id="@+id/txtPacienteServicio"/>
+
+        <!-- Termina Paciente -->
 
         <!-- Empieza Sexo -->
 
@@ -151,7 +365,7 @@
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_marginLeft="5dp"
-            android:layout_below="@id/imgDomicilioServicio"
+            android:layout_below="@id/imgPacienteServicio"
             android:id="@+id/imgSexoServicio"
             android:gravity="center"
             android:src="@drawable/ic_action_navigation_accept"/>
@@ -164,22 +378,22 @@
             android:typeface="sans"
             android:gravity="center"
             android:layout_toRightOf="@id/imgSexoServicio"
-            android:layout_below="@id/titleDomicilioServicio"
+            android:layout_below="@id/titlePacienteServicio"
             android:layout_marginLeft="7dp"
             android:id="@+id/titleSexoServicio"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="45dp"
-            android:text="MASCULINO"
+            android:text="16"
             android:typeface="sans"
             android:gravity="center"
             android:layout_marginLeft="8dp"
             android:layout_toRightOf="@id/titleSexoServicio"
-            android:layout_below="@id/txtDomicilioServicio"
+            android:layout_below="@id/txtPacienteServicio"
             android:id="@+id/txtSexoServicio"/>
 
-        <!-- Termina sexo -->
+        <!-- Termina Sexo -->
 
         <!-- Empieza Edad -->
 
@@ -215,9 +429,187 @@
             android:layout_below="@id/txtSexoServicio"
             android:id="@+id/txtEdadServicio"/>
 
-        <!-- Termina edad -->
+        <!-- Termina Edad -->
 
+        <!-- Empieza Entidad -->
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@id/imgEdadServicio"
+            android:id="@+id/imgEntidadServicio"
+            android:gravity="center"
+            android:src="@drawable/ic_action_navigation_accept"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="Entidad:"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_toRightOf="@id/imgEntidadServicio"
+            android:layout_below="@id/titleEdadServicio"
+            android:layout_marginLeft="7dp"
+            android:id="@+id/titleEntidadServicio"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="16"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/titleEntidadServicio"
+            android:layout_below="@id/txtEdadServicio"
+            android:id="@+id/txtEntidadServicio"/>
+
+        <!-- Termina Entidad -->
+
+        <!-- Empieza Nro Afiliado -->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@id/imgEntidadServicio"
+            android:id="@+id/imgNroAfiliadoServicio"
+            android:gravity="center"
+            android:src="@drawable/ic_action_navigation_accept"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="Nro. Afiliado:"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_toRightOf="@id/imgNroAfiliadoServicio"
+            android:layout_below="@id/titleEntidadServicio"
+            android:layout_marginLeft="7dp"
+            android:id="@+id/titleNroAfiliadoServicio"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="16"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/titleNroAfiliadoServicio"
+            android:layout_below="@id/txtEntidadServicio"
+            android:id="@+id/txtNroAfiliadoServicio"/>
+
+        <!-- Termina Nro Afiliado -->
+
+        <!-- Empieza Nro Interno -->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@id/imgNroAfiliadoServicio"
+            android:id="@+id/imgNroInternoServicio"
+            android:gravity="center"
+            android:src="@drawable/ic_action_navigation_accept"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="Nro. Interno:"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_toRightOf="@id/imgNroInternoServicio"
+            android:layout_below="@id/titleNroAfiliadoServicio"
+            android:layout_marginLeft="7dp"
+            android:id="@+id/titleNroInternoServicio"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="16"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/titleNroInternoServicio"
+            android:layout_below="@id/txtNroAfiliadoServicio"
+            android:id="@+id/txtNroInternoServicio"/>
+
+        <!-- Termina Nro Interno -->
+
+        <!-- Empieza CoPago -->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@id/imgNroInternoServicio"
+            android:id="@+id/imgCoPagoServicio"
+            android:gravity="center"
+            android:src="@drawable/ic_action_navigation_accept"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="CoPago:"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_toRightOf="@id/imgCoPagoServicio"
+            android:layout_below="@id/titleNroInternoServicio"
+            android:layout_marginLeft="7dp"
+            android:id="@+id/titleCoPagoServicio"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="16"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/titleCoPagoServicio"
+            android:layout_below="@id/txtNroInternoServicio"
+            android:id="@+id/txtCoPagoServicio"/>
+
+        <!-- Termina CoPago -->
+
+        <!-- Empieza Observaciones -->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@id/imgCoPagoServicio"
+            android:id="@+id/imgObservacionesServicio"
+            android:gravity="center"
+            android:src="@drawable/ic_action_navigation_accept"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="Observaciones:"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_toRightOf="@id/imgObservacionesServicio"
+            android:layout_below="@id/titleCoPagoServicio"
+            android:layout_marginLeft="7dp"
+            android:id="@+id/titleObservacionesServicio"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="16"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/titleObservacionesServicio"
+            android:layout_below="@id/txtCoPagoServicio"
+            android:id="@+id/txtObservacionesServicio"/>
+
+        <!-- Termina Observaciones -->
 
         </RelativeLayout>
 

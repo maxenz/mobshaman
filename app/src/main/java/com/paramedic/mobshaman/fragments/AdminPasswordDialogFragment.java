@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -24,22 +25,30 @@ public class AdminPasswordDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        // Get the layout inflater
+
         LayoutInflater inflater = getActivity().getLayoutInflater();
+
+        /** Obtengo variables para usar de la UI **/
 
         View myView = inflater.inflate(R.layout.dialog_admin_password,null);
 
         ipt_user = (EditText) myView.findViewById(R.id.username);
         ipt_password = (EditText) myView.findViewById(R.id.password);
+        ipt_password.setTypeface(Typeface.DEFAULT );
 
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
+        /** Armo el dialog para ingresar usuario / password **/
         builder.setView(myView)
                 // Add action buttons
                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
+
+                        /** Si ingreso los datos correctos del administrador, puedo configurar
+                         * la aplicación
+                         */
+
                         String user_ingresado = ipt_user.getText().toString();
                         String pass_ingresado = ipt_password.getText().toString();
 
@@ -57,6 +66,8 @@ public class AdminPasswordDialogFragment extends DialogFragment {
                         AdminPasswordDialogFragment.this.getDialog().cancel();
                     }
                 });
+
+        builder.setInverseBackgroundForced(true);
         return builder.create();
     }
 }

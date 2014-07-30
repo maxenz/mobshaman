@@ -33,13 +33,15 @@ public class DetalleServicioFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // --> Redefino este metodo para poder actualizar desde el fragment y no desde la activity
+
+        /** Redefino este metodo para poder actualizar desde el fragment y no desde la activity **/
 
         boolean handled = false;
 
         int id = item.getItemId();
         switch (id) {
             case R.id.action_ubicacion_servicio:
+                /** Voy a la actividad donde me muestra la ubicación del servicio **/
                 Intent intent = new Intent(getActivity(), MapaServicioActivity.class);
                 intent.putExtra("Servicio", serv);
                 startActivity(intent);
@@ -63,11 +65,13 @@ public class DetalleServicioFragment extends Fragment {
 
     private void displayValues(View myView) {
 
+        /** Obtengo via intent los datos del servicio y los muestro en la UI **/
+
         Intent intent = this.getActivity().getIntent();
 
         serv = (Servicio) intent.getSerializableExtra("Servicio");
 
-        tvCliente = (TextView) myView.findViewById(R.id.txtClienteServicio);
+        tvCliente = (TextView) myView.findViewById(R.id.txtEntidadServicio);
         tvGrado = (TextView) myView.findViewById(R.id.txtGradoServicio);
         tvDomicilio = (TextView) myView.findViewById(R.id.txtDomicilioServicio);
         tvSexo = (TextView) myView.findViewById(R.id.txtSexoServicio);

@@ -44,6 +44,7 @@
 
         <activity
             android:name=".activities.ServiciosActivity"
+            android:screenOrientation="portrait"
             android:label="Servicios" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -53,10 +54,12 @@
         </activity>
         <activity
             android:name=".activities.DetalleServicioActivity"
+            android:screenOrientation="portrait"
             android:label="Detalles" >
         </activity>
         <activity
             android:name=".activities.MapaServicioActivity"
+            android:screenOrientation="portrait"
             android:label="Ubicación del Servicio" >
         </activity>
 
@@ -82,12 +85,10 @@
 
         <activity
             android:name=".activities.ConfigGeneralActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_config_general" >
         </activity>
-        <activity
-            android:name=".activities.FirstUseActivity"
-            android:label="@string/title_activity_first_use" >
-        </activity>
+
     </application>
 
 </manifest>

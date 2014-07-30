@@ -37,16 +37,8 @@ public class AccionesDetalleServicioFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View myView = inflater.inflate(R.layout.fragment_acciones_detalle_servicio,container,false);
 
-        displayValues(myView);
-
         return myView;
     }
 
-    private void displayValues(View myView) {
 
-//        TextView txtIdServicio = (TextView) myView.findViewById(R.id.idServicio2);
-//
-//        txtIdServicio.setText("OLA K ASE 2");
-
-    }
 }

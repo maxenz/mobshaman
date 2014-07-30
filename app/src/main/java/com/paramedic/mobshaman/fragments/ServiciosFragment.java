@@ -50,16 +50,18 @@ public class ServiciosFragment extends ListFragment {
 
     private void initializeComponents() {
 
-        // --> Redefino el estilo de la listview que usa el fragment
+        /** Redefino el estilo de la listview que usa el fragment **/
         listView = getListView();
         ColorDrawable divider = new ColorDrawable(this.getResources().getColor(R.color.verde_color));
         listView.setDivider(divider);
         listView.setDividerHeight(1);
 
+        /** Muestro un dialogo spinner (no dejo que usuario use UI) **/
         pDialog = new ProgressDialog(getActivity());
         pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         pDialog.setCancelable(true);
 
+        /** Obtengo datos de shared preferences de la configuración general **/
         SharedPreferences sp = getActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
         NRO_MOVIL = sp.getString("nroMovil","");
         URL_REST_SERVICIOS = sp.getString("urlREST","");
@@ -68,7 +70,7 @@ public class ServiciosFragment extends ListFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        // --> Redefino este metodo para poder actualizar desde el fragment y no desde la activity
+        /** Redefino este metodo para poder actualizar desde el fragment y no desde la activity **/
 
         boolean handled = false;
 
@@ -87,6 +89,8 @@ public class ServiciosFragment extends ListFragment {
 
     public void getListadoServicios() {
 
+        /** Si no está configurado el móvil, no puedo obtener servicios.. **/
+
         if (NRO_MOVIL == "") {
             Toast.makeText(getActivity(),"La aplicación no fue configurada para su uso.",Toast.LENGTH_LONG).show();
             return;
@@ -95,6 +99,7 @@ public class ServiciosFragment extends ListFragment {
         pDialog.setMessage("Actualizando Servicios...");
         pDialog.show();
 
+        /** Request asincrónica para traer todos los servicios de ese móvil **/
         new HttpHandler() {
             @Override
             public HttpUriRequest getHttpRequestMethod() {
@@ -109,12 +114,14 @@ public class ServiciosFragment extends ListFragment {
             @Override
             public void onResponse(String result) {
 
+                /** Veo si pude obtener los servicios o si hubo un problema **/
                 if (result == "") {
 
                     Toast.makeText(getActivity(),"Error en la red. Intente nuevamente",Toast.LENGTH_LONG).show();
 
                 } else {
 
+                    /** Seteo los datos en la lista **/
                     ArrayList<Servicio> servicios = new ServiciosHelper().stringToListServicios(result,0);
 
                     servAdapter = new ServiciosAdapter(getActivity(), servicios, ServiciosFragment.this);
@@ -134,6 +141,7 @@ public class ServiciosFragment extends ListFragment {
         pDialog.setMessage("Cargando Servicio...");
         pDialog.show();
 
+        /** Obtengo asincronicamente el detalle del servicio .. **/
         new HttpHandler() {
             @Override
             public HttpUriRequest getHttpRequestMethod() {
@@ -150,6 +158,7 @@ public class ServiciosFragment extends ListFragment {
             @Override
             public void onResponse(String result) {
 
+                /** Veo si llegan los datos o si hubo un problema **/
                 if (result == "") {
 
                     Toast.makeText(getActivity(),"Error en la red. Intente nuevamente",Toast.LENGTH_LONG).show();
@@ -158,6 +167,7 @@ public class ServiciosFragment extends ListFragment {
 
                     try {
 
+                        /** Obtengo el servicio y lo paso a la actividad de detalle **/
                         JSONObject jServ = new JSONObject(result);
 
                         Servicio servDetalle = new ServiciosHelper().jsonToServicio(jServ,1);
