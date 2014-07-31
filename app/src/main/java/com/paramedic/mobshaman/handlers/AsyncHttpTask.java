@@ -32,7 +32,6 @@ public class AsyncHttpTask extends AsyncTask<String, Void, String> {
 
             result = EntityUtils.toString(httpResponse.getEntity());
 
-
         } catch (Exception e) {
             Log.d("InputStream", e.getLocalizedMessage());
         }

@@ -105,7 +105,7 @@ public class ServiciosFragment extends ListFragment {
             @Override
             public HttpUriRequest getHttpRequestMethod() {
 
-                HttpGet hgServicios = new HttpGet(URL_REST_SERVICIOS + "/servicios?idMovil=" + NRO_MOVIL);
+                HttpGet hgServicios = new HttpGet(URL_REST_SERVICIOS + "/api/servicios?idMovil=" + NRO_MOVIL);
 
                 hgServicios.setHeader("content-type", "application/json");
 
@@ -147,7 +147,7 @@ public class ServiciosFragment extends ListFragment {
             @Override
             public HttpUriRequest getHttpRequestMethod() {
 
-                String urlFinal = URL_REST_SERVICIOS + "/servicios/" + ID_SERVICIO_SELECCIONADO;
+                String urlFinal = URL_REST_SERVICIOS + "/api/servicios/" + ID_SERVICIO_SELECCIONADO;
 
                 HttpGet hgServicios = new HttpGet(urlFinal);
 
