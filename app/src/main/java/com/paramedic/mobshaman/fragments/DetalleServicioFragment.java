@@ -21,7 +21,11 @@ import org.w3c.dom.Text;
  */
 public class DetalleServicioFragment extends Fragment {
 
-    TextView tvCliente,tvGrado, tvDomicilio, tvSexo, tvEdad, tvNroServicio;
+    TextView tvLocalidad, tvDomicilio, tvEntreCalle1, tvEntreCalle2,
+    tvReferencias, tvSintomas, tvGrado, tvAviso, tvPaciente, tvSexo,
+    tvEdad, tvEntidad, tvNroAfiliado, tvNroInterno, tvCoPago, tvObservaciones,
+    tvNroServicio;
+
     Servicio serv;
 
     @Override
@@ -71,19 +75,41 @@ public class DetalleServicioFragment extends Fragment {
 
         serv = (Servicio) intent.getSerializableExtra("Servicio");
 
-        tvCliente = (TextView) myView.findViewById(R.id.txtEntidadServicio);
-        tvGrado = (TextView) myView.findViewById(R.id.txtGradoServicio);
+        tvLocalidad = (TextView) myView.findViewById(R.id.txtLocalidadServicio);
         tvDomicilio = (TextView) myView.findViewById(R.id.txtDomicilioServicio);
+        tvEntreCalle1 = (TextView) myView.findViewById(R.id.txtEntreCalle1Servicio);
+        tvEntreCalle2 = (TextView) myView.findViewById(R.id.txtEntreCalle2Servicio);
+        tvReferencias = (TextView) myView.findViewById(R.id.txtReferenciasServicio);
+        tvSintomas = (TextView) myView.findViewById(R.id.txtSintomasServicio);
+        tvGrado = (TextView) myView.findViewById(R.id.txtGradoServicio);
+        tvAviso = (TextView) myView.findViewById(R.id.txtAvisoServicio);
+        tvPaciente = (TextView) myView.findViewById(R.id.txtPacienteServicio);
         tvSexo = (TextView) myView.findViewById(R.id.txtSexoServicio);
         tvEdad = (TextView) myView.findViewById(R.id.txtEdadServicio);
-        tvNroServicio = (TextView) myView.findViewById(R.id.nroServicio);
+        tvEntidad = (TextView) myView.findViewById(R.id.txtEntidadServicio);
+        tvNroAfiliado = (TextView) myView.findViewById(R.id.txtNroAfiliadoServicio);
+        tvNroInterno = (TextView) myView.findViewById(R.id.txtNroInternoServicio);
+        tvCoPago = (TextView) myView.findViewById(R.id.txtCoPagoServicio);
+        tvObservaciones = (TextView) myView.findViewById(R.id.txtObservacionesServicio);
+        tvNroServicio = (TextView) myView.findViewById(R.id.txt_header_detalle_servicio);
 
-        tvCliente.setText(serv.getCliente());
-        tvGrado.setTextColor(getResources().getColor(serv.getGradoColor()));
-        tvGrado.setText(serv.getGrado());
+        tvLocalidad.setText(serv.getLocalidad());
         tvDomicilio.setText(serv.getDomicilio());
+        tvEntreCalle1.setText(serv.getEntreCalle1());
+        tvEntreCalle2.setText(serv.getEntreCalle2());
+        tvReferencias.setText(serv.getReferencia());
+        tvSintomas.setText(serv.getSintomas());
+        tvGrado.setText(serv.getGrado());
+        tvGrado.setTextColor(getResources().getColor(serv.getGradoColor()));
+        tvAviso.setText(serv.getAviso());
+        tvPaciente.setText(serv.getPaciente());
         tvSexo.setText(serv.getSexo());
         tvEdad.setText(serv.getEdad());
+        tvEntidad.setText(serv.getCliente());
+        tvNroAfiliado.setText(serv.getNroAfiliado());
+        //tvNroInterno.setText(serv.getNro);
+        tvCoPago.setText(serv.getCoPago().toString());
+        tvObservaciones.setText(serv.getObservaciones());
 
         tvNroServicio.setText("Datos del Servicio " + serv.getNroIncidente());
 

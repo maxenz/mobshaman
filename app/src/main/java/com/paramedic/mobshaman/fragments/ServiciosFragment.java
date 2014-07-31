@@ -16,6 +16,7 @@ import com.paramedic.mobshaman.activities.DetalleServicioActivity;
 import com.paramedic.mobshaman.adapters.ServiciosAdapter;
 import com.paramedic.mobshaman.handlers.HttpHandler;
 import com.paramedic.mobshaman.helpers.ServiciosHelper;
+import com.paramedic.mobshaman.helpers.SharedPrefsHelper;
 import com.paramedic.mobshaman.models.Servicio;
 
 import org.apache.http.client.methods.HttpGet;
@@ -63,8 +64,8 @@ public class ServiciosFragment extends ListFragment {
 
         /** Obtengo datos de shared preferences de la configuración general **/
         SharedPreferences sp = getActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
-        NRO_MOVIL = sp.getString("nroMovil","");
-        URL_REST_SERVICIOS = sp.getString("urlREST","");
+        NRO_MOVIL = new SharedPrefsHelper().getNroMovilFromSharedPrefs(this.getActivity());
+        URL_REST_SERVICIOS = new SharedPrefsHelper().getURLFromSharedPrefs(this.getActivity());
     }
 
     @Override
@@ -104,7 +105,7 @@ public class ServiciosFragment extends ListFragment {
             @Override
             public HttpUriRequest getHttpRequestMethod() {
 
-                HttpGet hgServicios = new HttpGet(URL_REST_SERVICIOS + "?idMovil=" + NRO_MOVIL);
+                HttpGet hgServicios = new HttpGet(URL_REST_SERVICIOS + "/servicios?idMovil=" + NRO_MOVIL);
 
                 hgServicios.setHeader("content-type", "application/json");
 
@@ -146,7 +147,7 @@ public class ServiciosFragment extends ListFragment {
             @Override
             public HttpUriRequest getHttpRequestMethod() {
 
-                String urlFinal = URL_REST_SERVICIOS + "/" + ID_SERVICIO_SELECCIONADO;
+                String urlFinal = URL_REST_SERVICIOS + "/servicios/" + ID_SERVICIO_SELECCIONADO;
 
                 HttpGet hgServicios = new HttpGet(urlFinal);
 
