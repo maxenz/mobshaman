@@ -38,9 +38,9 @@ public class AccionesDetalleServicioFragment extends Fragment {
     ProgressDialog pDialog;
     HandleMessageHelper msgHelper;
     Servicio serv;
-    Button btnLlegadaServicio;
+    Button btnLlegadaServicio, btnSalidaServicio;
 
-    String URL_REST, NRO_MOVIL;
+    String URL_REST, NRO_MOVIL,MENSAJE_TOAST_CORRECTO;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -75,8 +75,10 @@ public class AccionesDetalleServicioFragment extends Fragment {
         serv = (Servicio) intent.getSerializableExtra("Servicio");
 
         btnLlegadaServicio = (Button) myView.findViewById(R.id.btn_llegada_servicio);
+        btnSalidaServicio = (Button) myView.findViewById(R.id.btn_salida_servicio);
 
         setButtonLlegadaListener();
+        setButtonSalidaListener();
 
         return myView;
     }
@@ -90,7 +92,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 DialogHelper dg = new DialogHelper();
-                dg.getConfirmDialog(getActivity(),"Alerta", "¿Desea darle llegada al movil?", "Si", "No", false,
+                dg.getConfirmDialog(getActivity(), "Alerta", "¿Desea darle llegada al movil?", "Si", "No", false,
                         new AlertListener() {
 
                             @Override
@@ -100,7 +102,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
 
                             @Override
                             public void NegativeMethod(DialogInterface dialog, int id) {
-                                Toast.makeText(getActivity().getApplicationContext(),"Llegada cancelada.",Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity().getApplicationContext(), "Llegada cancelada.", Toast.LENGTH_LONG).show();
                             }
                         }
                 );
@@ -119,7 +121,69 @@ public class AccionesDetalleServicioFragment extends Fragment {
 
                 String viajeID = "" + serv.getId();
 
-                HttpPost hpSalida = new HttpPost(URL_REST + "/Acciones/setLlegadaMovil");
+                HttpPost hpLlegada = new HttpPost(URL_REST + "/Acciones/setLlegadaMovil");
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+                nameValuePairs.add(new BasicNameValuePair("movil", NRO_MOVIL));
+                nameValuePairs.add(new BasicNameValuePair("viajeID", viajeID));
+                try {
+                    hpLlegada.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                return hpLlegada;
+
+            }
+            @Override
+            public void onResponse(String result) {
+
+               MENSAJE_TOAST_CORRECTO = "La llegada se registró correctamente";
+               onResponseAction(result);
+
+            }
+
+        }.execute();
+    }
+
+    /**
+     * Termina llegada de movil
+     */
+
+    private void setButtonSalidaListener() {
+        btnSalidaServicio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogHelper dg = new DialogHelper();
+                dg.getConfirmDialog(getActivity(), "Alerta", "¿Desea darle salida al movil?", "Si", "No", false,
+                        new AlertListener() {
+
+                            @Override
+                            public void PositiveMethod(final DialogInterface dialog, final int id) {
+                                doAsyncTaskSalida();
+                            }
+
+                            @Override
+                            public void NegativeMethod(DialogInterface dialog, int id) {
+                                Toast.makeText(getActivity().getApplicationContext(), "Salida cancelada.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                );
+            }
+        });
+    }
+
+    private void doAsyncTaskSalida() {
+
+        pDialog.setMessage("Dando salida al móvil...");
+        pDialog.show();
+
+        new HttpHandler() {
+            @Override
+            public HttpUriRequest getHttpRequestMethod() {
+
+                String viajeID = "" + serv.getId();
+
+                HttpPost hpSalida = new HttpPost(URL_REST + "/Acciones/setSalidaMovil");
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
                 nameValuePairs.add(new BasicNameValuePair("movil", NRO_MOVIL));
                 nameValuePairs.add(new BasicNameValuePair("viajeID", viajeID));
@@ -135,28 +199,30 @@ public class AccionesDetalleServicioFragment extends Fragment {
             @Override
             public void onResponse(String result) {
 
-                /** Veo si pude obtener los servicios o si hubo un problema **/
-                if (result == "") {
+                MENSAJE_TOAST_CORRECTO = "La salida se registró correctamente";
+                onResponseAction(result);
 
-                    Toast.makeText(getActivity(),"Error en la red. Intente nuevamente.",Toast.LENGTH_LONG).show();
-
-                } else if (msgHelper.getCodeResponse(result) == "0") {
-
-                    Toast.makeText(getActivity(),"La llegada se registró correctamente",Toast.LENGTH_LONG).show();
-                } else {
-
-                    Toast.makeText(getActivity(),"Error: " + msgHelper.getMessageResponse(result),Toast.LENGTH_LONG).show();
-                }
-
-                pDialog.dismiss();
             }
 
         }.execute();
     }
 
-    /**
-     * Termina llegada de movil
-     */
+    private void onResponseAction(String result) {
 
+        if (result == "") {
+
+            Toast.makeText(getActivity(),"Error en la red. Intente nuevamente.",Toast.LENGTH_LONG).show();
+
+        } else if (msgHelper.getCodeResponse(result).equals("0")) {
+
+            Toast.makeText(getActivity(),MENSAJE_TOAST_CORRECTO,Toast.LENGTH_LONG).show();
+
+        } else {
+
+            Toast.makeText(getActivity(),"Error: " + msgHelper.getMessageResponse(result),Toast.LENGTH_LONG).show();
+        }
+
+        pDialog.dismiss();
+    }
 
 }
