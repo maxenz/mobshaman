@@ -12,23 +12,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.paramedic.mobshaman.R;
-import com.paramedic.mobshaman.handlers.HttpHandler;
 import com.paramedic.mobshaman.helpers.DialogHelper;
-import com.paramedic.mobshaman.helpers.HandleMessageHelper;
 import com.paramedic.mobshaman.helpers.SharedPrefsHelper;
 import com.paramedic.mobshaman.interfaces.AlertListener;
+import com.paramedic.mobshaman.models.AccionesRestModel;
 import com.paramedic.mobshaman.models.Servicio;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.paramedic.mobshaman.rest.ServiciosRestClient;
+import org.apache.http.Header;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by soporte on 23/07/2014.
@@ -36,20 +31,14 @@ import java.util.List;
 public class AccionesDetalleServicioFragment extends Fragment {
 
     ProgressDialog pDialog;
-    HandleMessageHelper msgHelper;
     Servicio serv;
-    Button btnLlegadaServicio, btnSalidaServicio;
-
-    String URL_REST, NRO_MOVIL,MENSAJE_TOAST_CORRECTO;
+    Button btnLlegadaServicio, btnSalidaServicio, btnFinalServicio;
+    String URL_REST, NRO_MOVIL;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         setHasOptionsMenu(true);
-
-        URL_REST = new SharedPrefsHelper().getURLFromSharedPrefs(this.getActivity());
-        NRO_MOVIL = new SharedPrefsHelper().getNroMovilFromSharedPrefs(this.getActivity());
     }
 
     @Override
@@ -65,10 +54,11 @@ public class AccionesDetalleServicioFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View myView = inflater.inflate(R.layout.fragment_acciones_detalle_servicio,container,false);
 
+        URL_REST = new SharedPrefsHelper().getURLFromSharedPrefs(this.getActivity());
+        NRO_MOVIL = new SharedPrefsHelper().getNroMovilFromSharedPrefs(this.getActivity());
+
         pDialog = new ProgressDialog(getActivity());
         pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-
-        msgHelper = new HandleMessageHelper();
 
         Intent intent = this.getActivity().getIntent();
 
@@ -76,153 +66,121 @@ public class AccionesDetalleServicioFragment extends Fragment {
 
         btnLlegadaServicio = (Button) myView.findViewById(R.id.btn_llegada_servicio);
         btnSalidaServicio = (Button) myView.findViewById(R.id.btn_salida_servicio);
+        btnFinalServicio = (Button) myView.findViewById(R.id.btn_final_servicio);
 
-        setButtonLlegadaListener();
-        setButtonSalidaListener();
+        RequestParams reqParams = new RequestParams();
+        reqParams.put("movil",NRO_MOVIL);
+        reqParams.put("viajeID", serv.getId());
+
+        AccionesRestModel finalServ = new AccionesRestModel("Final del servicio",
+                "¿Seguro que desea finalizar el servicio?","Final de servicio cancelado",
+                URL_REST + "/acciones/setFinal", "Finalizando servicio...");
+
+        AccionesRestModel salidaServ = new AccionesRestModel("Salida del servicio",
+                "¿Seguro que desea dar salida al servicio?","Salida de servicio cancelada",
+                URL_REST + "/acciones/setSalidaMovil", "Dando salida al servicio...");
+
+        AccionesRestModel llegadaServ = new AccionesRestModel("Llegada del servicio",
+                "¿Seguro que desea dar llegada al servicio?","Llegada de servicio cancelada",
+                URL_REST + "/acciones/setLlegadaMovil", "Dando llegada al servicio...");
+
+
+        doActionServicio(finalServ, btnFinalServicio, reqParams);
+        doActionServicio(salidaServ,btnSalidaServicio,reqParams);
+        doActionServicio(llegadaServ,btnLlegadaServicio,reqParams);
 
         return myView;
     }
 
-    /**
-     * Empieza llegada de movil
-     */
+    private void showToast(String mensaje) {
+        Toast.makeText(getActivity().getApplicationContext(), mensaje, Toast.LENGTH_LONG).show();
+    }
 
-    private void setButtonLlegadaListener() {
-        btnLlegadaServicio.setOnClickListener(new View.OnClickListener() {
+    private void showLoadingMessage(String message) {
+        pDialog.setMessage(message);
+        pDialog.show();
+    }
+
+    private void doActionServicio(final AccionesRestModel accServ, Button btn,
+                                  final RequestParams rp) {
+        setActionListener(btn,accServ.getTituloAlertDialog(),
+                accServ.getMensajeAlertDialog(),
+                new AlertListener() {
+                    @Override
+                    public void PositiveMethod(final DialogInterface dialog, final int id) {
+                        try {
+                            doAsyncTaskPostServicio(accServ.getUrl(), accServ.getLoadingMessage(),
+                                    rp);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void NegativeMethod(DialogInterface dialog, int id) {
+                        showToast(accServ.getMensajeCancelAlertDialog());
+                    }
+                }
+        );
+    }
+
+    private void doAsyncTaskPostServicio(String url, final String dialogMessage,
+                                         RequestParams rp) throws JSONException{
+
+            ServiciosRestClient.post(url,rp, new JsonHttpResponseHandler() {
+
+                @Override
+                public void onStart() {
+                    showLoadingMessage(dialogMessage);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    pDialog.dismiss();
+                    showToast("Error " + statusCode + ": " + throwable.getMessage());
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    pDialog.dismiss();
+                    showToast("Error " + statusCode + ": " + throwable.getMessage());
+                }
+
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    try {
+                        showToast(response.getString("Message"));
+                    } catch (JSONException e) {
+                        showToast(e.getMessage());
+                    }
+                    pDialog.dismiss();
+
+                }
+
+            });
+
+    }
+
+
+    private void setActionListener(Button btnAction, final String title,
+                                   final String messageDialog, final AlertListener alertListener) {
+
+        btnAction.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 DialogHelper dg = new DialogHelper();
-                dg.getConfirmDialog(getActivity(), "Alerta", "¿Desea darle llegada al movil?", "Si", "No", false,
-                        new AlertListener() {
-
-                            @Override
-                            public void PositiveMethod(final DialogInterface dialog, final int id) {
-                                doAsyncTaskLlegada();
-                            }
-
-                            @Override
-                            public void NegativeMethod(DialogInterface dialog, int id) {
-                                Toast.makeText(getActivity().getApplicationContext(), "Llegada cancelada.", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                );
+                dg.getConfirmDialog(getActivity(),title,messageDialog,"Si","No",false, alertListener);
             }
         });
     }
 
-    private void doAsyncTaskLlegada() {
 
-        pDialog.setMessage("Dando llegada al móvil...");
-        pDialog.show();
 
-        new HttpHandler() {
-            @Override
-            public HttpUriRequest getHttpRequestMethod() {
 
-                String viajeID = "" + serv.getId();
 
-                HttpPost hpLlegada = new HttpPost(URL_REST + "/Acciones/setLlegadaMovil");
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-                nameValuePairs.add(new BasicNameValuePair("movil", NRO_MOVIL));
-                nameValuePairs.add(new BasicNameValuePair("viajeID", viajeID));
-                try {
-                    hpLlegada.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
 
-                return hpLlegada;
-
-            }
-            @Override
-            public void onResponse(String result) {
-
-               MENSAJE_TOAST_CORRECTO = "La llegada se registró correctamente";
-               onResponseAction(result);
-
-            }
-
-        }.execute();
-    }
-
-    /**
-     * Termina llegada de movil
-     */
-
-    private void setButtonSalidaListener() {
-        btnSalidaServicio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DialogHelper dg = new DialogHelper();
-                dg.getConfirmDialog(getActivity(), "Alerta", "¿Desea darle salida al movil?", "Si", "No", false,
-                        new AlertListener() {
-
-                            @Override
-                            public void PositiveMethod(final DialogInterface dialog, final int id) {
-                                doAsyncTaskSalida();
-                            }
-
-                            @Override
-                            public void NegativeMethod(DialogInterface dialog, int id) {
-                                Toast.makeText(getActivity().getApplicationContext(), "Salida cancelada.", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                );
-            }
-        });
-    }
-
-    private void doAsyncTaskSalida() {
-
-        pDialog.setMessage("Dando salida al móvil...");
-        pDialog.show();
-
-        new HttpHandler() {
-            @Override
-            public HttpUriRequest getHttpRequestMethod() {
-
-                String viajeID = "" + serv.getId();
-
-                HttpPost hpSalida = new HttpPost(URL_REST + "/Acciones/setSalidaMovil");
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-                nameValuePairs.add(new BasicNameValuePair("movil", NRO_MOVIL));
-                nameValuePairs.add(new BasicNameValuePair("viajeID", viajeID));
-                try {
-                    hpSalida.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-
-                return hpSalida;
-
-            }
-            @Override
-            public void onResponse(String result) {
-
-                MENSAJE_TOAST_CORRECTO = "La salida se registró correctamente";
-                onResponseAction(result);
-
-            }
-
-        }.execute();
-    }
-
-    private void onResponseAction(String result) {
-
-        if (result == "") {
-
-            Toast.makeText(getActivity(),"Error en la red. Intente nuevamente.",Toast.LENGTH_LONG).show();
-
-        } else if (msgHelper.getCodeResponse(result).equals("0")) {
-
-            Toast.makeText(getActivity(),MENSAJE_TOAST_CORRECTO,Toast.LENGTH_LONG).show();
-
-        } else {
-
-            Toast.makeText(getActivity(),"Error: " + msgHelper.getMessageResponse(result),Toast.LENGTH_LONG).show();
-        }
-
-        pDialog.dismiss();
-    }
 
 }

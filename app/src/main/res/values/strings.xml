@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">MobShaman</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name">Shaman</string>
     <string name="action_buscar">Buscar</string>
     <string name="action_refresh">Actualizar</string>
     <string name="detalle_servicio">Detalle</string>
@@ -11,10 +9,8 @@
     <string name="geo_servicio">Ubicación</string>
     <string name="action_ubicacion">Ubicación</string>
     <string name="title_activity_mapa_servicio">MapaServicioActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_config_general">ConfigGeneralActivity</string>
     <string name="action_configuracion_general">Configuración</string>
-    <string name="title_activity_first_use">FirstUseActivity</string>
+
 
 </resources>
