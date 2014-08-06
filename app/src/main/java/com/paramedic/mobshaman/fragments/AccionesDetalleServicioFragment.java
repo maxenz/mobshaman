@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.paramedic.mobshaman.R;
+import com.paramedic.mobshaman.activities.FinalServicioActivity;
 import com.paramedic.mobshaman.helpers.DialogHelper;
 import com.paramedic.mobshaman.helpers.SharedPrefsHelper;
 import com.paramedic.mobshaman.interfaces.AlertListener;
@@ -89,9 +90,16 @@ public class AccionesDetalleServicioFragment extends Fragment {
                 "¿Seguro que desea dar llegada al servicio?","Llegada de servicio cancelada",
                 URL_REST + "/acciones/setLlegadaMovil", "Dando llegada al servicio...");
 
-        doActionServicio(finalServ, btnFinalServicio, reqParams);
+        //doActionServicio(finalServ, btnFinalServicio, reqParams);
         doActionServicio(salidaServ,btnSalidaServicio,reqParams);
         doActionServicio(llegadaServ,btnLlegadaServicio,reqParams);
+
+        btnFinalServicio.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), FinalServicioActivity.class));
+            }
+        });
 
     }
 

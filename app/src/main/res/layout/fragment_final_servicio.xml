@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Cierre del Servicio K2T"
+        android:textStyle="bold"
+        android:typeface="sans"
+        android:textSize="17sp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="10dp"
+        android:id="@+id/txt_header_final_servicio"
+        android:background="@drawable/fondo_gris_gradient"
+        android:layout_gravity="left" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/verde_color"
+        android:layout_marginBottom="8dp"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txt_header_final_servicio"
+        android:id="@+id/txt_pregunta_final_servicio_realizado"
+        android:text="¿El servicio fue realizado?"
+        android:layout_marginLeft="8dp"
+        android:textStyle="bold"
+        android:typeface="sans"
+        android:textSize="17sp"
+        android:paddingTop="12dp"/>
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_toRightOf="@id/txt_pregunta_final_servicio_realizado"
+        android:layout_below="@+id/txt_header_final_servicio"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="20dp"
+        android:paddingTop="6dp"
+        android:layout_alignParentEnd="true">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Si"
+            android:id="@+id/radioButton2" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No"
+            android:id="@+id/radioButton3" />
+    </RadioGroup>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="15dp"
+        android:background="@color/verde_color"
+        android:layout_below="@id/txt_pregunta_final_servicio_realizado"
+        android:layout_marginBottom="8dp"/>
+
+</RelativeLayout>

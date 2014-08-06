@@ -8,9 +8,9 @@
     <string name="acciones_servicio">Acciones</string>
     <string name="geo_servicio">Ubicación</string>
     <string name="action_ubicacion">Ubicación</string>
-    <string name="title_activity_mapa_servicio">MapaServicioActivity</string>
-    <string name="title_activity_config_general">ConfigGeneralActivity</string>
+    <string name="title_activity_mapa_servicio">Ubicación del Servicio</string>
+    <string name="title_activity_config_general">Configuración General</string>
     <string name="action_configuracion_general">Configuración</string>
-
+    <string name="title_activity_final_servicio">Final del Servicio</string>
 
 </resources>

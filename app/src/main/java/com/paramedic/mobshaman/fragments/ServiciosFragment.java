@@ -10,28 +10,26 @@ import android.support.v4.app.ListFragment;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.activities.DetalleServicioActivity;
 import com.paramedic.mobshaman.adapters.ServiciosAdapter;
-import com.paramedic.mobshaman.handlers.HttpHandler;
 import com.paramedic.mobshaman.helpers.ServiciosHelper;
 import com.paramedic.mobshaman.helpers.SharedPrefsHelper;
+import com.paramedic.mobshaman.models.Diagnostico;
 import com.paramedic.mobshaman.models.Servicio;
-import com.paramedic.mobshaman.models.ServicioPrueba;
 import com.paramedic.mobshaman.rest.ServiciosRestClient;
-
 import org.apache.http.Header;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.simpleframework.xml.Serializer;
+import org.simpleframework.xml.core.Persister;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 /**
@@ -53,8 +51,6 @@ public class ServiciosFragment extends ListFragment {
         setHasOptionsMenu(true);
 
         initializeComponents();
-
-        //getListadoServicios();
 
         getServicios(URL_REST_SERVICIOS + "/api/servicios?idMovil=" + NRO_MOVIL ,"Actualizando Servicios...",null);
 
