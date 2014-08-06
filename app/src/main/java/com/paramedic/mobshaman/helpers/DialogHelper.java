@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
+import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.interfaces.AlertListener;
 
 /**
@@ -26,6 +27,7 @@ public class DialogHelper {
         });
 
         AlertDialog alert = builder.create();
+        alert.setIcon(R.drawable.ic_action_about);
         alert.setCancelable(isCancelable);
         alert.show();
         if (isCancelable) {

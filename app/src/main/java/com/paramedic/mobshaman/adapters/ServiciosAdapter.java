@@ -66,7 +66,7 @@ public class ServiciosAdapter extends ArrayAdapter<Servicio> {
 
         ivGrado.setImageDrawable(context.getResources().getDrawable(shapeGrado));
 
-        rowView.setId(serv.getId());
+        rowView.setId(serv.getIdServicio());
 
         rowView.setOnClickListener(new View.OnClickListener()
         {
@@ -75,7 +75,9 @@ public class ServiciosAdapter extends ArrayAdapter<Servicio> {
             {
 
              fragment.ID_SERVICIO_SELECCIONADO = v.getId();
-             fragment.getDetalleServicio();
+             String urlDetalle = fragment.URL_REST_SERVICIOS + "/api/servicios/"
+                     + fragment.ID_SERVICIO_SELECCIONADO;
+             fragment.getDetalleServicio(urlDetalle,"Cargando servicio...",null);
 
             }
         });

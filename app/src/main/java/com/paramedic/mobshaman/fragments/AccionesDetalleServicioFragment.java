@@ -57,20 +57,25 @@ public class AccionesDetalleServicioFragment extends Fragment {
         URL_REST = new SharedPrefsHelper().getURLFromSharedPrefs(this.getActivity());
         NRO_MOVIL = new SharedPrefsHelper().getNroMovilFromSharedPrefs(this.getActivity());
 
-        pDialog = new ProgressDialog(getActivity());
-        pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        getServicioFromIntent();
 
+        initializeUI(myView);
+
+        initializeActionButtons();
+
+        return myView;
+    }
+
+    private void getServicioFromIntent() {
         Intent intent = this.getActivity().getIntent();
-
         serv = (Servicio) intent.getSerializableExtra("Servicio");
+    }
 
-        btnLlegadaServicio = (Button) myView.findViewById(R.id.btn_llegada_servicio);
-        btnSalidaServicio = (Button) myView.findViewById(R.id.btn_salida_servicio);
-        btnFinalServicio = (Button) myView.findViewById(R.id.btn_final_servicio);
+    private void initializeActionButtons() {
 
         RequestParams reqParams = new RequestParams();
         reqParams.put("movil",NRO_MOVIL);
-        reqParams.put("viajeID", serv.getId());
+        reqParams.put("viajeID", serv.getIdServicio());
 
         AccionesRestModel finalServ = new AccionesRestModel("Final del servicio",
                 "¿Seguro que desea finalizar el servicio?","Final de servicio cancelado",
@@ -84,12 +89,21 @@ public class AccionesDetalleServicioFragment extends Fragment {
                 "¿Seguro que desea dar llegada al servicio?","Llegada de servicio cancelada",
                 URL_REST + "/acciones/setLlegadaMovil", "Dando llegada al servicio...");
 
-
         doActionServicio(finalServ, btnFinalServicio, reqParams);
         doActionServicio(salidaServ,btnSalidaServicio,reqParams);
         doActionServicio(llegadaServ,btnLlegadaServicio,reqParams);
 
-        return myView;
+    }
+
+    private void initializeUI(View myView) {
+
+        btnLlegadaServicio = (Button) myView.findViewById(R.id.btn_llegada_servicio);
+        btnSalidaServicio = (Button) myView.findViewById(R.id.btn_salida_servicio);
+        btnFinalServicio = (Button) myView.findViewById(R.id.btn_final_servicio);
+
+        pDialog = new ProgressDialog(getActivity());
+        pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
     }
 
     private void showToast(String mensaje) {
@@ -148,7 +162,6 @@ public class AccionesDetalleServicioFragment extends Fragment {
                     showToast("Error " + statusCode + ": " + throwable.getMessage());
                 }
 
-
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -164,7 +177,6 @@ public class AccionesDetalleServicioFragment extends Fragment {
 
     }
 
-
     private void setActionListener(Button btnAction, final String title,
                                    final String messageDialog, final AlertListener alertListener) {
 
@@ -176,11 +188,5 @@ public class AccionesDetalleServicioFragment extends Fragment {
             }
         });
     }
-
-
-
-
-
-
 
 }

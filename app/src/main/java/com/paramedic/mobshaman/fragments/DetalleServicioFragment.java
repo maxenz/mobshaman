@@ -111,7 +111,7 @@ public class DetalleServicioFragment extends Fragment {
         tvCoPago.setText(serv.getCoPago().toString());
         tvObservaciones.setText(serv.getObservaciones());
 
-        tvNroServicio.setText("Datos del Servicio " + serv.getNroIncidente());
+        tvNroServicio.setText("Datos del Servicio " + serv.getNroServicio());
 
     }
 }
