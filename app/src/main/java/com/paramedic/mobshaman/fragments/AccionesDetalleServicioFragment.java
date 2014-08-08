@@ -97,7 +97,8 @@ public class AccionesDetalleServicioFragment extends Fragment {
         btnFinalServicio.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), FinalServicioActivity.class));
+                Intent i = new Intent(getActivity(), FinalServicioActivity.class);
+                startActivityForResult(i, 1);
             }
         });
 
@@ -195,6 +196,28 @@ public class AccionesDetalleServicioFragment extends Fragment {
                 dg.getConfirmDialog(getActivity(),title,messageDialog,"Si","No",false, alertListener);
             }
         });
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == getActivity().RESULT_OK){
+                RequestParams rp = new RequestParams();
+                rp.add("movil",NRO_MOVIL);
+                rp.add("viajeID", String.valueOf(serv.getIdServicio()));
+                rp.add("motivoID", String.valueOf(data.getIntExtra("idMotivo", 0)));
+                rp.add("diagnosticoID", String.valueOf(data.getIntExtra("idDiagnostico", 0)));
+                rp.add("observaciones", data.getStringExtra("observaciones"));
+                try {
+                    doAsyncTaskPostServicio(URL_REST + "/acciones/setFinalServicio","Finalizando servicio...",rp);
+                } catch (JSONException e) {
+                    showToast(e.getMessage());
+                }
+            }
+            if (resultCode == getActivity().RESULT_CANCELED) {
+                showToast("No se finalizó el servicio");
+            }
+        }
     }
 
 }

@@ -51,6 +51,10 @@ public class ActualizarInformacionActivity extends ActionBarActivity {
         setButtonsForDownloadInformation(btnActualizarDiagnosticos,
                 "Cargando Diagnósticos...",URL_DIAGNOSTICOS,"diagnosticos",
                 "Los diagnósticos han sido actualizados");
+
+        setButtonsForDownloadInformation(btnActualizarMotivos,
+                "Cargando Motivos...",URL_MOTIVOS,"motivos",
+                "Los motivos han sido actualizados");
     }
 
     @Override

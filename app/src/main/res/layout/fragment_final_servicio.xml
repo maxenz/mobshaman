@@ -43,6 +43,7 @@
         android:orientation="horizontal"
         android:layout_toRightOf="@id/txt_pregunta_final_servicio_realizado"
         android:layout_below="@+id/txt_header_final_servicio"
+        android:id="@+id/radio_group_final"
         android:layout_alignParentRight="true"
         android:layout_marginLeft="20dp"
         android:paddingTop="6dp"
@@ -52,13 +53,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Si"
-            android:id="@+id/radioButton2" />
+            android:id="@+id/radio_final_si" />
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="No"
-            android:id="@+id/radioButton3" />
+            android:id="@+id/radio_final_no" />
     </RadioGroup>
 
     <View
@@ -67,10 +68,10 @@
         android:layout_height="1dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:background="@color/verde_color"
         android:layout_below="@id/txt_pregunta_final_servicio_realizado"
-        android:layout_marginBottom="14dp"/>
+        android:layout_marginBottom="20dp"/>
 
     <AutoCompleteTextView
         android:id="@+id/autocomplete_final_servicio"
@@ -80,17 +81,39 @@
         android:layout_marginRight="10dip"
         android:layout_below="@id/sep_title_final_servicio"
         android:hint="Seleccione Diagnóstico"
+        android:visibility="gone"
         android:typeface="sans"
         android:textStyle="bold"/>
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:inputType="textMultiLine"
         android:layout_marginTop="20dp"
-        android:id="@+id/editText"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:typeface="sans"
+        android:textStyle="bold"
+        android:id="@+id/et_observaciones_final"
+        android:visibility="gone"
         android:hint="Ingrese observaciones"
         android:layout_below="@+id/autocomplete_final_servicio"/>
 
+    <Button
+        android:id="@+id/btn_finalizar_servicio"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"
+        android:padding="13dp"
+        android:textSize="@dimen/font_size_buttons"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold"
+        android:typeface="sans"
+        android:layout_below="@id/et_observaciones_final"
+        android:text="Finalizar Servicio"
+        android:textColor="@android:color/white"
+        android:background="@drawable/sel_button_round"
+        android:drawableLeft="@drawable/ic_action_llegada"
+        android:visibility="gone"/>
 
 </RelativeLayout>

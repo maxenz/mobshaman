@@ -1,5 +1,6 @@
 package com.paramedic.mobshaman.activities;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.helpers.FileHelper;
@@ -18,12 +22,16 @@ import java.util.List;
 public class FinalServicioActivity extends ActionBarActivity
 implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
 
-    AutoCompleteTextView textView=null;
+    AutoCompleteTextView searchTextView = null;
+    EditText etObservaciones = null;
+    Button btnFinalizarServicio = null;
     private ArrayAdapter<String> adapter;
+    String TIPO_FINAL_SELECCIONADO = "";
+    RadioGroup radioGroup;
 
-    //These values show in autocomplete
     List<String> vMotivosDiagnosticos = new ArrayList<String>();
     List<String> vDescripcion = new ArrayList<String>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,19 +40,75 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_final_servicio);
 
-        textView = (AutoCompleteTextView) findViewById(R.id.autocomplete_final_servicio);
+        radioGroup = (RadioGroup) findViewById(R.id.radio_group_final);
+        searchTextView = (AutoCompleteTextView) findViewById(R.id.autocomplete_final_servicio);
+        etObservaciones = (EditText) findViewById(R.id.et_observaciones_final);
+        btnFinalizarServicio = (Button) findViewById(R.id.btn_finalizar_servicio);
 
-        setAdapterArray("diagnosticos");
-        //Create adapter
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item,
-                vDescripcion);
+        btnFinalizarServicio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String palabra = searchTextView.getText().toString();
+                String observaciones = etObservaciones.getText().toString();
+                int id = 0;
 
-        textView.setThreshold(1);
+                if (palabra.equals("")) {
+                    showToast("Debe ingresar el " + TIPO_FINAL_SELECCIONADO);
+                } else {
+                    id = searchID(palabra);
+                    if (id == -1) {
+                        showToast("El " + TIPO_FINAL_SELECCIONADO + " es inválido");
+                    } else {
 
-        //Set adapter to AutoCompleteTextView
-        textView.setAdapter(adapter);
-        textView.setOnItemSelectedListener(this);
-        textView.setOnItemClickListener(this);
+                        Intent returnIntent = new Intent();
+
+                        if (radioGroup.getCheckedRadioButtonId() == R.id.radio_final_si) {
+                            returnIntent.putExtra("idDiagnostico",id);
+                        } else {
+                            returnIntent.putExtra("idMotivo",id);
+                        }
+
+                        returnIntent.putExtra("observaciones",observaciones);
+                        setResult(RESULT_OK,returnIntent);
+                        finish();
+                    }
+                }
+
+            }
+        });
+
+        searchTextView.setThreshold(1);
+        searchTextView.setOnItemSelectedListener(this);
+        searchTextView.setOnItemClickListener(this);
+
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                searchTextView.setText("");
+                etObservaciones.setText("");
+
+                if (checkedId == R.id.radio_final_si) {
+                    TIPO_FINAL_SELECCIONADO = "diagnóstico";
+                    searchTextView.setHint("Seleccione Diagnóstico");
+                    setAdapterArray("diagnosticos");
+                } else {
+                    TIPO_FINAL_SELECCIONADO = "motivo de no realización";
+                    searchTextView.setHint("Seleccione Motivo");
+                    setAdapterArray("motivos");
+                }
+
+                searchTextView.setVisibility(View.VISIBLE);
+                etObservaciones.setVisibility(View.VISIBLE);
+                btnFinalizarServicio.setVisibility(View.VISIBLE);
+
+                adapter = new ArrayAdapter<String>(FinalServicioActivity.this,
+                        android.R.layout.simple_spinner_dropdown_item,vDescripcion);
+                searchTextView.setAdapter(adapter);
+
+            }
+        });
     }
 
     @Override
@@ -63,10 +127,7 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Toast.makeText(getBaseContext(), "Position:" + i + " Month:" + adapterView.getItemAtPosition(i),
-                Toast.LENGTH_LONG).show();
 
-        Log.d("AutocompleteContacts", "Position:" + i);
     }
 
     @Override
@@ -88,6 +149,21 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
 
     }
 
+    private int searchID(String palabraABuscar) {
+
+        String md = "";
+
+        for (String texto : vMotivosDiagnosticos) {
+
+            md = getFrom(texto,1);
+            if (palabraABuscar.equals(md)) {
+                return Integer.parseInt(getFrom(texto,0));
+            }
+        }
+
+        return -1;
+    }
+
     private void setAdapterArray(String fileName) {
 
         vMotivosDiagnosticos = FileHelper.readFileInternalStorage(fileName,this);
@@ -100,4 +176,9 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
 
         }
     }
+
+    private void showToast(String mensaje) {
+        Toast.makeText(getApplicationContext(), mensaje, Toast.LENGTH_LONG).show();
+    }
+
 }
