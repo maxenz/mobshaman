@@ -3,7 +3,7 @@
 
     <string name="app_name">Shaman</string>
     <string name="action_buscar">Buscar</string>
-    <string name="action_refresh">Actualizar</string>
+    <string name="action_refresh">Actualizar Servicios</string>
     <string name="detalle_servicio">Detalle</string>
     <string name="acciones_servicio">Acciones</string>
     <string name="geo_servicio">Ubicación</string>
@@ -12,5 +12,9 @@
     <string name="title_activity_config_general">Configuración General</string>
     <string name="action_configuracion_general">Configuración</string>
     <string name="title_activity_final_servicio">Final del Servicio</string>
+    <string name="action_actualizar_sistema">Actualizar Datos</string>
+    <string name="title_activity_actualizar_informacion">Actualizar Información</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

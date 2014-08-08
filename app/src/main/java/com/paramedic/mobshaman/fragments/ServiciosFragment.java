@@ -17,19 +17,12 @@ import com.paramedic.mobshaman.activities.DetalleServicioActivity;
 import com.paramedic.mobshaman.adapters.ServiciosAdapter;
 import com.paramedic.mobshaman.helpers.ServiciosHelper;
 import com.paramedic.mobshaman.helpers.SharedPrefsHelper;
-import com.paramedic.mobshaman.models.Diagnostico;
 import com.paramedic.mobshaman.models.Servicio;
 import com.paramedic.mobshaman.rest.ServiciosRestClient;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.simpleframework.xml.Serializer;
-import org.simpleframework.xml.core.Persister;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 /**
@@ -40,7 +33,7 @@ public class ServiciosFragment extends ListFragment {
     ListView listView;
     private ProgressDialog pDialog;
     private ServiciosAdapter servAdapter;
-    public String NRO_MOVIL, URL_REST_SERVICIOS;
+    public String NRO_MOVIL, URL_REST, URL_REST_SERVICIOS;
     public int ID_SERVICIO_SELECCIONADO = 0;
 
     @Override
@@ -52,7 +45,7 @@ public class ServiciosFragment extends ListFragment {
 
         initializeComponents();
 
-        getServicios(URL_REST_SERVICIOS + "/api/servicios?idMovil=" + NRO_MOVIL ,"Actualizando Servicios...",null);
+        getServicios(URL_REST_SERVICIOS ,"Actualizando Servicios...",null);
 
     }
 
@@ -72,7 +65,9 @@ public class ServiciosFragment extends ListFragment {
         /** Obtengo datos de shared preferences de la configuración general **/
         SharedPreferences sp = getActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
         NRO_MOVIL = new SharedPrefsHelper().getNroMovilFromSharedPrefs(this.getActivity());
-        URL_REST_SERVICIOS = new SharedPrefsHelper().getURLFromSharedPrefs(this.getActivity());
+        URL_REST = new SharedPrefsHelper().getURLFromSharedPrefs(this.getActivity());
+        URL_REST_SERVICIOS = URL_REST + "/api/servicios?idMovil=" + NRO_MOVIL;
+
     }
 
     @Override
@@ -85,7 +80,7 @@ public class ServiciosFragment extends ListFragment {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_refresh:
-                //getListadoServicios();
+                getServicios(URL_REST_SERVICIOS ,"Actualizando Servicios...",null);
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -192,113 +187,5 @@ public class ServiciosFragment extends ListFragment {
             }
         });
     }
-
-//    public void getListadoServicios() {
-//
-//        /** Si no está configurado el móvil, no puedo obtener servicios.. **/
-//
-//        if (NRO_MOVIL == "") {
-//            Toast.makeText(getActivity(),"La aplicación no fue configurada para su uso.",
-//                    Toast.LENGTH_LONG).show();
-//            return;
-//        }
-//
-//        pDialog.setMessage("Actualizando Servicios...");
-//        pDialog.show();
-//
-//        /** Request asincrónica para traer todos los servicios de ese móvil **/
-//        new HttpHandler() {
-//            @Override
-//            public HttpUriRequest getHttpRequestMethod() {
-//
-//                HttpGet hgServicios = new HttpGet(URL_REST_SERVICIOS + "/api/servicios?idMovil=" + NRO_MOVIL);
-//
-//                hgServicios.setHeader("content-type", "application/json");
-//
-//                return hgServicios;
-//
-//            }
-//            @Override
-//            public void onResponse(String result) {
-//
-//                /** Veo si pude obtener los servicios o si hubo un problema **/
-//                if (result == "") {
-//
-//                    Toast.makeText(getActivity(),"Error en la red. Intente nuevamente",
-//                            Toast.LENGTH_LONG).show();
-//
-//                } else {
-//
-//                    /** Seteo los datos en la lista **/
-//                    ArrayList<Servicio> servicios = new ServiciosHelper().stringToListServicios(result,0);
-//
-//                    servAdapter = new ServiciosAdapter(getActivity(), servicios, ServiciosFragment.this);
-//                    setListAdapter(servAdapter);
-//                }
-//
-//                pDialog.dismiss();
-//
-//            }
-//
-//        }.execute();
-//
-//    }
-
-//    public void getDetalleServicio() {
-//
-//        pDialog.setMessage("Cargando Servicio...");
-//        pDialog.show();
-//
-//        /** Obtengo asincronicamente el detalle del servicio .. **/
-//        new HttpHandler() {
-//            @Override
-//            public HttpUriRequest getHttpRequestMethod() {
-//
-//                String urlFinal = URL_REST_SERVICIOS + "/api/servicios/" + ID_SERVICIO_SELECCIONADO;
-//
-//                HttpGet hgServicios = new HttpGet(urlFinal);
-//
-//                hgServicios.setHeader("content-type", "application/json");
-//
-//                return hgServicios;
-//
-//            }
-//            @Override
-//            public void onResponse(String result) {
-//
-//                /** Veo si llegan los datos o si hubo un problema **/
-//                if (result == "") {
-//
-//                    Toast.makeText(getActivity(),"Error en la red. Intente nuevamente",Toast.LENGTH_LONG).show();
-//
-//                } else {
-//
-//                    try {
-//
-//                        /** Obtengo el servicio y lo paso a la actividad de detalle **/
-//                        JSONObject jServ = new JSONObject(result);
-//
-//                        Servicio servDetalle = new ServiciosHelper().jsonToServicio(jServ,1);
-//
-//                        pDialog.dismiss();
-//
-//                        Intent intent = new Intent(getActivity(), DetalleServicioActivity.class);
-//                        intent.putExtra("Servicio", servDetalle);
-//                        startActivity(intent);
-//
-//
-//                    } catch (JSONException e) {
-//
-//                        e.printStackTrace();
-//
-//                    }
-//
-//                }
-//
-//            }
-//
-//        }.execute();
-
-    //}
 
 }

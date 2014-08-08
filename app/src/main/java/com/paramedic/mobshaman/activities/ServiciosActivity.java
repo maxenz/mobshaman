@@ -1,12 +1,25 @@
 package com.paramedic.mobshaman.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.fragments.AdminPasswordDialogFragment;
+import com.paramedic.mobshaman.helpers.FileHelper;
 import com.parse.ParseInstallation;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+
 
 public class ServiciosActivity extends ActionBarActivity {
 
@@ -15,6 +28,11 @@ public class ServiciosActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_servicios);
         ParseInstallation.getCurrentInstallation().saveInBackground();
+
+        ArrayList<String> diagnosticos = FileHelper.readFileInternalStorage("diagnosticos",this);
+        String fiebre = diagnosticos.get(0);
+        String diarrea = diagnosticos.get(1);
+
     }
 
     @Override
@@ -39,6 +57,8 @@ public class ServiciosActivity extends ActionBarActivity {
                 /** Paso false para poder redefinirlo desde el fragment **/
                 handled = false;
                 break;
+            case R.id.action_actualizar_parametros:
+                startActivity(new Intent(this,ActualizarInformacionActivity.class));
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -46,5 +66,7 @@ public class ServiciosActivity extends ActionBarActivity {
         return handled;
 
     }
+
+
 
 }

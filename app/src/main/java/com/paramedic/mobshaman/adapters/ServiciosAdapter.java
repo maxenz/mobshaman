@@ -1,25 +1,15 @@
 package com.paramedic.mobshaman.adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.paramedic.mobshaman.R;
-import com.paramedic.mobshaman.activities.DetalleServicioActivity;
 import com.paramedic.mobshaman.fragments.ServiciosFragment;
-import com.paramedic.mobshaman.handlers.HttpHandler;
 import com.paramedic.mobshaman.models.Servicio;
-
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
-
 import java.util.ArrayList;
 
 /**
@@ -75,8 +65,9 @@ public class ServiciosAdapter extends ArrayAdapter<Servicio> {
             {
 
              fragment.ID_SERVICIO_SELECCIONADO = v.getId();
-             String urlDetalle = fragment.URL_REST_SERVICIOS + "/api/servicios/"
-                     + fragment.ID_SERVICIO_SELECCIONADO;
+             String urlDetalle = fragment.URL_REST + "/api/servicios/"
+                     + fragment.ID_SERVICIO_SELECCIONADO + "?idMovil=" +
+                     fragment.NRO_MOVIL;
              fragment.getDetalleServicio(urlDetalle,"Cargando servicio...",null);
 
             }

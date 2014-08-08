@@ -63,12 +63,34 @@
 
     <View
         android:layout_width="fill_parent"
+        android:id="@+id/sep_title_final_servicio"
         android:layout_height="1dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="15dp"
         android:background="@color/verde_color"
         android:layout_below="@id/txt_pregunta_final_servicio_realizado"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="14dp"/>
+
+    <AutoCompleteTextView
+        android:id="@+id/autocomplete_final_servicio"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:layout_below="@id/sep_title_final_servicio"
+        android:hint="Seleccione Diagnóstico"
+        android:typeface="sans"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:inputType="textMultiLine"
+        android:layout_marginTop="20dp"
+        android:id="@+id/editText"
+        android:hint="Ingrese observaciones"
+        android:layout_below="@+id/autocomplete_final_servicio"/>
+
 
 </RelativeLayout>
