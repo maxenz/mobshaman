@@ -16,6 +16,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.activities.FinalServicioActivity;
+import com.paramedic.mobshaman.activities.HistoriaClinicaActivity;
 import com.paramedic.mobshaman.activities.ServiciosActivity;
 import com.paramedic.mobshaman.helpers.DialogHelper;
 import com.paramedic.mobshaman.helpers.SharedPrefsHelper;
@@ -34,7 +35,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
 
     ProgressDialog pDialog;
     Servicio serv;
-    Button btnLlegadaServicio, btnSalidaServicio, btnFinalServicio;
+    Button btnLlegadaServicio, btnSalidaServicio, btnFinalServicio, btnHistoriaClinica;
     String URL_REST, NRO_MOVIL;
     int FLAG_FINALIZAR_SERVICIO = 0;
 
@@ -105,6 +106,15 @@ public class AccionesDetalleServicioFragment extends Fragment {
             }
         });
 
+        btnHistoriaClinica.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(), HistoriaClinicaActivity.class);
+                i.putExtra("viajeId", serv.getIdServicio());
+                startActivity(i);
+            }
+        });
+
     }
 
     private void initializeUI(View myView) {
@@ -112,6 +122,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
         btnLlegadaServicio = (Button) myView.findViewById(R.id.btn_llegada_servicio);
         btnSalidaServicio = (Button) myView.findViewById(R.id.btn_salida_servicio);
         btnFinalServicio = (Button) myView.findViewById(R.id.btn_final_servicio);
+        btnHistoriaClinica = (Button) myView.findViewById(R.id.btn_hc_paciente_servicio);
 
         pDialog = new ProgressDialog(getActivity());
         pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
