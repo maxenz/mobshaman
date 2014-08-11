@@ -1,7 +1,8 @@
 package com.paramedic.mobshaman.models;
 
-import com.paramedic.mobshaman.R;
+import android.graphics.Color;
 
+import com.paramedic.mobshaman.R;
 import java.io.Serializable;
 
 /**
@@ -32,42 +33,22 @@ public class Servicio implements Serializable{
     private String PlanId;
     private Double CoPago;
     private String Observaciones;
-
-
+    private String ColorHexa;
 
     public String getDatosGrales() {
 
         return Cliente + " / " + NroServicio + " / " + getSexoEdad();
+
     }
 
     public String getSexoEdad() {
         return Sexo + Edad;
     }
 
-    public int getGradoDrawable() {
-
-        if (Grado.equals("R")) {
-            return R.drawable.shape_grado_rojo;
-        } else if (Grado.equals("V")) {
-            return R.drawable.shape_grado_verde;
-        } else if (Grado.equals("A")) {
-            return R.drawable.shape_grado_amarillo;
-        } else {
-            return R.drawable.shape_grado_verde;
-        }
-    }
-
     public int getGradoColor() {
 
-        if (Grado.equals("R")) {
-            return R.color.rojo;
-        } else if (Grado.equals("V")) {
-            return R.color.verde;
-        } else if (Grado.equals("A")) {
-            return R.color.amarillo;
-        } else {
-            return R.color.verde;
-        }
+        return Color.parseColor("#" + this.getColorHexa());
+
     }
 
     public int getIdServicio() {
@@ -253,4 +234,6 @@ public class Servicio implements Serializable{
     public void setObservaciones(String observaciones) {
         Observaciones = observaciones;
     }
+
+    public String getColorHexa() { return ColorHexa ;}
 }

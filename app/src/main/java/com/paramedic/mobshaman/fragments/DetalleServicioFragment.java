@@ -100,7 +100,7 @@ public class DetalleServicioFragment extends Fragment {
         tvReferencias.setText(serv.getReferencia());
         tvSintomas.setText(serv.getSintomas());
         tvGrado.setText(serv.getGrado());
-        tvGrado.setTextColor(getResources().getColor(serv.getGradoColor()));
+        tvGrado.setTextColor(serv.getGradoColor());
         tvAviso.setText(serv.getAviso());
         tvPaciente.setText(serv.getPaciente());
         tvSexo.setText(serv.getSexo());

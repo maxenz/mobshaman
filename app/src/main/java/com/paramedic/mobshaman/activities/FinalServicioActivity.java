@@ -1,5 +1,6 @@
 package com.paramedic.mobshaman.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -13,9 +14,20 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.helpers.FileHelper;
+import com.paramedic.mobshaman.models.Servicio;
+import com.paramedic.mobshaman.rest.ServiciosRestClient;
+
+import org.apache.http.Header;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,25 +37,47 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
     AutoCompleteTextView searchTextView = null;
     EditText etObservaciones = null;
     Button btnFinalizarServicio = null;
-    private ArrayAdapter<String> adapter;
+    ArrayAdapter<String> adapter;
     String TIPO_FINAL_SELECCIONADO = "";
     RadioGroup radioGroup;
+    TextView titulo;
+    Intent intent;
 
     List<String> vMotivosDiagnosticos = new ArrayList<String>();
     List<String> vDescripcion = new ArrayList<String>();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_final_servicio);
+
+        initializeUI();
+        setButtonFinalizarServicioListener();
+        setRadioGroupListener();
+
+    }
+
+    private void initializeUI() {
+
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setContentView(R.layout.activity_final_servicio);
+
+        intent = getIntent();
 
         radioGroup = (RadioGroup) findViewById(R.id.radio_group_final);
         searchTextView = (AutoCompleteTextView) findViewById(R.id.autocomplete_final_servicio);
         etObservaciones = (EditText) findViewById(R.id.et_observaciones_final);
         btnFinalizarServicio = (Button) findViewById(R.id.btn_finalizar_servicio);
+        titulo = (TextView) findViewById(R.id.txt_header_final_servicio);
+        titulo.setText("Cierre del Servicio " + intent.getStringExtra("nroServicio"));
+
+        searchTextView.setThreshold(1);
+        searchTextView.setOnItemSelectedListener(this);
+        searchTextView.setOnItemClickListener(this);
+
+    }
+
+    private void setButtonFinalizarServicioListener() {
 
         btnFinalizarServicio.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,11 +110,9 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
 
             }
         });
+    }
 
-        searchTextView.setThreshold(1);
-        searchTextView.setOnItemSelectedListener(this);
-        searchTextView.setOnItemClickListener(this);
-
+    private void setRadioGroupListener() {
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -180,5 +212,6 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
     private void showToast(String mensaje) {
         Toast.makeText(getApplicationContext(), mensaje, Toast.LENGTH_LONG).show();
     }
+
 
 }

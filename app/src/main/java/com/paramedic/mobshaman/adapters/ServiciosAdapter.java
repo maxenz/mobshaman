@@ -1,6 +1,9 @@
 package com.paramedic.mobshaman.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +24,7 @@ public class ServiciosAdapter extends ArrayAdapter<Servicio> {
     private final Context context;
     private final ArrayList<Servicio> serviciosArrayList;
     private final ServiciosFragment fragment;
+    private int shape_grado;
 
     public ServiciosAdapter(Context context, ArrayList<Servicio> serviciosArrayList, ServiciosFragment fragment) {
 
@@ -52,9 +56,13 @@ public class ServiciosAdapter extends ArrayAdapter<Servicio> {
         tvDomicilio.setText(serv.getDomicilio());
         tvHorario.setText(serv.getHorario());
 
-        int shapeGrado = serv.getGradoDrawable();
+        shape_grado = R.drawable.shape_grado;
 
-        ivGrado.setImageDrawable(context.getResources().getDrawable(shapeGrado));
+        GradientDrawable dw = (GradientDrawable) context.getResources().getDrawable(R.drawable.shape_grado);
+
+        dw.setColor(serv.getGradoColor());
+
+        ivGrado.setImageDrawable(context.getResources().getDrawable(shape_grado));
 
         rowView.setId(serv.getIdServicio());
 

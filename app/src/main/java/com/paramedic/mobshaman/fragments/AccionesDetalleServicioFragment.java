@@ -16,6 +16,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.activities.FinalServicioActivity;
+import com.paramedic.mobshaman.activities.ServiciosActivity;
 import com.paramedic.mobshaman.helpers.DialogHelper;
 import com.paramedic.mobshaman.helpers.SharedPrefsHelper;
 import com.paramedic.mobshaman.interfaces.AlertListener;
@@ -35,6 +36,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
     Servicio serv;
     Button btnLlegadaServicio, btnSalidaServicio, btnFinalServicio;
     String URL_REST, NRO_MOVIL;
+    int FLAG_FINALIZAR_SERVICIO = 0;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -98,6 +100,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getActivity(), FinalServicioActivity.class);
+                i.putExtra("nroServicio", serv.getNroServicio());
                 startActivityForResult(i, 1);
             }
         });
@@ -175,6 +178,9 @@ public class AccionesDetalleServicioFragment extends Fragment {
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
                         showToast(response.getString("Message"));
+                        if (FLAG_FINALIZAR_SERVICIO == 1) {
+                            startActivity(new Intent(getActivity(), ServiciosActivity.class));
+                        }
                     } catch (JSONException e) {
                         showToast(e.getMessage());
                     }
@@ -208,6 +214,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
                 rp.add("motivoID", String.valueOf(data.getIntExtra("idMotivo", 0)));
                 rp.add("diagnosticoID", String.valueOf(data.getIntExtra("idDiagnostico", 0)));
                 rp.add("observaciones", data.getStringExtra("observaciones"));
+                FLAG_FINALIZAR_SERVICIO = 1;
                 try {
                     doAsyncTaskPostServicio(URL_REST + "/acciones/setFinalServicio","Finalizando servicio...",rp);
                 } catch (JSONException e) {
