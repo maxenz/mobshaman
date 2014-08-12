@@ -1,0 +1,14 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.paramedic.mobshaman.activities.HistoriaClinicaActivity">
+
+    <fragment
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:name="com.paramedic.mobshaman.fragments.HistoriaClinicaFragment"
+        android:id="@+id/historiaClinicaFragment"
+        tools:layout="@layout/fragment_historia_clinica" />
+
+</RelativeLayout>
