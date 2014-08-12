@@ -1,8 +1,6 @@
 package com.paramedic.mobshaman.models;
 
 import android.graphics.Color;
-
-import com.paramedic.mobshaman.R;
 import java.io.Serializable;
 
 /**
@@ -34,6 +32,9 @@ public class Servicio implements Serializable{
     private Double CoPago;
     private String Observaciones;
     private String ColorHexa;
+    private byte HabSalida;
+    private byte HabLlegada;
+    private byte HabFinal;
 
     public String getDatosGrales() {
 
@@ -236,4 +237,32 @@ public class Servicio implements Serializable{
     }
 
     public String getColorHexa() { return ColorHexa ;}
+
+    public void setColorHexa(String colorHexa) {
+        ColorHexa = colorHexa;
+    }
+
+    public byte getHabSalida() {
+        return HabSalida;
+    }
+
+    public byte getHabLlegada() {
+        return HabLlegada;
+    }
+
+    public byte getHabFinal() {
+        return HabFinal;
+    }
+
+    public void setHabFinal(byte habFinal) {
+        HabFinal = habFinal;
+    }
+
+    public void setHabLlegada(byte habLlegada) {
+        HabLlegada = habLlegada;
+    }
+
+    public void setHabSalida(byte habSalida) {
+        HabSalida = habSalida;
+    }
 }

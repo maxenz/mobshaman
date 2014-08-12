@@ -37,7 +37,6 @@ public class AccionesDetalleServicioFragment extends Fragment {
     Servicio serv;
     Button btnLlegadaServicio, btnSalidaServicio, btnFinalServicio, btnHistoriaClinica;
     String URL_REST, NRO_MOVIL;
-    int FLAG_FINALIZAR_SERVICIO = 0;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -124,6 +123,10 @@ public class AccionesDetalleServicioFragment extends Fragment {
         btnFinalServicio = (Button) myView.findViewById(R.id.btn_final_servicio);
         btnHistoriaClinica = (Button) myView.findViewById(R.id.btn_hc_paciente_servicio);
 
+        toggleButton(btnLlegadaServicio,serv.getHabLlegada());
+        toggleButton(btnSalidaServicio,serv.getHabSalida());
+        toggleButton(btnFinalServicio,serv.getHabFinal());
+
         pDialog = new ProgressDialog(getActivity());
         pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
@@ -131,6 +134,14 @@ public class AccionesDetalleServicioFragment extends Fragment {
 
     private void showToast(String mensaje) {
         Toast.makeText(getActivity().getApplicationContext(), mensaje, Toast.LENGTH_LONG).show();
+    }
+
+    private void toggleButton(Button btn, int habilitado) {
+        boolean isEnabled = habilitado == 1 ? true : false;
+        if (!isEnabled) btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.disabled_button_round));
+        btn.setEnabled(isEnabled);
+        btn.setClickable(isEnabled);
+
     }
 
     private void showLoadingMessage(String message) {
@@ -188,10 +199,10 @@ public class AccionesDetalleServicioFragment extends Fragment {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
+
                         showToast(response.getString("Message"));
-                        if (FLAG_FINALIZAR_SERVICIO == 1) {
-                            startActivity(new Intent(getActivity(), ServiciosActivity.class));
-                        }
+                        startActivity(new Intent(getActivity(), ServiciosActivity.class));
+
                     } catch (JSONException e) {
                         showToast(e.getMessage());
                     }
@@ -225,7 +236,6 @@ public class AccionesDetalleServicioFragment extends Fragment {
                 rp.add("motivoID", String.valueOf(data.getIntExtra("idMotivo", 0)));
                 rp.add("diagnosticoID", String.valueOf(data.getIntExtra("idDiagnostico", 0)));
                 rp.add("observaciones", data.getStringExtra("observaciones"));
-                FLAG_FINALIZAR_SERVICIO = 1;
                 try {
                     doAsyncTaskPostServicio(URL_REST + "/acciones/setFinalServicio","Finalizando servicio...",rp);
                 } catch (JSONException e) {

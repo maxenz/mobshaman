@@ -70,6 +70,11 @@ public class HistoriaClinicaFragment extends ListFragment {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray historiaClinica) {
 
+                if (historiaClinica.length() == 0) {
+                    showToast("El paciente no posee historia clínica");
+                    getActivity().finish();
+                }
+
                 try {
                     ArrayList<HistoriaClinica> vHC =
                             HistoriaClinicaHelper.getArrayListFromJSONArray(historiaClinica);

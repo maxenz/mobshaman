@@ -49,7 +49,6 @@
             android:orientation="horizontal"
             android:id="@+id/radio_group_final"
             android:layout_alignParentRight="true"
-            android:layout_marginLeft="20dp"
             android:paddingTop="6dp"
             android:layout_alignParentEnd="true">
 
