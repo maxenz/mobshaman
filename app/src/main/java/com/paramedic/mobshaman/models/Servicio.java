@@ -32,9 +32,11 @@ public class Servicio implements Serializable{
     private Double CoPago;
     private String Observaciones;
     private String ColorHexa;
+    private int CurrentViaje;
     private byte HabSalida;
     private byte HabLlegada;
     private byte HabFinal;
+    private byte HabCancelacion;
 
     public String getDatosGrales() {
 
@@ -264,5 +266,21 @@ public class Servicio implements Serializable{
 
     public void setHabSalida(byte habSalida) {
         HabSalida = habSalida;
+    }
+
+    public int getCurrentViaje() {
+        return CurrentViaje;
+    }
+
+    public void setCurrentViaje(int currentViaje) {
+        CurrentViaje = currentViaje;
+    }
+
+    public byte getHabCancelacion() {
+        return HabCancelacion;
+    }
+
+    public void setHabCancelacion(byte habCancelacion) {
+        HabCancelacion = habCancelacion;
     }
 }

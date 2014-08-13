@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.adapters.DetalleServicioPagerAdapter;
+import com.paramedic.mobshaman.fragments.AccionesDetalleServicioFragment;
 import com.paramedic.mobshaman.models.Servicio;
 
 public class DetalleServicioActivity extends ActionBarActivity {

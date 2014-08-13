@@ -1,6 +1,7 @@
 package com.paramedic.mobshaman.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
@@ -23,8 +24,30 @@ import java.util.ArrayList;
 public class HistoriaClinicaFragment extends ListFragment {
 
     private ProgressDialog pDialog;
-    String URL_REST, NRO_MOVIL;
+    String URL_REST, NRO_MOVIL, URL_HC;
     HistoriaClinicaAdapter hcAdapter;
+    Intent intent;
+    RequestParams rp;
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        setParametersForAsyncRequest();
+        getHistoriaClinica(URL_HC,"Cargando historia clínica...",rp);
+    }
+
+    private void setParametersForAsyncRequest() {
+
+        URL_HC = URL_REST + "/api/historiaclinica/";
+
+        intent = getActivity().getIntent();
+        int viajeId = intent.getIntExtra("viajeId",0);
+
+        rp = new RequestParams();
+        rp.add("id",String.valueOf(viajeId));
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -32,14 +55,8 @@ public class HistoriaClinicaFragment extends ListFragment {
         NRO_MOVIL = new SharedPrefsHelper().getNroMovilFromSharedPrefs(this.getActivity());
         URL_REST = new SharedPrefsHelper().getURLFromSharedPrefs(this.getActivity());
 
-        String URL_HC = URL_REST + "/api/historiaclinica/";
-        RequestParams rp = new RequestParams();
-        rp.add("id","918");
-
         pDialog = new ProgressDialog(getActivity());
         pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-
-        getHistoriaClinica(URL_HC,"Cargando historia clínica...",rp);
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }

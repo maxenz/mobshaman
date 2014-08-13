@@ -16,10 +16,11 @@ import com.paramedic.mobshaman.fragments.DetalleServicioFragment;
 public class DetalleServicioPagerAdapter extends FragmentPagerAdapter {
 
     String[] pager_titles;
+    FragmentManager mFm;
 
     public DetalleServicioPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
-
+        mFm = fm;
         Resources resources = context.getResources();
         pager_titles = resources.getStringArray(R.array.detalle_servicios_titulos);
 
@@ -31,6 +32,7 @@ public class DetalleServicioPagerAdapter extends FragmentPagerAdapter {
         switch(position) {
             case 0:
                 DetalleServicioFragment dsFragment = new DetalleServicioFragment();
+                //mFm.beginTransaction().add(dsFragment, "AccionesFragment").commit();
                 return dsFragment;
             case 1:
                 AccionesDetalleServicioFragment acDsFragment = new AccionesDetalleServicioFragment();

@@ -162,14 +162,14 @@ public class ServiciosFragment extends ListFragment {
             public void onFailure(int statusCode, Header[] headers, String responseString,
                                   Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
-                showToast("Error " + statusCode + ": " + throwable.getMessage());
+                showToast("Error en la red. Intente nuevamente ");
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable,
                                   JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
-                showToast("Error " + statusCode + ": " + throwable.getMessage());
+                showToast("Error en la red. Intente nuevamente ");
             }
 
             @Override

@@ -2,6 +2,9 @@ package com.paramedic.mobshaman.models;
 
 /**
  * Created by maxo on 05/08/14.
+ * Clase que me facilita el manejo de las llamadas asincronicas. Le paso el titulo del dialog,
+ * el mensaje, la url que llama y demas, y en un objeto tengo lo que uso cuando llamo
+ * a algun servicio rest
  */
 public class AccionesRestModel {
 

@@ -8,7 +8,7 @@
     android:background="@drawable/list_item_selector"
     >
 
-    <LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="4"

@@ -2,6 +2,8 @@ package com.paramedic.mobshaman.rest;
 
 /**
  * Created by maxo on 05/08/14.
+ * Esta clase la uso para llamar asincronicamente a los servicios rest, dependiendo si hago
+ * un get o un post. Uso la libreria loopj para facilitar el manejo.
  */
 import com.loopj.android.http.*;
 

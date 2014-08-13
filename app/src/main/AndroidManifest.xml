@@ -91,17 +91,21 @@
         <activity
             android:name=".activities.FinalServicioActivity"
             android:label="@string/title_activity_final_servicio"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".activities.ActualizarInformacionActivity"
             android:label="@string/title_activity_actualizar_informacion"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".activities.HistoriaClinicaActivity"
             android:label="@string/title_activity_historia_clinica"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".activities.CancelarServicioActivity"
+            android:label="@string/title_activity_cancelar_servicio" >
         </activity>
     </application>
 

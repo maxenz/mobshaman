@@ -55,10 +55,10 @@ public class AdminPasswordDialogFragment extends DialogFragment {
                         if (user_ingresado.equals("administrador") && pass_ingresado.equals("yeike")) {
                             startActivity(new Intent(getActivity(), ConfigGeneralActivity.class));
                         } else {
-                            Toast.makeText(getActivity(),"No está autorizado para ingresar",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(),"No está autorizado para ingresar",
+                                    Toast.LENGTH_LONG).show();
                             AdminPasswordDialogFragment.this.getDialog().cancel();
                         }
-
                     }
                 })
                 .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {

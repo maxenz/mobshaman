@@ -1,5 +1,6 @@
 package com.paramedic.mobshaman.fragments;
 
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,10 +16,12 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.paramedic.mobshaman.R;
+import com.paramedic.mobshaman.activities.CancelarServicioActivity;
 import com.paramedic.mobshaman.activities.FinalServicioActivity;
 import com.paramedic.mobshaman.activities.HistoriaClinicaActivity;
 import com.paramedic.mobshaman.activities.ServiciosActivity;
 import com.paramedic.mobshaman.helpers.DialogHelper;
+import com.paramedic.mobshaman.helpers.ServiciosHelper;
 import com.paramedic.mobshaman.helpers.SharedPrefsHelper;
 import com.paramedic.mobshaman.interfaces.AlertListener;
 import com.paramedic.mobshaman.models.AccionesRestModel;
@@ -35,7 +38,8 @@ public class AccionesDetalleServicioFragment extends Fragment {
 
     ProgressDialog pDialog;
     Servicio serv;
-    Button btnLlegadaServicio, btnSalidaServicio, btnFinalServicio, btnHistoriaClinica;
+    Button btnLlegadaServicio, btnSalidaServicio, btnFinalServicio,
+            btnHistoriaClinica, btnCancelarServicio;
     String URL_REST, NRO_MOVIL;
 
     @Override
@@ -80,10 +84,6 @@ public class AccionesDetalleServicioFragment extends Fragment {
         reqParams.put("movil",NRO_MOVIL);
         reqParams.put("viajeID", serv.getIdServicio());
 
-        AccionesRestModel finalServ = new AccionesRestModel("Final del servicio",
-                "¿Seguro que desea finalizar el servicio?","Final de servicio cancelado",
-                URL_REST + "/acciones/setFinal", "Finalizando servicio...");
-
         AccionesRestModel salidaServ = new AccionesRestModel("Salida del servicio",
                 "¿Seguro que desea dar salida al servicio?","Salida de servicio cancelada",
                 URL_REST + "/acciones/setSalidaMovil", "Dando salida al servicio...");
@@ -92,16 +92,14 @@ public class AccionesDetalleServicioFragment extends Fragment {
                 "¿Seguro que desea dar llegada al servicio?","Llegada de servicio cancelada",
                 URL_REST + "/acciones/setLlegadaMovil", "Dando llegada al servicio...");
 
-        //doActionServicio(finalServ, btnFinalServicio, reqParams);
+
         doActionServicio(salidaServ,btnSalidaServicio,reqParams);
         doActionServicio(llegadaServ,btnLlegadaServicio,reqParams);
 
         btnFinalServicio.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getActivity(), FinalServicioActivity.class);
-                i.putExtra("nroServicio", serv.getNroServicio());
-                startActivityForResult(i, 1);
+                doStartActivityForResult(FinalServicioActivity.class, 1);
             }
         });
 
@@ -114,6 +112,19 @@ public class AccionesDetalleServicioFragment extends Fragment {
             }
         });
 
+        btnCancelarServicio.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                doStartActivityForResult(CancelarServicioActivity.class,2);
+            }
+        });
+
+    }
+
+    private void doStartActivityForResult(Class clase,int reqCode ) {
+        Intent i = new Intent(getActivity(), clase);
+        i.putExtra("nroServicio", serv.getNroServicio());
+        startActivityForResult(i, reqCode);
     }
 
     private void initializeUI(View myView) {
@@ -122,10 +133,12 @@ public class AccionesDetalleServicioFragment extends Fragment {
         btnSalidaServicio = (Button) myView.findViewById(R.id.btn_salida_servicio);
         btnFinalServicio = (Button) myView.findViewById(R.id.btn_final_servicio);
         btnHistoriaClinica = (Button) myView.findViewById(R.id.btn_hc_paciente_servicio);
+        btnCancelarServicio = (Button) myView.findViewById(R.id.btn_cancelacion_servicio);
 
         toggleButton(btnLlegadaServicio,serv.getHabLlegada());
         toggleButton(btnSalidaServicio,serv.getHabSalida());
         toggleButton(btnFinalServicio,serv.getHabFinal());
+        toggleButton(btnCancelarServicio,serv.getHabCancelacion());
 
         pDialog = new ProgressDialog(getActivity());
         pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -141,7 +154,6 @@ public class AccionesDetalleServicioFragment extends Fragment {
         if (!isEnabled) btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.disabled_button_round));
         btn.setEnabled(isEnabled);
         btn.setClickable(isEnabled);
-
     }
 
     private void showLoadingMessage(String message) {
@@ -172,7 +184,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
         );
     }
 
-    private void doAsyncTaskPostServicio(String url, final String dialogMessage,
+    public void doAsyncTaskPostServicio(String url, final String dialogMessage,
                                          RequestParams rp) throws JSONException{
 
             ServiciosRestClient.post(url,rp, new JsonHttpResponseHandler() {
@@ -186,14 +198,14 @@ public class AccionesDetalleServicioFragment extends Fragment {
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     super.onFailure(statusCode, headers, responseString, throwable);
                     pDialog.dismiss();
-                    showToast("Error " + statusCode + ": " + throwable.getMessage());
+                    showToast("Error en la red. Intente nuevamente ");
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                     super.onFailure(statusCode, headers, throwable, errorResponse);
                     pDialog.dismiss();
-                    showToast("Error " + statusCode + ": " + throwable.getMessage());
+                    showToast("Error en la red. Intente nuevamente ");
                 }
 
                 @Override
@@ -209,7 +221,6 @@ public class AccionesDetalleServicioFragment extends Fragment {
                     pDialog.dismiss();
 
                 }
-
             });
 
     }
@@ -228,24 +239,48 @@ public class AccionesDetalleServicioFragment extends Fragment {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == 1) {
-            if(resultCode == getActivity().RESULT_OK){
-                RequestParams rp = new RequestParams();
-                rp.add("movil",NRO_MOVIL);
-                rp.add("viajeID", String.valueOf(serv.getIdServicio()));
-                rp.add("motivoID", String.valueOf(data.getIntExtra("idMotivo", 0)));
-                rp.add("diagnosticoID", String.valueOf(data.getIntExtra("idDiagnostico", 0)));
-                rp.add("observaciones", data.getStringExtra("observaciones"));
-                try {
-                    doAsyncTaskPostServicio(URL_REST + "/acciones/setFinalServicio","Finalizando servicio...",rp);
-                } catch (JSONException e) {
-                    showToast(e.getMessage());
+        switch (requestCode) {
+
+            //FINAL DEL SERVICIO
+            case 1:
+                if(resultCode == getActivity().RESULT_OK){
+                    RequestParams rp = new RequestParams();
+                    rp.add("movil",NRO_MOVIL);
+                    rp.add("viajeID", String.valueOf(serv.getIdServicio()));
+                    rp.add("motivoID", String.valueOf(data.getIntExtra("idMotivo", 0)));
+                    rp.add("diagnosticoID", String.valueOf(data.getIntExtra("idDiagnostico", 0)));
+                    rp.add("observaciones", data.getStringExtra("observaciones"));
+                    try {
+                        doAsyncTaskPostServicio(URL_REST + "/acciones/setFinalServicio","Finalizando servicio...",rp);
+                    } catch (JSONException e) {
+                        showToast(e.getMessage());
+                    }
+                } else {
+                    showToast("No se finalizó el servicio");
                 }
-            }
-            if (resultCode == getActivity().RESULT_CANCELED) {
-                showToast("No se finalizó el servicio");
-            }
+
+                break;
+            //CANCELACION DEL SERVICIO
+            case 2:
+                if(resultCode == getActivity().RESULT_OK) {
+                    String motivoCancelacion = data.getStringExtra("motivoCancelacion");
+                    RequestParams rp = new RequestParams();
+                    rp.add("movil",NRO_MOVIL);
+                    rp.add("viajeID", String.valueOf(serv.getIdServicio()));
+                    rp.add("observaciones",motivoCancelacion);
+                    try {
+                        doAsyncTaskPostServicio(URL_REST + "/acciones/setCancelacionServicio",
+                                "Cancelando servicio...",rp);
+                    } catch (JSONException e) {
+                        showToast(e.getMessage());
+                    }
+                } else {
+                    showToast("No se canceló el servicio");
+                }
+                break;
+
         }
+
     }
 
 }

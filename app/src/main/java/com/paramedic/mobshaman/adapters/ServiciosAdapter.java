@@ -1,9 +1,7 @@
 package com.paramedic.mobshaman.adapters;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.ShapeDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +26,7 @@ public class ServiciosAdapter extends ArrayAdapter<Servicio> {
 
     public ServiciosAdapter(Context context, ArrayList<Servicio> serviciosArrayList, ServiciosFragment fragment) {
 
-        super(context, R.layout.rowlayout, serviciosArrayList);
+        super(context, R.layout.fragment_servicios, serviciosArrayList);
 
         this.context = context;
         this.serviciosArrayList = serviciosArrayList;
@@ -43,7 +41,7 @@ public class ServiciosAdapter extends ArrayAdapter<Servicio> {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        final View rowView = inflater.inflate(R.layout.rowlayout, parent, false);
+        final View rowView = inflater.inflate(R.layout.fragment_servicios, parent, false);
 
         TextView tvDatosGrales = (TextView) rowView.findViewById(R.id.datosGrales);
         TextView tvDomicilio = (TextView) rowView.findViewById(R.id.domicilio);
@@ -65,6 +63,10 @@ public class ServiciosAdapter extends ArrayAdapter<Servicio> {
         ivGrado.setImageDrawable(context.getResources().getDrawable(shape_grado));
 
         rowView.setId(serv.getIdServicio());
+
+        if (serv.getCurrentViaje() == 1) {
+            rowView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.list_item_current_viaje));
+        }
 
         rowView.setOnClickListener(new View.OnClickListener()
         {
