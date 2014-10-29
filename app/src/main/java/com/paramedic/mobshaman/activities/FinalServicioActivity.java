@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,9 +40,11 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
     Button btnFinalizarServicio = null;
     ArrayAdapter<String> adapter;
     String TIPO_FINAL_SELECCIONADO = "";
-    RadioGroup radioGroup;
+    RadioGroup radioGroup, radioGroupCopago;
     TextView titulo;
     Intent intent;
+    LinearLayout layout_copago;
+    View separator_copago;
 
     List<String> vMotivosDiagnosticos = new ArrayList<String>();
     List<String> vDescripcion = new ArrayList<String>();
@@ -64,6 +67,9 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
 
         intent = getIntent();
 
+        layout_copago = (LinearLayout) findViewById(R.id.contenido_copago);
+        separator_copago = (View) findViewById(R.id.sep_title_final_servicio_copago);
+        radioGroupCopago = (RadioGroup) findViewById(R.id.radio_group_final_copago);
         radioGroup = (RadioGroup) findViewById(R.id.radio_group_final);
         searchTextView = (AutoCompleteTextView) findViewById(R.id.autocomplete_final_servicio);
         etObservaciones = (EditText) findViewById(R.id.et_observaciones_final);
@@ -97,7 +103,20 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
                         Intent returnIntent = new Intent();
 
                         if (radioGroup.getCheckedRadioButtonId() == R.id.radio_final_si) {
-                            returnIntent.putExtra("idDiagnostico",id);
+
+                            Double copago = intent.getDoubleExtra("copago",0);
+                            if (copago > 0) {
+                                if (radioGroupCopago.getCheckedRadioButtonId() == -1) {
+                                    showToast("Debe seleccionar si se cobró copago");
+                                    return;
+                                }
+                            }
+
+                            returnIntent.putExtra("idDiagnostico", id);
+                            if (radioGroupCopago.getCheckedRadioButtonId()
+                                    == R.id.radio_final_copago_no) {
+                                returnIntent.putExtra("copago",1);
+                            }
                         } else {
                             returnIntent.putExtra("idMotivo",id);
                         }
@@ -125,10 +144,19 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
                     TIPO_FINAL_SELECCIONADO = "diagnóstico";
                     searchTextView.setHint("Seleccione Diagnóstico");
                     setAdapterArray("diagnosticos");
+
+                    Double copago = intent.getDoubleExtra("copago", 0);
+                    if (copago > 0) {
+                        layout_copago.setVisibility(View.VISIBLE);
+                        separator_copago.setVisibility(View.VISIBLE);
+                    }
+
                 } else {
                     TIPO_FINAL_SELECCIONADO = "motivo de no realización";
                     searchTextView.setHint("Seleccione Motivo");
                     setAdapterArray("motivos");
+                    layout_copago.setVisibility(View.GONE);
+                    separator_copago.setVisibility(View.GONE);
                 }
 
                 searchTextView.setVisibility(View.VISIBLE);

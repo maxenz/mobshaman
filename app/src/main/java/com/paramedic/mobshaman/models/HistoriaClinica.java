@@ -9,7 +9,7 @@ public class HistoriaClinica {
 
     private int ID;
     private String FecIncidente;
-    private int NroServicio;
+    private String NroServicio;
     private String ColorHexa;
     private String Grado;
     private String Paciente;
@@ -37,11 +37,11 @@ public class HistoriaClinica {
         FecIncidente = fecIncidente;
     }
 
-    public int getNroServicio() {
+    public String getNroServicio() {
         return NroServicio;
     }
 
-    public void setNroServicio(int nroServicio) {
+    public void setNroServicio(String nroServicio) {
         NroServicio = nroServicio;
     }
 

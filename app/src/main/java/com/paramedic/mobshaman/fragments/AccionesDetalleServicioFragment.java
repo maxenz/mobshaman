@@ -124,6 +124,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
     private void doStartActivityForResult(Class clase,int reqCode ) {
         Intent i = new Intent(getActivity(), clase);
         i.putExtra("nroServicio", serv.getNroServicio());
+        i.putExtra("copago",serv.getCoPago());
         startActivityForResult(i, reqCode);
     }
 
@@ -197,14 +198,12 @@ public class AccionesDetalleServicioFragment extends Fragment {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     super.onFailure(statusCode, headers, responseString, throwable);
-                    pDialog.dismiss();
                     showToast("Error en la red. Intente nuevamente ");
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                     super.onFailure(statusCode, headers, throwable, errorResponse);
-                    pDialog.dismiss();
                     showToast("Error en la red. Intente nuevamente ");
                 }
 
@@ -218,8 +217,11 @@ public class AccionesDetalleServicioFragment extends Fragment {
                     } catch (JSONException e) {
                         showToast(e.getMessage());
                     }
-                    pDialog.dismiss();
+                }
 
+                @Override
+                public void onFinish() {
+                    pDialog.dismiss();
                 }
             });
 
@@ -250,6 +252,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
                     rp.add("motivoID", String.valueOf(data.getIntExtra("idMotivo", 0)));
                     rp.add("diagnosticoID", String.valueOf(data.getIntExtra("idDiagnostico", 0)));
                     rp.add("observaciones", data.getStringExtra("observaciones"));
+                    rp.add("copago", String.valueOf(data.getIntExtra("copago",0)));
                     try {
                         doAsyncTaskPostServicio(URL_REST + "/acciones/setFinalServicio","Finalizando servicio...",rp);
                     } catch (JSONException e) {
