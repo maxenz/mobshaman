@@ -37,6 +37,15 @@ public class Servicio implements Serializable{
     private byte HabLlegada;
     private byte HabFinal;
     private byte HabCancelacion;
+    private String Telefono;
+
+    public String getTelefono() {
+        return Telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        Telefono = telefono;
+    }
 
     public String getDatosGrales() {
 

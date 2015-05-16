@@ -24,7 +24,7 @@ public class DetalleServicioFragment extends Fragment {
     TextView tvLocalidad, tvDomicilio, tvEntreCalle1, tvEntreCalle2,
     tvReferencias, tvSintomas, tvGrado, tvAviso, tvPaciente, tvSexo,
     tvEdad, tvEntidad, tvNroAfiliado, tvNroInterno, tvCoPago, tvObservaciones,
-    tvNroServicio;
+    tvNroServicio, tvTelefono;
 
     Servicio serv;
 
@@ -77,6 +77,7 @@ public class DetalleServicioFragment extends Fragment {
 
         tvLocalidad = (TextView) myView.findViewById(R.id.txtLocalidadServicio);
         tvDomicilio = (TextView) myView.findViewById(R.id.txtDomicilioServicio);
+        tvTelefono = (TextView) myView.findViewById(R.id.txtTelefonoServicio);
         tvEntreCalle1 = (TextView) myView.findViewById(R.id.txtEntreCalle1Servicio);
         tvEntreCalle2 = (TextView) myView.findViewById(R.id.txtEntreCalle2Servicio);
         tvReferencias = (TextView) myView.findViewById(R.id.txtReferenciasServicio);
@@ -95,6 +96,7 @@ public class DetalleServicioFragment extends Fragment {
 
         tvLocalidad.setText(serv.getLocalidad());
         tvDomicilio.setText(serv.getDomicilio());
+        tvTelefono.setText(serv.getTelefono());
         tvEntreCalle1.setText(serv.getEntreCalle1());
         tvEntreCalle2.setText(serv.getEntreCalle2());
         tvReferencias.setText(serv.getReferencia());

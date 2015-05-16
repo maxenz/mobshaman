@@ -45,7 +45,12 @@ public class ServiciosFragment extends ListFragment {
 
         initializeComponents();
 
-        getServicios(URL_REST_SERVICIOS ,"Actualizando Servicios...",null);
+        try {
+            getServicios(URL_REST_SERVICIOS ,"Actualizando Servicios...",null);
+        } catch (Exception e) {
+            Toast.makeText(getActivity().getApplicationContext(), "Error en la conexión con el servidor",
+                    Toast.LENGTH_LONG).show();
+        }
 
     }
 

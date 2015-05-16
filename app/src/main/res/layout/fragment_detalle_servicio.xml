@@ -70,13 +70,48 @@
 
         <!-- Termina localidad -->
 
-        <!-- Empieza domicilio -->
+        <!-- Empieza Telefono -->
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_marginLeft="5dp"
             android:layout_below="@id/imgLocalidadServicio"
+            android:id="@+id/imgTelefonoServicio"
+            android:gravity="center"
+            android:src="@drawable/ic_action_navigation_accept"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="Telefono:"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_toRightOf="@id/imgTelefonoServicio"
+            android:layout_below="@id/titleLocalidadServicio"
+            android:layout_marginLeft="7dp"
+            android:id="@+id/titleTelefonoServicio"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:typeface="sans"
+            android:gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/titleTelefonoServicio"
+            android:layout_below="@id/txtLocalidadServicio"
+            android:id="@+id/txtTelefonoServicio"/>
+
+        <!-- Termina Telefono -->
+
+        <!-- Empieza domicilio -->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@id/imgTelefonoServicio"
             android:id="@+id/imgDomicilioServicio"
             android:gravity="center"
             android:src="@drawable/ic_action_navigation_accept"/>
@@ -89,7 +124,7 @@
             android:typeface="sans"
             android:gravity="center"
             android:layout_toRightOf="@id/imgDomicilioServicio"
-            android:layout_below="@id/titleLocalidadServicio"
+            android:layout_below="@id/titleTelefonoServicio"
             android:layout_marginLeft="7dp"
             android:id="@+id/titleDomicilioServicio"/>
 
@@ -100,7 +135,7 @@
             android:gravity="center"
             android:layout_marginLeft="8dp"
             android:layout_toRightOf="@id/titleDomicilioServicio"
-            android:layout_below="@id/txtLocalidadServicio"
+            android:layout_below="@id/txtTelefonoServicio"
             android:id="@+id/txtDomicilioServicio"/>
 
         <!-- Termina domicilio -->
