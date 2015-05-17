@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.paramedic.mobshaman.R;
+import com.paramedic.mobshaman.domain.Configuration;
 import com.paramedic.mobshaman.helpers.FileHelper;
 import com.paramedic.mobshaman.models.Servicio;
 import com.paramedic.mobshaman.rest.ServiciosRestClient;
@@ -37,6 +38,7 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
 
     AutoCompleteTextView searchTextView = null;
     EditText etObservaciones = null;
+    EditText etReportNumber = null;
     Button btnFinalizarServicio = null;
     ArrayAdapter<String> adapter;
     String TIPO_FINAL_SELECCIONADO = "";
@@ -45,6 +47,7 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
     Intent intent;
     LinearLayout layout_copago;
     View separator_copago;
+    private Configuration configuration;
 
     List<String> vMotivosDiagnosticos = new ArrayList<String>();
     List<String> vDescripcion = new ArrayList<String>();
@@ -53,6 +56,8 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_final_servicio);
+
+        configuration = Configuration.getInstance(this);
 
         initializeUI();
         setButtonFinalizarServicioListener();
@@ -73,6 +78,7 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
         radioGroup = (RadioGroup) findViewById(R.id.radio_group_final);
         searchTextView = (AutoCompleteTextView) findViewById(R.id.autocomplete_final_servicio);
         etObservaciones = (EditText) findViewById(R.id.et_observaciones_final);
+        etReportNumber = (EditText) findViewById(R.id.et_report_number_final);
         btnFinalizarServicio = (Button) findViewById(R.id.btn_finalizar_servicio);
         titulo = (TextView) findViewById(R.id.txt_header_final_servicio);
         titulo.setText("Cierre del Servicio " + intent.getStringExtra("nroServicio"));
@@ -80,6 +86,8 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
         searchTextView.setThreshold(1);
         searchTextView.setOnItemSelectedListener(this);
         searchTextView.setOnItemClickListener(this);
+
+        etReportNumber.setVisibility(configuration.isRequestReportNumber() ? View.VISIBLE : View.GONE);
 
     }
 

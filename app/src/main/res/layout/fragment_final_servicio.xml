@@ -154,6 +154,19 @@
         android:visibility="gone"
         android:hint="Ingrese observaciones"/>
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:typeface="sans"
+        android:textStyle="bold"
+        android:id="@+id/et_report_number_final"
+        android:visibility="gone"
+        android:hint="Nro. de reporte"/>
+
     <Button
         android:id="@+id/btn_finalizar_servicio"
         android:layout_width="wrap_content"
