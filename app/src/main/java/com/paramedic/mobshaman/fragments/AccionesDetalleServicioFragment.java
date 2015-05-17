@@ -1,6 +1,5 @@
 package com.paramedic.mobshaman.fragments;
 
-import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,9 +19,8 @@ import com.paramedic.mobshaman.activities.CancelarServicioActivity;
 import com.paramedic.mobshaman.activities.FinalServicioActivity;
 import com.paramedic.mobshaman.activities.HistoriaClinicaActivity;
 import com.paramedic.mobshaman.activities.ServiciosActivity;
+import com.paramedic.mobshaman.domain.Configuration;
 import com.paramedic.mobshaman.helpers.DialogHelper;
-import com.paramedic.mobshaman.helpers.ServiciosHelper;
-import com.paramedic.mobshaman.helpers.SharedPrefsHelper;
 import com.paramedic.mobshaman.interfaces.AlertListener;
 import com.paramedic.mobshaman.models.AccionesRestModel;
 import com.paramedic.mobshaman.models.Servicio;
@@ -40,7 +38,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
     Servicio serv;
     Button btnLlegadaServicio, btnSalidaServicio, btnFinalServicio,
             btnHistoriaClinica, btnCancelarServicio;
-    String URL_REST, NRO_MOVIL;
+    private Configuration configuration = Configuration.getInstance(this.getActivity());
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -61,9 +59,6 @@ public class AccionesDetalleServicioFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View myView = inflater.inflate(R.layout.fragment_acciones_detalle_servicio,container,false);
 
-        URL_REST = new SharedPrefsHelper().getURLFromSharedPrefs(this.getActivity());
-        NRO_MOVIL = new SharedPrefsHelper().getNroMovilFromSharedPrefs(this.getActivity());
-
         getServicioFromIntent();
 
         initializeUI(myView);
@@ -81,16 +76,16 @@ public class AccionesDetalleServicioFragment extends Fragment {
     private void initializeActionButtons() {
 
         RequestParams reqParams = new RequestParams();
-        reqParams.put("movil",NRO_MOVIL);
+        reqParams.put("movil",configuration.getMobile());
         reqParams.put("viajeID", serv.getIdServicio());
 
         AccionesRestModel salidaServ = new AccionesRestModel("Salida del servicio",
                 "¿Seguro que desea dar salida al servicio?","Salida de servicio cancelada",
-                URL_REST + "/acciones/setSalidaMovil", "Dando salida al servicio...");
+                configuration.getUrl() + "/acciones/setSalidaMovil", "Dando salida al servicio...");
 
         AccionesRestModel llegadaServ = new AccionesRestModel("Llegada del servicio",
                 "¿Seguro que desea dar llegada al servicio?","Llegada de servicio cancelada",
-                URL_REST + "/acciones/setLlegadaMovil", "Dando llegada al servicio...");
+                configuration.getUrl() + "/acciones/setLlegadaMovil", "Dando llegada al servicio...");
 
 
         doActionServicio(salidaServ,btnSalidaServicio,reqParams);
@@ -247,14 +242,14 @@ public class AccionesDetalleServicioFragment extends Fragment {
             case 1:
                 if(resultCode == getActivity().RESULT_OK){
                     RequestParams rp = new RequestParams();
-                    rp.add("movil",NRO_MOVIL);
+                    rp.add("movil",configuration.getMobile());
                     rp.add("viajeID", String.valueOf(serv.getIdServicio()));
                     rp.add("motivoID", String.valueOf(data.getIntExtra("idMotivo", 0)));
                     rp.add("diagnosticoID", String.valueOf(data.getIntExtra("idDiagnostico", 0)));
                     rp.add("observaciones", data.getStringExtra("observaciones"));
                     rp.add("copago", String.valueOf(data.getIntExtra("copago",0)));
                     try {
-                        doAsyncTaskPostServicio(URL_REST + "/acciones/setFinalServicio","Finalizando servicio...",rp);
+                        doAsyncTaskPostServicio(configuration.getUrl() + "/acciones/setFinalServicio","Finalizando servicio...",rp);
                     } catch (JSONException e) {
                         showToast(e.getMessage());
                     }
@@ -268,11 +263,11 @@ public class AccionesDetalleServicioFragment extends Fragment {
                 if(resultCode == getActivity().RESULT_OK) {
                     String motivoCancelacion = data.getStringExtra("motivoCancelacion");
                     RequestParams rp = new RequestParams();
-                    rp.add("movil",NRO_MOVIL);
+                    rp.add("movil",configuration.getMobile());
                     rp.add("viajeID", String.valueOf(serv.getIdServicio()));
                     rp.add("observaciones",motivoCancelacion);
                     try {
-                        doAsyncTaskPostServicio(URL_REST + "/acciones/setCancelacionServicio",
+                        doAsyncTaskPostServicio(configuration.getUrl() + "/acciones/setCancelacionServicio",
                                 "Cancelando servicio...",rp);
                     } catch (JSONException e) {
                         showToast(e.getMessage());

@@ -11,8 +11,8 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.paramedic.mobshaman.adapters.HistoriaClinicaAdapter;
+import com.paramedic.mobshaman.domain.Configuration;
 import com.paramedic.mobshaman.helpers.HistoriaClinicaHelper;
-import com.paramedic.mobshaman.helpers.SharedPrefsHelper;
 import com.paramedic.mobshaman.models.HistoriaClinica;
 import com.paramedic.mobshaman.rest.ServiciosRestClient;
 import org.apache.http.Header;
@@ -24,10 +24,11 @@ import java.util.ArrayList;
 public class HistoriaClinicaFragment extends ListFragment {
 
     private ProgressDialog pDialog;
-    String URL_REST, NRO_MOVIL, URL_HC;
+    String URL_HC;
     HistoriaClinicaAdapter hcAdapter;
     Intent intent;
     RequestParams rp;
+    private Configuration configuration = Configuration.getInstance(this.getActivity());
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class HistoriaClinicaFragment extends ListFragment {
 
     private void setParametersForAsyncRequest() {
 
-        URL_HC = URL_REST + "/api/historiaclinica/";
+        URL_HC = configuration.getUrl() + "/api/historiaclinica/";
 
         intent = getActivity().getIntent();
         int viajeId = intent.getIntExtra("viajeId",0);
@@ -51,9 +52,6 @@ public class HistoriaClinicaFragment extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        NRO_MOVIL = new SharedPrefsHelper().getNroMovilFromSharedPrefs(this.getActivity());
-        URL_REST = new SharedPrefsHelper().getURLFromSharedPrefs(this.getActivity());
 
         pDialog = new ProgressDialog(getActivity());
         pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);

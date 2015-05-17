@@ -64,13 +64,13 @@ public class ConfigGeneralFragment extends Fragment {
                     try {
 
                         /** Guardo datos de la configuracion en las shared preferences **/
-                        SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
+                        SharedPreferences prefs = getActivity().getSharedPreferences("configuration", Context.MODE_PRIVATE);
 
                         SharedPreferences.Editor editor = prefs.edit();
-                        editor.putString("urlREST", url);
-                        editor.putString("nroMovil", nroMovil);
-                        editor.putString("nroLicencia", nroLicencia);
-                        editor.putBoolean("solicitaNroReport", solicitaNroReport);
+                        editor.putString("url", url);
+                        editor.putString("mobile", nroMovil);
+                        editor.putString("license", nroLicencia);
+                        editor.putBoolean("requestReportNumber", solicitaNroReport);
                         editor.commit();
 
                         /** Obtengo el/los canal/es en los cuales está registrado el móvil/celular **/

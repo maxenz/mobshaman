@@ -1,9 +1,7 @@
 package com.paramedic.mobshaman.fragments;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -15,8 +13,8 @@ import com.loopj.android.http.RequestParams;
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.activities.DetalleServicioActivity;
 import com.paramedic.mobshaman.adapters.ServiciosAdapter;
+import com.paramedic.mobshaman.domain.Configuration;
 import com.paramedic.mobshaman.helpers.ServiciosHelper;
-import com.paramedic.mobshaman.helpers.SharedPrefsHelper;
 import com.paramedic.mobshaman.models.Servicio;
 import com.paramedic.mobshaman.rest.ServiciosRestClient;
 import org.apache.http.Header;
@@ -35,6 +33,8 @@ public class ServiciosFragment extends ListFragment {
     private ServiciosAdapter servAdapter;
     public String NRO_MOVIL, URL_REST, URL_REST_SERVICIOS;
     public int ID_SERVICIO_SELECCIONADO = 0;
+    private Configuration configuration = Configuration.getInstance(this.getActivity());
+    private static final String URL_SERVICE_PARAMETERS = "/api/servicios?idMovil=";
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -68,10 +68,7 @@ public class ServiciosFragment extends ListFragment {
         pDialog.setCancelable(true);
 
         /** Obtengo datos de shared preferences de la configuración general **/
-        SharedPreferences sp = getActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
-        NRO_MOVIL = new SharedPrefsHelper().getNroMovilFromSharedPrefs(this.getActivity());
-        URL_REST = new SharedPrefsHelper().getURLFromSharedPrefs(this.getActivity());
-        URL_REST_SERVICIOS = URL_REST + "/api/servicios?idMovil=" + NRO_MOVIL;
+        URL_REST_SERVICIOS = configuration.getUrl() + URL_SERVICE_PARAMETERS + configuration.getMobile();
 
     }
 
@@ -105,7 +102,7 @@ public class ServiciosFragment extends ListFragment {
 
     public void getServicios(String URL, final String dialogMessage, RequestParams rp) {
 
-        if (NRO_MOVIL == "") {
+        if (!configuration.IsValid()) {
             Toast.makeText(getActivity(),"La aplicación no fue configurada para su uso.",
                     Toast.LENGTH_LONG).show();
             return;

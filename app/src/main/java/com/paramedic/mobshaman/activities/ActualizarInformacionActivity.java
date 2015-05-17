@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -13,7 +12,7 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.paramedic.mobshaman.R;
-import com.paramedic.mobshaman.helpers.SharedPrefsHelper;
+import com.paramedic.mobshaman.domain.Configuration;
 import com.paramedic.mobshaman.rest.ServiciosRestClient;
 
 import org.apache.http.Header;
@@ -29,7 +28,7 @@ public class ActualizarInformacionActivity extends ActionBarActivity {
 
     ProgressDialog pDialog;
     Button btnActualizarMotivos, btnActualizarDiagnosticos;
-    String URL_REST;
+    private Configuration configuration = Configuration.getInstance(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +40,11 @@ public class ActualizarInformacionActivity extends ActionBarActivity {
         pDialog = new ProgressDialog(this);
         pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
-        URL_REST = new SharedPrefsHelper().getURLFromSharedPrefs(this);
         btnActualizarDiagnosticos = (Button) findViewById(R.id.btn_actualizar_diagnosticos);
         btnActualizarMotivos = (Button) findViewById(R.id.btn_actualizar_motivos_no_realizacion);
 
-        String URL_DIAGNOSTICOS = URL_REST + "/api/diagnosticos";
-        String URL_MOTIVOS = URL_REST + "/api/motivos";
+        String URL_DIAGNOSTICOS = configuration.getUrl() + "/api/diagnosticos";
+        String URL_MOTIVOS = configuration.getUrl() + "/api/motivos";
 
         setButtonsForDownloadInformation(btnActualizarDiagnosticos,
                 "Cargando Diagnósticos...",URL_DIAGNOSTICOS,"diagnosticos",
