@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.paramedic.mobshaman.R;
@@ -23,8 +24,11 @@ import org.json.JSONArray;
  */
 public class ConfigGeneralFragment extends Fragment {
 
-    EditText etNroMovilRegistro, etUrlregistro;
+    EditText etNroMovilRegistro, etUrlregistro, etNroLicencia;
     Button btnRegistrarMovil;
+    CheckBox checkboxSolicitaReport;
+    String nroMovil, url, nroLicencia;
+    Boolean solicitaNroReport;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -36,6 +40,8 @@ public class ConfigGeneralFragment extends Fragment {
         etNroMovilRegistro = (EditText) myView.findViewById(R.id.et_movil_registro);
         etUrlregistro = (EditText) myView.findViewById(R.id.et_url_registro);
         btnRegistrarMovil = (Button) myView.findViewById(R.id.btn_registrar_movil);
+        etNroLicencia = (EditText) myView.findViewById(R.id.et_registro_licencia);
+        checkboxSolicitaReport = (CheckBox) myView.findViewById(R.id.checkbox_nro_report);
 
         /** Si hago click en registrar movil.. **/
         btnRegistrarMovil.setOnClickListener(new View.OnClickListener() {
@@ -44,12 +50,14 @@ public class ConfigGeneralFragment extends Fragment {
                 /** Obtengo los valores del nro de movil y de la URL REST,
                  * y verifico que ambos tengan datos
                  */
-                String nroMov = etNroMovilRegistro.getText().toString();
-                String urlREST = etUrlregistro.getText().toString();
+                nroMovil = etNroMovilRegistro.getText().toString();
+                url = etUrlregistro.getText().toString();
+                nroLicencia = etNroLicencia.getText().toString();
+                solicitaNroReport = checkboxSolicitaReport.isChecked();
 
-                if (nroMov.equals("") || urlREST.equals("")) {
+                if (!IsConfigurationValid()) {
 
-                    Toast.makeText(getActivity(),"Debe ingresar nro de movil y url",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(),"Debe ingresar Nro de Movil, Licencia y URL",Toast.LENGTH_LONG).show();
 
                 } else {
 
@@ -59,8 +67,10 @@ public class ConfigGeneralFragment extends Fragment {
                         SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
 
                         SharedPreferences.Editor editor = prefs.edit();
-                        editor.putString("urlREST", urlREST);
-                        editor.putString("nroMovil", nroMov);
+                        editor.putString("urlREST", url);
+                        editor.putString("nroMovil", nroMovil);
+                        editor.putString("nroLicencia", nroLicencia);
+                        editor.putBoolean("solicitaNroReport", solicitaNroReport);
                         editor.commit();
 
                         /** Obtengo el/los canal/es en los cuales está registrado el móvil/celular **/
@@ -76,8 +86,7 @@ public class ConfigGeneralFragment extends Fragment {
 
                         /** Me suscribo al canal registrado. Por ejemplo, el móvil 23 se registra
                          * en el canal m23 **/
-                        PushService.subscribe(getActivity(),
-                                "m"+etNroMovilRegistro.getText().toString(), ServiciosActivity.class);
+                        PushService.subscribe(getActivity(), "m" + nroMovil, ServiciosActivity.class);
 
                         Toast.makeText(getActivity(),"El movil se configuró correctamente.",Toast.LENGTH_LONG).show();
 
@@ -94,5 +103,12 @@ public class ConfigGeneralFragment extends Fragment {
 
         return myView;
 
+    }
+
+    private boolean IsConfigurationValid() {
+        if (nroMovil == "") return false;
+        if (nroLicencia == "") return false;
+        if (url == "") return false;
+        return true;
     }
 }
