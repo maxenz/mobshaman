@@ -38,7 +38,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
     Servicio serv;
     Button btnLlegadaServicio, btnSalidaServicio, btnFinalServicio,
             btnHistoriaClinica, btnCancelarServicio;
-    private Configuration configuration = Configuration.getInstance(this.getActivity());
+    private Configuration configuration;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -58,6 +58,8 @@ public class AccionesDetalleServicioFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View myView = inflater.inflate(R.layout.fragment_acciones_detalle_servicio,container,false);
+
+        configuration = Configuration.getInstance(this.getActivity());
 
         getServicioFromIntent();
 

@@ -33,7 +33,7 @@ public class ServiciosFragment extends ListFragment {
     private ServiciosAdapter servAdapter;
     public String NRO_MOVIL, URL_REST, URL_REST_SERVICIOS;
     public int ID_SERVICIO_SELECCIONADO = 0;
-    private Configuration configuration = Configuration.getInstance(this.getActivity());
+    public Configuration configuration;
     private static final String URL_SERVICE_PARAMETERS = "/api/servicios?idMovil=";
 
     @Override
@@ -55,6 +55,8 @@ public class ServiciosFragment extends ListFragment {
     }
 
     private void initializeComponents() {
+
+        configuration = Configuration.getInstance(this.getActivity());
 
         /** Redefino el estilo de la listview que usa el fragment **/
         listView = getListView();

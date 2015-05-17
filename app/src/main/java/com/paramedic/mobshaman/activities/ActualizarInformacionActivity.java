@@ -28,7 +28,7 @@ public class ActualizarInformacionActivity extends ActionBarActivity {
 
     ProgressDialog pDialog;
     Button btnActualizarMotivos, btnActualizarDiagnosticos;
-    private Configuration configuration = Configuration.getInstance(this);
+    private Configuration configuration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +36,8 @@ public class ActualizarInformacionActivity extends ActionBarActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_actualizar_informacion);
+
+        configuration = Configuration.getInstance(this);
 
         pDialog = new ProgressDialog(this);
         pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);

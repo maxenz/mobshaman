@@ -28,12 +28,12 @@ public class HistoriaClinicaFragment extends ListFragment {
     HistoriaClinicaAdapter hcAdapter;
     Intent intent;
     RequestParams rp;
-    private Configuration configuration = Configuration.getInstance(this.getActivity());
+    private Configuration configuration;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        configuration = Configuration.getInstance(this.getActivity());
         setParametersForAsyncRequest();
         getHistoriaClinica(URL_HC,"Cargando historia clínica...",rp);
     }
