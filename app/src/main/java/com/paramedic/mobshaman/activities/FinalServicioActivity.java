@@ -98,6 +98,7 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
             public void onClick(View v) {
                 String palabra = searchTextView.getText().toString();
                 String observaciones = etObservaciones.getText().toString();
+                Integer requestReportNumber = Integer.valueOf(etReportNumber.getText().toString());
                 int id = 0;
 
                 if (palabra.equals("")) {
@@ -126,15 +127,15 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
                                 returnIntent.putExtra("copago",1);
                             }
                         } else {
-                            returnIntent.putExtra("idMotivo",id);
+                            returnIntent.putExtra("idMotivo", id);
                         }
 
-                        returnIntent.putExtra("observaciones",observaciones);
-                        setResult(RESULT_OK,returnIntent);
+                        returnIntent.putExtra("observaciones", observaciones);
+                        returnIntent.putExtra("requestReportNumber", requestReportNumber);
+                        setResult(RESULT_OK, returnIntent);
                         finish();
                     }
                 }
-
             }
         });
     }

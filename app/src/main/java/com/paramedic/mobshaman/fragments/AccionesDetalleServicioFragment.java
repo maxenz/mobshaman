@@ -83,11 +83,11 @@ public class AccionesDetalleServicioFragment extends Fragment {
 
         AccionesRestModel salidaServ = new AccionesRestModel("Salida del servicio",
                 "¿Seguro que desea dar salida al servicio?","Salida de servicio cancelada",
-                configuration.getUrl() + "/acciones/setSalidaMovil", "Dando salida al servicio...");
+                configuration.getUrl() + "/acciones/setSalidaMovilV2", "Dando salida al servicio...");
 
         AccionesRestModel llegadaServ = new AccionesRestModel("Llegada del servicio",
                 "¿Seguro que desea dar llegada al servicio?","Llegada de servicio cancelada",
-                configuration.getUrl() + "/acciones/setLlegadaMovil", "Dando llegada al servicio...");
+                configuration.getUrl() + "/acciones/setLlegadaMovilV2", "Dando llegada al servicio...");
 
 
         doActionServicio(salidaServ,btnSalidaServicio,reqParams);
@@ -250,8 +250,9 @@ public class AccionesDetalleServicioFragment extends Fragment {
                     rp.add("diagnosticoID", String.valueOf(data.getIntExtra("idDiagnostico", 0)));
                     rp.add("observaciones", data.getStringExtra("observaciones"));
                     rp.add("copago", String.valueOf(data.getIntExtra("copago",0)));
+                    rp.add("requestReportNumber", String.valueOf(data.getIntExtra("requestReportNumber",0)));
                     try {
-                        doAsyncTaskPostServicio(configuration.getUrl() + "/acciones/setFinalServicio","Finalizando servicio...",rp);
+                        doAsyncTaskPostServicio(configuration.getUrl() + "/acciones/setFinalServicioV2","Finalizando servicio...",rp);
                     } catch (JSONException e) {
                         showToast(e.getMessage());
                     }
@@ -269,7 +270,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
                     rp.add("viajeID", String.valueOf(serv.getIdServicio()));
                     rp.add("observaciones",motivoCancelacion);
                     try {
-                        doAsyncTaskPostServicio(configuration.getUrl() + "/acciones/setCancelacionServicio",
+                        doAsyncTaskPostServicio(configuration.getUrl() + "/acciones/setCancelacionServicioV2",
                                 "Cancelando servicio...",rp);
                     } catch (JSONException e) {
                         showToast(e.getMessage());

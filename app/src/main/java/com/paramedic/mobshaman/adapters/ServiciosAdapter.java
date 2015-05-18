@@ -75,7 +75,7 @@ public class ServiciosAdapter extends ArrayAdapter<Servicio> {
             {
 
              fragment.ID_SERVICIO_SELECCIONADO = v.getId();
-             String urlDetalle = fragment.configuration.getUrl() + "/api/servicios/"
+             String urlDetalle = fragment.configuration.getUrl() + "/api/serviciosV2/"
                      + fragment.ID_SERVICIO_SELECCIONADO + "?idMovil=" +
                      fragment.configuration.getMobile();
              fragment.getDetalleServicio(urlDetalle,"Cargando servicio...",null);

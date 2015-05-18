@@ -45,8 +45,8 @@ public class ActualizarInformacionActivity extends ActionBarActivity {
         btnActualizarDiagnosticos = (Button) findViewById(R.id.btn_actualizar_diagnosticos);
         btnActualizarMotivos = (Button) findViewById(R.id.btn_actualizar_motivos_no_realizacion);
 
-        String URL_DIAGNOSTICOS = configuration.getUrl() + "/api/diagnosticos";
-        String URL_MOTIVOS = configuration.getUrl() + "/api/motivos";
+        String URL_DIAGNOSTICOS = configuration.getUrl() + "/api/diagnosticosV2";
+        String URL_MOTIVOS = configuration.getUrl() + "/api/motivosV2";
 
         setButtonsForDownloadInformation(btnActualizarDiagnosticos,
                 "Cargando Diagnósticos...",URL_DIAGNOSTICOS,"diagnosticos",

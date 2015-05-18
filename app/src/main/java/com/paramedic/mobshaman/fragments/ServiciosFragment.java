@@ -34,7 +34,7 @@ public class ServiciosFragment extends ListFragment {
     public String NRO_MOVIL, URL_REST, URL_REST_SERVICIOS;
     public int ID_SERVICIO_SELECCIONADO = 0;
     public Configuration configuration;
-    private static final String URL_SERVICE_PARAMETERS = "/api/servicios?idMovil=";
+    private static final String URL_SERVICE_PARAMETERS = "/api/serviciosV2?idMovil=";
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -143,7 +143,6 @@ public class ServiciosFragment extends ListFragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
 
             @Override
