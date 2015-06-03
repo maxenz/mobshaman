@@ -40,7 +40,7 @@ public class HistoriaClinicaFragment extends ListFragment {
 
     private void setParametersForAsyncRequest() {
 
-        URL_HC = configuration.getUrl() + "/api/historiaclinicaV2/";
+        URL_HC = configuration.getUrl() + "/api/clinicalhistory?licencia=" + configuration.getLicense();
 
         intent = getActivity().getIntent();
         int viajeId = intent.getIntExtra("viajeId",0);

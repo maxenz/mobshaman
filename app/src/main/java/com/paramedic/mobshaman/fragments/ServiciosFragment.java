@@ -34,7 +34,7 @@ public class ServiciosFragment extends ListFragment {
     public String NRO_MOVIL, URL_REST, URL_REST_SERVICIOS;
     public int ID_SERVICIO_SELECCIONADO = 0;
     public Configuration configuration;
-    private static final String URL_SERVICE_PARAMETERS = "/api/serviciosV2?idMovil=";
+    private static final String URL_SERVICE_PARAMETERS = "/api/services?idMovil=";
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -70,7 +70,8 @@ public class ServiciosFragment extends ListFragment {
         pDialog.setCancelable(true);
 
         /** Obtengo datos de shared preferences de la configuración general **/
-        URL_REST_SERVICIOS = configuration.getUrl() + URL_SERVICE_PARAMETERS + configuration.getMobile();
+        URL_REST_SERVICIOS = configuration.getUrl() + URL_SERVICE_PARAMETERS
+                + configuration.getMobile() + "&licencia=" + configuration.getLicense();
 
     }
 

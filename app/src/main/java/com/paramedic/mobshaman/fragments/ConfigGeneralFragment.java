@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.activities.ServiciosActivity;
+import com.paramedic.mobshaman.domain.Configuration;
 import com.parse.ParseInstallation;
 import com.parse.PushService;
 import org.json.JSONArray;
@@ -27,8 +28,10 @@ public class ConfigGeneralFragment extends Fragment {
     EditText etNroMovilRegistro, etUrlregistro, etNroLicencia;
     Button btnRegistrarMovil;
     CheckBox checkboxSolicitaReport;
-    String nroMovil, url, nroLicencia;
+    String  url, nroLicencia;
     Boolean solicitaNroReport;
+    Integer nroMovil;
+    private Configuration configuration;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,6 +46,8 @@ public class ConfigGeneralFragment extends Fragment {
         etNroLicencia = (EditText) myView.findViewById(R.id.et_registro_licencia);
         checkboxSolicitaReport = (CheckBox) myView.findViewById(R.id.checkbox_nro_report);
 
+        configuration = Configuration.getInstance(this.getActivity());
+
         /** Si hago click en registrar movil.. **/
         btnRegistrarMovil.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -50,14 +55,14 @@ public class ConfigGeneralFragment extends Fragment {
                 /** Obtengo los valores del nro de movil y de la URL REST,
                  * y verifico que ambos tengan datos
                  */
-                nroMovil = etNroMovilRegistro.getText().toString();
+                nroMovil = Integer.valueOf(etNroMovilRegistro.getText().toString());
                 url = etUrlregistro.getText().toString();
                 nroLicencia = etNroLicencia.getText().toString();
                 solicitaNroReport = checkboxSolicitaReport.isChecked();
 
                 if (!IsConfigurationValid()) {
 
-                    Toast.makeText(getActivity(),"Debe ingresar Nro de Movil, Licencia y URL",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(),"Debe ingresar Nro de Movil, Licencia y URL (10 caracteres)",Toast.LENGTH_LONG).show();
 
                 } else {
 
@@ -68,10 +73,15 @@ public class ConfigGeneralFragment extends Fragment {
 
                         SharedPreferences.Editor editor = prefs.edit();
                         editor.putString("url", url);
-                        editor.putString("mobile", nroMovil);
+                        editor.putString("mobile", nroMovil.toString().trim());
                         editor.putString("license", nroLicencia);
                         editor.putBoolean("requestReportNumber", solicitaNroReport);
                         editor.commit();
+
+                        configuration.setUrl(url);
+                        configuration.setMobile(nroMovil.toString().trim());
+                        configuration.setLicense(nroLicencia);
+                        configuration.setRequestReportNumber(solicitaNroReport);
 
                         /** Obtengo el/los canal/es en los cuales está registrado el móvil/celular **/
                         JSONArray vInstalacion = ParseInstallation.getCurrentInstallation().getJSONArray("channels");
@@ -86,7 +96,7 @@ public class ConfigGeneralFragment extends Fragment {
 
                         /** Me suscribo al canal registrado. Por ejemplo, el móvil 23 se registra
                          * en el canal m23 **/
-                        PushService.subscribe(getActivity(), "m" + nroMovil, ServiciosActivity.class);
+                        PushService.subscribe(getActivity(), "m" + nroMovil + "_" + nroLicencia, ServiciosActivity.class);
 
                         Toast.makeText(getActivity(),"El movil se configuró correctamente.",Toast.LENGTH_LONG).show();
 
@@ -106,9 +116,10 @@ public class ConfigGeneralFragment extends Fragment {
     }
 
     private boolean IsConfigurationValid() {
-        if (nroMovil == "") return false;
+        if (nroMovil.toString() == "") return false;
         if (nroLicencia == "") return false;
         if (url == "") return false;
+        if (url.length() < 10) return false;
         return true;
     }
 }

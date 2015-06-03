@@ -78,16 +78,17 @@ public class AccionesDetalleServicioFragment extends Fragment {
     private void initializeActionButtons() {
 
         RequestParams reqParams = new RequestParams();
+        reqParams.put("licencia", configuration.getLicense());
         reqParams.put("movil",configuration.getMobile());
         reqParams.put("viajeID", serv.getIdServicio());
 
         AccionesRestModel salidaServ = new AccionesRestModel("Salida del servicio",
                 "¿Seguro que desea dar salida al servicio?","Salida de servicio cancelada",
-                configuration.getUrl() + "/acciones/setSalidaMovilV2", "Dando salida al servicio...");
+                configuration.getUrl() + "/actions/setSalidaMovil", "Dando salida al servicio...");
 
         AccionesRestModel llegadaServ = new AccionesRestModel("Llegada del servicio",
                 "¿Seguro que desea dar llegada al servicio?","Llegada de servicio cancelada",
-                configuration.getUrl() + "/acciones/setLlegadaMovilV2", "Dando llegada al servicio...");
+                configuration.getUrl() + "/actions/setLlegadaMovil", "Dando llegada al servicio...");
 
 
         doActionServicio(salidaServ,btnSalidaServicio,reqParams);
@@ -244,15 +245,17 @@ public class AccionesDetalleServicioFragment extends Fragment {
             case 1:
                 if(resultCode == getActivity().RESULT_OK){
                     RequestParams rp = new RequestParams();
+                    rp.add("reportNumber", String.valueOf(data.getIntExtra("requestReportNumber",0)));
+                    rp.add("licencia",configuration.getLicense());
                     rp.add("movil",configuration.getMobile());
                     rp.add("viajeID", String.valueOf(serv.getIdServicio()));
                     rp.add("motivoID", String.valueOf(data.getIntExtra("idMotivo", 0)));
                     rp.add("diagnosticoID", String.valueOf(data.getIntExtra("idDiagnostico", 0)));
                     rp.add("observaciones", data.getStringExtra("observaciones"));
                     rp.add("copago", String.valueOf(data.getIntExtra("copago",0)));
-                    rp.add("requestReportNumber", String.valueOf(data.getIntExtra("requestReportNumber",0)));
+
                     try {
-                        doAsyncTaskPostServicio(configuration.getUrl() + "/acciones/setFinalServicioV2","Finalizando servicio...",rp);
+                        doAsyncTaskPostServicio(configuration.getUrl() + "/actions/setFinalServicio","Finalizando servicio...",rp);
                     } catch (JSONException e) {
                         showToast(e.getMessage());
                     }
@@ -266,11 +269,12 @@ public class AccionesDetalleServicioFragment extends Fragment {
                 if(resultCode == getActivity().RESULT_OK) {
                     String motivoCancelacion = data.getStringExtra("motivoCancelacion");
                     RequestParams rp = new RequestParams();
+                    rp.add("licencia",configuration.getLicense());
                     rp.add("movil",configuration.getMobile());
                     rp.add("viajeID", String.valueOf(serv.getIdServicio()));
                     rp.add("observaciones",motivoCancelacion);
                     try {
-                        doAsyncTaskPostServicio(configuration.getUrl() + "/acciones/setCancelacionServicioV2",
+                        doAsyncTaskPostServicio(configuration.getUrl() + "/actions/setCancelacionServicio",
                                 "Cancelando servicio...",rp);
                     } catch (JSONException e) {
                         showToast(e.getMessage());
