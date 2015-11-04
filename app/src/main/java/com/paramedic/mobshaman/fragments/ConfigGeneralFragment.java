@@ -28,9 +28,8 @@ public class ConfigGeneralFragment extends Fragment {
     EditText etNroMovilRegistro, etUrlregistro, etNroLicencia;
     Button btnRegistrarMovil;
     CheckBox checkboxSolicitaReport;
-    String  url, nroLicencia;
+    String  url, nroLicencia, nroMovil;
     Boolean solicitaNroReport;
-    Integer nroMovil;
     private Configuration configuration;
 
     @Override
@@ -55,7 +54,7 @@ public class ConfigGeneralFragment extends Fragment {
                 /** Obtengo los valores del nro de movil y de la URL REST,
                  * y verifico que ambos tengan datos
                  */
-                nroMovil = Integer.valueOf(etNroMovilRegistro.getText().toString());
+                nroMovil = etNroMovilRegistro.getText().toString();
                 url = etUrlregistro.getText().toString();
                 nroLicencia = etNroLicencia.getText().toString();
                 solicitaNroReport = checkboxSolicitaReport.isChecked();
