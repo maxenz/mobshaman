@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.paramedic.mobshaman.R;
-import com.paramedic.mobshaman.fragments.AccionesDetalleServicioFragment;
 import com.paramedic.mobshaman.fragments.AdminPasswordDialogFragment;
-import com.parse.ParseInstallation;
 
 
 
@@ -18,8 +16,6 @@ public class ServiciosActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_servicios);
-        ParseInstallation.getCurrentInstallation().saveInBackground();
-
     }
 
     @Override

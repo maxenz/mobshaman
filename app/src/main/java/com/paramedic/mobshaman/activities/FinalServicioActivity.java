@@ -98,7 +98,11 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
             public void onClick(View v) {
                 String palabra = searchTextView.getText().toString();
                 String observaciones = etObservaciones.getText().toString();
-                Integer requestReportNumber = Integer.valueOf(etReportNumber.getText().toString());
+                String repNumber = etReportNumber.getText().toString();
+                Integer requestReportNumber = 0;
+                if (!("".equals(repNumber))) {
+                    requestReportNumber = Integer.valueOf(repNumber);
+                }
                 int id = 0;
 
                 if (palabra.equals("")) {

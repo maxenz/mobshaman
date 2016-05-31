@@ -15,9 +15,10 @@ import android.widget.Toast;
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.activities.ServiciosActivity;
 import com.paramedic.mobshaman.domain.Configuration;
-import com.parse.ParseInstallation;
-import com.parse.PushService;
 import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.onesignal.OneSignal;
 
 
 /**
@@ -82,20 +83,12 @@ public class ConfigGeneralFragment extends Fragment {
                         configuration.setLicense(nroLicencia);
                         configuration.setRequestReportNumber(solicitaNroReport);
 
-                        /** Obtengo el/los canal/es en los cuales está registrado el móvil/celular **/
-                        JSONArray vInstalacion = ParseInstallation.getCurrentInstallation().getJSONArray("channels");
+                        // --> Registro el equipo para las push notifications con nro movil y licencia
 
-                        /** Borro todas las suscripciones que tenga, ya que un móvil solo puede estar
-                            asociado a un canal **/
-                        if (vInstalacion != null) {
-                            for(int i = 0; i < vInstalacion.length(); i++) {
-                                PushService.unsubscribe(getActivity(),vInstalacion.getString(i));
-                            }
-                        }
-
-                        /** Me suscribo al canal registrado. Por ejemplo, el móvil 23 se registra
-                         * en el canal m23 **/
-                        PushService.subscribe(getActivity(), "m" + nroMovil + "_" + nroLicencia, ServiciosActivity.class);
+                        JSONObject tags = new JSONObject();
+                        tags.put("license", nroLicencia);
+                        tags.put("mobile", nroMovil);
+                        OneSignal.sendTags(tags);
 
                         Toast.makeText(getActivity(),"El movil se configuró correctamente.",Toast.LENGTH_LONG).show();
 
