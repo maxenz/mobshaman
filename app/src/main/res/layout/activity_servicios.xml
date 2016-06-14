@@ -1,9 +1,9 @@
 <ScrollView
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:fillViewport="true"
     xmlns:android="http://schemas.android.com/apk/res/android">
 <LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
@@ -13,6 +13,6 @@
         android:layout_height="fill_parent"
         android:name="com.paramedic.mobshaman.fragments.ServiciosFragment"
         android:id="@+id/serviciosFragment"
-        tools:layout="@layout/rowlayout" />
+        />
 </LinearLayout>
     </ScrollView>
