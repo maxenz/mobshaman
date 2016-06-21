@@ -59,7 +59,10 @@ public class Servicio implements Serializable{
 
     public int getGradoColor() {
 
-        return Color.parseColor("#" + this.getColorHexa());
+        String hexa = this.getColorHexa();
+        if (!hexa.contains("#")) hexa = "#" + hexa;
+
+        return Color.parseColor(hexa);
 
     }
 
