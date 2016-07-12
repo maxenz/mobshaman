@@ -118,7 +118,13 @@ public class ActualizarInformacionActivity extends ActionBarActivity {
                 try {
                     for (int i = 0; i < response.length(); i++) {
                         JSONObject obj = (JSONObject) response.get(i);
-                        String linea = obj.getInt("ID") + "&" + obj.getString("Descripcion");
+                        StringBuilder strBuilder = new StringBuilder();
+                        strBuilder.append(obj.getInt("ID"));
+                        strBuilder.append("&");
+                        strBuilder.append(obj.getString("AbreviaturaId"));
+                        strBuilder.append("&");
+                        strBuilder.append(obj.getString("Descripcion"));
+                        String linea = strBuilder.toString();
                         lineas.add(linea);
                     }
 

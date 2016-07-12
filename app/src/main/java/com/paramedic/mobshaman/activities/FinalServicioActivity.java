@@ -4,11 +4,15 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -34,11 +38,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FinalServicioActivity extends ActionBarActivity
-implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
+implements AdapterView.OnItemClickListener, OnItemSelectedListener{
 
     AutoCompleteTextView searchTextView = null;
     EditText etObservaciones = null;
     EditText etReportNumber = null;
+    EditText etDiagnosisReasonsCode = null;
     Button btnFinalizarServicio = null;
     ArrayAdapter<String> adapter;
     String TIPO_FINAL_SELECCIONADO = "";
@@ -62,6 +67,39 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
         initializeUI();
         setButtonFinalizarServicioListener();
         setRadioGroupListener();
+        initListeners();
+
+    }
+
+    private void initListeners() {
+
+        etDiagnosisReasonsCode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_NULL && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                    setDiagnosisReasonsDescription();
+                }
+                return true;
+            }
+        });
+
+        etDiagnosisReasonsCode.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    setDiagnosisReasonsDescription();
+                }
+            }
+        });
+
+        searchTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String code = getCodeByDescription(searchTextView.getText().toString());
+                etDiagnosisReasonsCode.setText(code);
+                etObservaciones.requestFocus();
+            }
+        });
+
 
     }
 
@@ -79,6 +117,7 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
         searchTextView = (AutoCompleteTextView) findViewById(R.id.autocomplete_final_servicio);
         etObservaciones = (EditText) findViewById(R.id.et_observaciones_final);
         etReportNumber = (EditText) findViewById(R.id.et_report_number_final);
+        etDiagnosisReasonsCode = (EditText) findViewById(R.id.et_diagnosis_reasons_code);
         btnFinalizarServicio = (Button) findViewById(R.id.btn_finalizar_servicio);
         titulo = (TextView) findViewById(R.id.txt_header_final_servicio);
         titulo.setText("Cierre del Servicio " + intent.getStringExtra("nroServicio"));
@@ -91,12 +130,29 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
 
     }
 
+    private void setDiagnosisReasonsDescription() {
+        String code = etDiagnosisReasonsCode.getText().toString();
+        if (TextUtils.isEmpty(code)) {
+            searchTextView.setText(null);
+            return;
+        }
+            String description = getDescriptionByCode(code);
+            searchTextView.setText(description);
+            if (description == null) {
+                etDiagnosisReasonsCode.setText(null);
+                showToast("El código de " + TIPO_FINAL_SELECCIONADO + " es inválido.");
+            }
+            etObservaciones.requestFocus();
+
+    }
+
     private void setButtonFinalizarServicioListener() {
 
         btnFinalizarServicio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String palabra = searchTextView.getText().toString();
+                String drDescription = searchTextView.getText().toString();
+                String drCode = etDiagnosisReasonsCode.getText().toString();
                 String observaciones = etObservaciones.getText().toString();
                 String repNumber = etReportNumber.getText().toString();
                 Integer requestReportNumber = 0;
@@ -105,10 +161,10 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
                 }
                 int id = 0;
 
-                if (palabra.equals("")) {
+                if (TextUtils.isEmpty(drDescription) || TextUtils.isEmpty(drCode)) {
                     showToast("Debe ingresar el " + TIPO_FINAL_SELECCIONADO);
                 } else {
-                    id = searchID(palabra);
+                    id = getIdByCode(drCode);
                     if (id == -1) {
                         showToast("El " + TIPO_FINAL_SELECCIONADO + " es inválido");
                     } else {
@@ -117,7 +173,7 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
 
                         if (radioGroup.getCheckedRadioButtonId() == R.id.radio_final_si) {
 
-                            Double copago = intent.getDoubleExtra("copago",0);
+                            Double copago = intent.getDoubleExtra("copago", 0);
                             if (copago > 0) {
                                 if (radioGroupCopago.getCheckedRadioButtonId() == -1) {
                                     showToast("Debe seleccionar si se cobró copago");
@@ -128,7 +184,7 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
                             returnIntent.putExtra("idDiagnostico", id);
                             if (radioGroupCopago.getCheckedRadioButtonId()
                                     == R.id.radio_final_copago_no) {
-                                returnIntent.putExtra("copago",1);
+                                returnIntent.putExtra("copago", 1);
                             }
                         } else {
                             returnIntent.putExtra("idMotivo", id);
@@ -151,13 +207,13 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
             public void onCheckedChanged(RadioGroup group, int checkedId) {
 
                 searchTextView.setText("");
+                etDiagnosisReasonsCode.setText("");
                 etObservaciones.setText("");
 
                 if (checkedId == R.id.radio_final_si) {
                     TIPO_FINAL_SELECCIONADO = "diagnóstico";
-                    searchTextView.setHint("Seleccione Diagnóstico");
+                    setDiagnosisReasonsHint("Ingrese código de diagnóstico", "Seleccione diagnóstico");
                     setAdapterArray("diagnosticos");
-
                     Double copago = intent.getDoubleExtra("copago", 0);
                     if (copago > 0) {
                         layout_copago.setVisibility(View.VISIBLE);
@@ -166,22 +222,28 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
 
                 } else {
                     TIPO_FINAL_SELECCIONADO = "motivo de no realización";
-                    searchTextView.setHint("Seleccione Motivo");
+                    setDiagnosisReasonsHint("Ingrese código de motivo", "Seleccione motivo");
                     setAdapterArray("motivos");
                     layout_copago.setVisibility(View.GONE);
                     separator_copago.setVisibility(View.GONE);
                 }
 
                 searchTextView.setVisibility(View.VISIBLE);
+                etDiagnosisReasonsCode.setVisibility(View.VISIBLE);
                 etObservaciones.setVisibility(View.VISIBLE);
                 btnFinalizarServicio.setVisibility(View.VISIBLE);
 
                 adapter = new ArrayAdapter<String>(FinalServicioActivity.this,
-                        android.R.layout.simple_spinner_dropdown_item,vDescripcion);
+                        android.R.layout.simple_spinner_dropdown_item, vDescripcion);
                 searchTextView.setAdapter(adapter);
 
             }
         });
+    }
+
+    private void setDiagnosisReasonsHint(String codeHint,String descriptionHint) {
+        searchTextView.setHint(descriptionHint);
+        etDiagnosisReasonsCode.setHint(codeHint);
     }
 
     @Override
@@ -222,19 +284,33 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
 
     }
 
-    private int searchID(String palabraABuscar) {
+    private String getDescriptionByCode(String code) {
+        return searchWord(code, 1, 2);
+    }
 
-        String md = "";
+    private String getCodeByDescription(String description) {
+        return searchWord(description, 2, 1);
+    }
 
-        for (String texto : vMotivosDiagnosticos) {
+    private int getIdByCode(String code) {
+        String id = searchWord(code,1,0);
+        return id == null ? -1 : Integer.parseInt(id);
+    }
 
-            md = getFrom(texto,1);
-            if (palabraABuscar.equals(md)) {
-                return Integer.parseInt(getFrom(texto,0));
+    private String searchWord(String wordToSearch, int indexToSearch, int indexToReturn) {
+
+        // 0 : ID
+        // 1 : Codigo
+        // 2 : Descripcion
+
+        for (String text : vMotivosDiagnosticos) {
+            String textSearched = getFrom(text, indexToSearch);
+            if (wordToSearch.equals(textSearched)) {
+                return getFrom(text, indexToReturn);
             }
         }
 
-        return -1;
+        return null;
     }
 
     private void setAdapterArray(String fileName) {
@@ -245,7 +321,7 @@ implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener{
 
         for(String texto : vMotivosDiagnosticos) {
 
-            vDescripcion.add(texto.split("&")[1]);
+            vDescripcion.add(texto.split("&")[2]);
 
         }
     }

@@ -130,13 +130,24 @@
         android:visibility="gone"
         android:layout_marginBottom="20dp"/>
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:typeface="sans"
+        android:textStyle="bold"
+        android:id="@+id/et_diagnosis_reasons_code"
+        android:visibility="gone" />
+
     <AutoCompleteTextView
         android:id="@+id/autocomplete_final_servicio"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:layout_marginLeft="10dip"
         android:layout_marginRight="10dip"
-        android:hint="Seleccione Diagnóstico"
         android:visibility="gone"
         android:typeface="sans"
         android:textStyle="bold"/>
