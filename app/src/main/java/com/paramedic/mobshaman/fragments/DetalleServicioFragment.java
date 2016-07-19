@@ -1,20 +1,25 @@
 package com.paramedic.mobshaman.fragments;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import com.paramedic.mobshaman.R;
-import com.paramedic.mobshaman.activities.DetalleServicioActivity;
 import com.paramedic.mobshaman.activities.MapaServicioActivity;
 import com.paramedic.mobshaman.models.Servicio;
-
-import org.w3c.dom.Text;
 
 /**
  * Created by soporte on 23/07/2014.
@@ -33,6 +38,7 @@ public class DetalleServicioFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         setHasOptionsMenu(true);
+
     }
 
     @Override
@@ -64,6 +70,9 @@ public class DetalleServicioFragment extends Fragment {
 
         displayValues(myView);
 
+        ExpandableListView elv = (ExpandableListView) myView.findViewById(R.id.service_components_list);
+        elv.setAdapter(new ExpandableListAdapter());
+
         return myView;
     }
 
@@ -75,45 +84,139 @@ public class DetalleServicioFragment extends Fragment {
 
         serv = (Servicio) intent.getSerializableExtra("Servicio");
 
-        tvLocalidad = (TextView) myView.findViewById(R.id.txtLocalidadServicio);
-        tvDomicilio = (TextView) myView.findViewById(R.id.txtDomicilioServicio);
-        tvTelefono = (TextView) myView.findViewById(R.id.txtTelefonoServicio);
-        tvEntreCalle1 = (TextView) myView.findViewById(R.id.txtEntreCalle1Servicio);
-        tvEntreCalle2 = (TextView) myView.findViewById(R.id.txtEntreCalle2Servicio);
-        tvReferencias = (TextView) myView.findViewById(R.id.txtReferenciasServicio);
-        tvSintomas = (TextView) myView.findViewById(R.id.txtSintomasServicio);
-        tvGrado = (TextView) myView.findViewById(R.id.txtGradoServicio);
-        tvAviso = (TextView) myView.findViewById(R.id.txtAvisoServicio);
-        tvPaciente = (TextView) myView.findViewById(R.id.txtPacienteServicio);
-        tvSexo = (TextView) myView.findViewById(R.id.txtSexoServicio);
-        tvEdad = (TextView) myView.findViewById(R.id.txtEdadServicio);
-        tvEntidad = (TextView) myView.findViewById(R.id.txtEntidadServicio);
-        tvNroAfiliado = (TextView) myView.findViewById(R.id.txtNroAfiliadoServicio);
-        tvNroInterno = (TextView) myView.findViewById(R.id.txtNroInternoServicio);
-        tvCoPago = (TextView) myView.findViewById(R.id.txtCoPagoServicio);
-        tvObservaciones = (TextView) myView.findViewById(R.id.txtObservacionesServicio);
-        tvNroServicio = (TextView) myView.findViewById(R.id.txt_header_detalle_servicio);
 
-        tvLocalidad.setText(serv.getLocalidad());
-        tvDomicilio.setText(serv.getDomicilio());
-        tvTelefono.setText(serv.getTelefono());
-        tvEntreCalle1.setText(serv.getEntreCalle1());
-        tvEntreCalle2.setText(serv.getEntreCalle2());
-        tvReferencias.setText(serv.getReferencia());
-        tvSintomas.setText(serv.getSintomas());
-        tvGrado.setText(serv.getGrado());
-        tvGrado.setTextColor(serv.getGradoColor());
-        tvAviso.setText(serv.getAviso());
-        tvPaciente.setText(serv.getPaciente());
-        tvSexo.setText(serv.getSexo());
-        tvEdad.setText(serv.getEdad());
-        tvEntidad.setText(serv.getCliente());
-        tvNroAfiliado.setText(serv.getNroAfiliado());
-        //tvNroInterno.setText(serv.getNro);
-        tvCoPago.setText(serv.getCoPago().toString());
-        tvObservaciones.setText(serv.getObservaciones());
 
-        tvNroServicio.setText("Datos del Servicio " + serv.getNroServicio());
+//       tvSintomas.setText(serv.getSintomas());
+//        tvGrado.setText(serv.getGrado());
+//        tvGrado.setTextColor(serv.getGradoColor());
+
+
+
+    }
+
+    public class ExpandableListAdapter extends BaseExpandableListAdapter {
+
+        private String[] groups = { "Servicio", "Síntomas", "Domicilio", "Derivación" };
+
+        //Grupo servicio
+        Spannable nroServicio = getDescriptionFormatted("Nro. Servicio", serv.getNroServicio());
+        Spannable telefono = getDescriptionFormatted("Teléfono", serv.getTelefono());
+        Spannable grado = getDescriptionFormatted("Grado", serv.getGrado());
+        Spannable gradoFormatted = getGradeColor(grado, serv.getGrado());
+        Spannable paciente = getDescriptionFormatted("Paciente", serv.getPaciente());
+        Spannable entidad = getDescriptionFormatted("Entidad", serv.getCliente());
+        Spannable nroAfiliado = getDescriptionFormatted("Nro. Afiliado", serv.getNroAfiliado());
+        Spannable sexo = getDescriptionFormatted("Sexo", serv.getSexo());
+        Spannable edad = getDescriptionFormatted("Edad", serv.getEdad());
+        Spannable aviso = getDescriptionFormatted("Aviso", serv.getAviso());
+        Spannable referencias = getDescriptionFormatted("Referencias", serv.getReferencia());
+        Spannable copago = getDescriptionFormatted("CoPago", serv.getCoPago().toString());
+        Spannable observaciones = getDescriptionFormatted("Observaciones", serv.getObservaciones());
+
+        // Grupo domicilio
+        Spannable localidad = getDescriptionFormatted("Localidad", serv.getLocalidad());
+        Spannable domicilio = getDescriptionFormatted("Domicilio", serv.getDomicilio());
+        Spannable entreCalle1 = getDescriptionFormatted("Entre Calle 1", serv.getEntreCalle1());
+        Spannable entreCalle2 = getDescriptionFormatted("Entre Calle 2", serv.getEntreCalle2());
+        Spannable partido = getDescriptionFormatted("Partido", serv.getPartido());
+        Spannable institucion = getDescriptionFormatted("Institución", serv.getInstitucion());
+
+        //Grupo Sintomas
+
+
+        // Grupo Derivacion
+        Spannable derDomicilio = getDescriptionFormatted("Domicilio", serv.getDerDomicilio());
+        Spannable derLocalidad = getDescriptionFormatted("Localidad", serv.getDerLocalidad());
+        Spannable derEntreCalle1 = getDescriptionFormatted("Entre Calle 1", serv.getDerEntreCalle1());
+        Spannable derEntreCalle2 = getDescriptionFormatted("Entre Calle 2", serv.getDerEntreCalle2());
+        Spannable derInstitucion = getDescriptionFormatted("Institución", serv.getDerInstitucion());
+        Spannable derPartido = getDescriptionFormatted("Partido", serv.getDerPartido());
+        Spannable derReferencia = getDescriptionFormatted("Referencia", serv.getDerReferencia());
+
+
+        private Spannable[][] children = {
+                { nroServicio, telefono, paciente,gradoFormatted, entidad, nroAfiliado, sexo,
+                        edad, aviso, referencias, copago, observaciones },
+                {
+                //SintomasItems, no se como me llegan
+                },
+                { localidad, partido, domicilio, entreCalle1, entreCalle2, institucion },
+                {derDomicilio, derLocalidad, derEntreCalle1, derEntreCalle2, derInstitucion,
+                derPartido, derReferencia}
+        };
+
+        @Override
+        public int getGroupCount() {
+            return groups.length;
+        }
+
+        @Override
+        public int getChildrenCount(int i) {
+            return children[i].length;
+        }
+
+        @Override
+        public Object getGroup(int i) {
+            return groups[i];
+        }
+
+        @Override
+        public Spannable getChild(int i, int i1) {
+            return children[i][i1];
+        }
+
+        @Override
+        public long getGroupId(int i) {
+            return i;
+        }
+
+        @Override
+        public long getChildId(int i, int i1) {
+            return i1;
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return true;
+        }
+
+        @Override
+        public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
+            TextView textView = new TextView(DetalleServicioFragment.this.getActivity());
+            textView.setText(getGroup(i).toString());
+            textView.setPadding(80, 20, 20, 20);
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17);
+
+            return textView;
+        }
+
+        @Override
+        public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
+
+            TextView textView = new TextView(DetalleServicioFragment.this.getActivity());
+            textView.setText(getChild(i, i1));
+            textView.setPadding(20,20,20,20);
+            return textView;
+        }
+
+        @Override
+        public boolean isChildSelectable(int i, int i1) {
+            return true;
+        }
+
+        private Spannable getDescriptionFormatted(String label, String description) {
+            String fullWord = label + ": " + description;
+            Spannable wordToSpan = new SpannableString(fullWord);
+            wordToSpan.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, label.length() + 1,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            return wordToSpan;
+        }
+
+        private Spannable getGradeColor(Spannable word, String description) {
+            word.setSpan(new ForegroundColorSpan(serv.getGradoColor()), 6, 6 + description.length() + 1,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            return word;
+        }
 
     }
 }

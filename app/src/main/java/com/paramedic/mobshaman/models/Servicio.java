@@ -38,6 +38,22 @@ public class Servicio implements Serializable{
     private byte HabFinal;
     private byte HabCancelacion;
     private String Telefono;
+    private String Institucion;
+    private int ClasificacionId;
+    private int FlgRename;
+    private int FlgDerivacion;
+    private String DerLocalidad;
+    private String DerPartido;
+    private String DerInstitucion;
+    private String DerDomicilio;
+    private String DerEntreCalle1;
+    private String DerEntreCalle2;
+    private String DerReferencia;
+    private String DerLatitud;
+    private String DerLongitud;
+    private String Diagnostico;
+    private String SintomasItems;
+
 
     public String getTelefono() {
         return Telefono;
@@ -294,5 +310,125 @@ public class Servicio implements Serializable{
 
     public void setHabCancelacion(byte habCancelacion) {
         HabCancelacion = habCancelacion;
+    }
+
+    public int getClasificacionId() {
+        return ClasificacionId;
+    }
+
+    public void setClasificacionId(int clasificacionId) {
+        ClasificacionId = clasificacionId;
+    }
+
+    public int getFlgRename() {
+        return FlgRename;
+    }
+
+    public void setFlgRename(int flgRename) {
+        FlgRename = flgRename;
+    }
+
+    public int getFlgDerivacion() {
+        return FlgDerivacion;
+    }
+
+    public void setFlgDerivacion(int flgDerivacion) {
+        FlgDerivacion = flgDerivacion;
+    }
+
+    public String getDerLocalidad() {
+        return DerLocalidad;
+    }
+
+    public void setDerLocalidad(String derLocalidad) {
+        DerLocalidad = derLocalidad;
+    }
+
+    public String getDerPartido() {
+        return DerPartido;
+    }
+
+    public void setDerPartido(String derPartido) {
+        DerPartido = derPartido;
+    }
+
+    public String getDerInstitucion() {
+        return DerInstitucion;
+    }
+
+    public void setDerInstitucion(String derInstitucion) {
+        DerInstitucion = derInstitucion;
+    }
+
+    public String getDerDomicilio() {
+        return DerDomicilio;
+    }
+
+    public void setDerDomicilio(String derDomicilio) {
+        DerDomicilio = derDomicilio;
+    }
+
+    public String getDerEntreCalle1() {
+        return DerEntreCalle1;
+    }
+
+    public void setDerEntreCalle1(String derEntreCalle1) {
+        DerEntreCalle1 = derEntreCalle1;
+    }
+
+    public String getDerEntreCalle2() {
+        return DerEntreCalle2;
+    }
+
+    public void setDerEntreCalle2(String derEntreCalle2) {
+        DerEntreCalle2 = derEntreCalle2;
+    }
+
+    public String getDerReferencia() {
+        return DerReferencia;
+    }
+
+    public void setDerReferencia(String derReferencia) {
+        DerReferencia = derReferencia;
+    }
+
+    public String getDerLatitud() {
+        return DerLatitud;
+    }
+
+    public void setDerLatitud(String derLatitud) {
+        DerLatitud = derLatitud;
+    }
+
+    public String getDerLongitud() {
+        return DerLongitud;
+    }
+
+    public void setDerLongitud(String derLongitud) {
+        DerLongitud = derLongitud;
+    }
+
+    public String getDiagnostico() {
+        return Diagnostico;
+    }
+
+    public void setDiagnostico(String diagnostico) {
+        Diagnostico = diagnostico;
+    }
+
+    public String getSintomasItems() {
+        return SintomasItems;
+    }
+
+    public void setSintomasItems(String sintomasItems) {
+        SintomasItems = sintomasItems;
+    }
+
+    public String getInstitucion() {
+        return Institucion;
+    }
+
+    public void setInstitucion(String institucion) {
+        Institucion = institucion;
     }
 }
