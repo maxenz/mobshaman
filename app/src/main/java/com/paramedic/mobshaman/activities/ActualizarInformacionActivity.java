@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -28,6 +29,7 @@ public class ActualizarInformacionActivity extends ActionBarActivity {
 
     ProgressDialog pDialog;
     Button btnActualizarMotivos, btnActualizarDiagnosticos;
+    TextView tvVersion;
     private Configuration configuration;
 
     @Override
@@ -44,6 +46,7 @@ public class ActualizarInformacionActivity extends ActionBarActivity {
 
         btnActualizarDiagnosticos = (Button) findViewById(R.id.btn_actualizar_diagnosticos);
         btnActualizarMotivos = (Button) findViewById(R.id.btn_actualizar_motivos_no_realizacion);
+        tvVersion = (TextView) findViewById(R.id.tv_version_system);
 
         String URL_DIAGNOSTICOS = configuration.getUrl() + "/api/diagnosis?licencia="
                 + configuration.getLicense();
@@ -57,6 +60,14 @@ public class ActualizarInformacionActivity extends ActionBarActivity {
         setButtonsForDownloadInformation(btnActualizarMotivos,
                 "Cargando Motivos...",URL_MOTIVOS,"motivos",
                 "Los motivos han sido actualizados");
+    try {
+        String versionName = getPackageManager()
+                .getPackageInfo(this.getPackageName(), 0).versionName;
+        tvVersion.setText("Versión del sistema: " + versionName);
+    } catch(Exception exception) {
+        //No se encontro la version
+    }
+
     }
 
     @Override

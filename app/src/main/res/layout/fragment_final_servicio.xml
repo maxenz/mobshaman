@@ -22,7 +22,6 @@
         android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:background="@color/verde_color"
-
         android:layout_marginBottom="8dp"/>
 
     <LinearLayout
@@ -151,6 +150,18 @@
         android:visibility="gone"
         android:typeface="sans"
         android:textStyle="bold"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:typeface="sans"
+        android:textStyle="bold"
+        android:id="@+id/et_time_picker_derivacion"
+        android:visibility="gone"
+        android:hint="Horario derivación"/>
 
     <EditText
         android:layout_width="match_parent"

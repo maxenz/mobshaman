@@ -1,7 +1,6 @@
 package com.paramedic.mobshaman.fragments;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Spannable;
@@ -16,20 +15,15 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
-
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.activities.MapaServicioActivity;
 import com.paramedic.mobshaman.models.Servicio;
+import com.paramedic.mobshaman.models.TriageQuestion;
 
-/**
- * Created by soporte on 23/07/2014.
- */
+import java.util.*;
+
+
 public class DetalleServicioFragment extends Fragment {
-
-    TextView tvLocalidad, tvDomicilio, tvEntreCalle1, tvEntreCalle2,
-    tvReferencias, tvSintomas, tvGrado, tvAviso, tvPaciente, tvSexo,
-    tvEdad, tvEntidad, tvNroAfiliado, tvNroInterno, tvCoPago, tvObservaciones,
-    tvNroServicio, tvTelefono;
 
     Servicio serv;
 
@@ -84,22 +78,16 @@ public class DetalleServicioFragment extends Fragment {
 
         serv = (Servicio) intent.getSerializableExtra("Servicio");
 
-
-
-//       tvSintomas.setText(serv.getSintomas());
-//        tvGrado.setText(serv.getGrado());
-//        tvGrado.setTextColor(serv.getGradoColor());
-
-
-
     }
+
 
     public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
-        private String[] groups = { "Servicio", "Síntomas", "Domicilio", "Derivación" };
+        private LinkedList<String> groups = new LinkedList<String>();
 
         //Grupo servicio
         Spannable nroServicio = getDescriptionFormatted("Nro. Servicio", serv.getNroServicio());
+        Spannable fechaIncidente = getDescriptionFormatted("Fecha del Servicio", serv.getFecIncidente());
         Spannable telefono = getDescriptionFormatted("Teléfono", serv.getTelefono());
         Spannable grado = getDescriptionFormatted("Grado", serv.getGrado());
         Spannable gradoFormatted = getGradeColor(grado, serv.getGrado());
@@ -112,6 +100,7 @@ public class DetalleServicioFragment extends Fragment {
         Spannable referencias = getDescriptionFormatted("Referencias", serv.getReferencia());
         Spannable copago = getDescriptionFormatted("CoPago", serv.getCoPago().toString());
         Spannable observaciones = getDescriptionFormatted("Observaciones", serv.getObservaciones());
+        Spannable plan = getDescriptionFormatted("Plan", serv.getPlanId());
 
         // Grupo domicilio
         Spannable localidad = getDescriptionFormatted("Localidad", serv.getLocalidad());
@@ -122,7 +111,8 @@ public class DetalleServicioFragment extends Fragment {
         Spannable institucion = getDescriptionFormatted("Institución", serv.getInstitucion());
 
         //Grupo Sintomas
-
+        private LinkedList<TriageQuestion> triage = serv.getTriage();
+        private Spannable[] grpSintomas = new Spannable[triage.size() + 1];
 
         // Grupo Derivacion
         Spannable derDomicilio = getDescriptionFormatted("Domicilio", serv.getDerDomicilio());
@@ -133,36 +123,61 @@ public class DetalleServicioFragment extends Fragment {
         Spannable derPartido = getDescriptionFormatted("Partido", serv.getDerPartido());
         Spannable derReferencia = getDescriptionFormatted("Referencia", serv.getDerReferencia());
 
+        Spannable[] grpPrincipalData = new Spannable[]{nroServicio, fechaIncidente, telefono,
+                paciente,gradoFormatted, entidad, nroAfiliado, sexo, edad, aviso, referencias, plan,
+                copago, observaciones};
 
-        private Spannable[][] children = {
-                { nroServicio, telefono, paciente,gradoFormatted, entidad, nroAfiliado, sexo,
-                        edad, aviso, referencias, copago, observaciones },
-                {
-                //SintomasItems, no se como me llegan
-                },
-                { localidad, partido, domicilio, entreCalle1, entreCalle2, institucion },
-                {derDomicilio, derLocalidad, derEntreCalle1, derEntreCalle2, derInstitucion,
-                derPartido, derReferencia}
-        };
+        Spannable[] grpDomicilio = new Spannable[]{localidad, partido, domicilio, entreCalle1,
+                entreCalle2, institucion};
+
+        Spannable[] grpDerivacion = new Spannable[] {derDomicilio, derLocalidad, derEntreCalle1,
+                derEntreCalle2, derInstitucion, derPartido, derReferencia};
+
+
+        private LinkedList<Spannable[]> children = new LinkedList<Spannable[]>();
+
+
+        public ExpandableListAdapter() {
+
+            groups.add("Servicio");
+            groups.add("Domicilio");
+            groups.add("Síntomas");
+
+            grpSintomas[0] = getDescriptionFormatted("Síntomas", serv.getSintomas());
+            for (int i = 0; i < triage.size(); i++) {
+                grpSintomas[i+1] = getDescriptionFormatted(triage.get(i).getQuestion(), triage.get(i).getAnswer());
+            }
+
+            children.add(grpPrincipalData);
+            children.add(grpDomicilio);
+            children.add(grpSintomas);
+
+            if (serv.getFlgDerivacion() == 1) {
+                groups.add("Derivación");
+                children.add(grpDerivacion);
+            }
+
+        }
 
         @Override
         public int getGroupCount() {
-            return groups.length;
+            return groups.size();
         }
 
         @Override
         public int getChildrenCount(int i) {
-            return children[i].length;
+            return children.get(i).length;
         }
 
         @Override
         public Object getGroup(int i) {
-            return groups[i];
+
+            return groups.get(i);
         }
 
         @Override
         public Spannable getChild(int i, int i1) {
-            return children[i][i1];
+            return children.get(i)[i1];
         }
 
         @Override
@@ -201,7 +216,7 @@ public class DetalleServicioFragment extends Fragment {
 
         @Override
         public boolean isChildSelectable(int i, int i1) {
-            return true;
+            return false;
         }
 
         private Spannable getDescriptionFormatted(String label, String description) {

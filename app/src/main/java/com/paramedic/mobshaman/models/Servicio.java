@@ -2,6 +2,8 @@ package com.paramedic.mobshaman.models;
 
 import android.graphics.Color;
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by maxo on 22/07/14.
@@ -430,5 +432,19 @@ public class Servicio implements Serializable{
 
     public void setInstitucion(String institucion) {
         Institucion = institucion;
+    }
+
+    public LinkedList<TriageQuestion> getTriage() {
+
+        LinkedList<TriageQuestion> triage = new LinkedList<TriageQuestion>();
+        String[] items = this.getSintomasItems().split("\\n\\r");
+        for (int i = 0; i < items.length; i++) {
+            String[] vTriage = items[i].split(":");
+            TriageQuestion tq = new TriageQuestion(vTriage[1], vTriage[0]);
+            triage.add(tq);
+        }
+
+        return triage;
+
     }
 }

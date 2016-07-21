@@ -123,6 +123,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
         Intent i = new Intent(getActivity(), clase);
         i.putExtra("nroServicio", serv.getNroServicio());
         i.putExtra("copago",serv.getCoPago());
+        i.putExtra("serviceType", serv.getClasificacionId());
         startActivityForResult(i, reqCode);
     }
 
@@ -133,6 +134,11 @@ public class AccionesDetalleServicioFragment extends Fragment {
         btnFinalServicio = (Button) myView.findViewById(R.id.btn_final_servicio);
         btnHistoriaClinica = (Button) myView.findViewById(R.id.btn_hc_paciente_servicio);
         btnCancelarServicio = (Button) myView.findViewById(R.id.btn_cancelacion_servicio);
+
+        if (serv.getFlgRename() == 1) {
+            btnSalidaServicio.setText("Derivación");
+            btnLlegadaServicio.setText("Internación");
+        }
 
         toggleButton(btnLlegadaServicio,serv.getHabLlegada());
         toggleButton(btnSalidaServicio,serv.getHabSalida());
@@ -253,6 +259,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
                     rp.add("diagnosticoID", String.valueOf(data.getIntExtra("idDiagnostico", 0)));
                     rp.add("observaciones", data.getStringExtra("observaciones"));
                     rp.add("copago", String.valueOf(data.getIntExtra("copago",0)));
+                    rp.add("derivationTime", String.valueOf(data.getStringExtra("derivationTime")));
 
                     try {
                         doAsyncTaskPostServicio(configuration.getUrl() + "/actions/setFinalServicio","Finalizando servicio...",rp);

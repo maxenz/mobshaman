@@ -1,11 +1,9 @@
 package com.paramedic.mobshaman.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,19 +19,10 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.domain.Configuration;
 import com.paramedic.mobshaman.helpers.FileHelper;
-import com.paramedic.mobshaman.models.Servicio;
-import com.paramedic.mobshaman.rest.ServiciosRestClient;
-
-import org.apache.http.Header;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import com.paramedic.mobshaman.helpers.SetTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +33,7 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
     EditText etObservaciones = null;
     EditText etReportNumber = null;
     EditText etDiagnosisReasonsCode = null;
+    EditText etTimePickerDerivacion = null;
     Button btnFinalizarServicio = null;
     ArrayAdapter<String> adapter;
     String TIPO_FINAL_SELECCIONADO = "";
@@ -53,6 +43,7 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
     LinearLayout layout_copago;
     View separator_copago;
     private Configuration configuration;
+    int serviceType;
 
     List<String> vMotivosDiagnosticos = new ArrayList<String>();
     List<String> vDescripcion = new ArrayList<String>();
@@ -110,6 +101,8 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
 
         intent = getIntent();
 
+        serviceType = intent.getIntExtra("serviceType", 0);
+
         layout_copago = (LinearLayout) findViewById(R.id.contenido_copago);
         separator_copago = (View) findViewById(R.id.sep_title_final_servicio_copago);
         radioGroupCopago = (RadioGroup) findViewById(R.id.radio_group_final_copago);
@@ -127,6 +120,9 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
         searchTextView.setOnItemClickListener(this);
 
         etReportNumber.setVisibility(configuration.isRequestReportNumber() ? View.VISIBLE : View.GONE);
+
+         etTimePickerDerivacion = (EditText) findViewById(R.id.et_time_picker_derivacion);
+        SetTime fromTime = new SetTime(etTimePickerDerivacion, this);
 
     }
 
@@ -154,49 +150,73 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
                 String drDescription = searchTextView.getText().toString();
                 String drCode = etDiagnosisReasonsCode.getText().toString();
                 String observaciones = etObservaciones.getText().toString();
+                String timePickerDerivation = etTimePickerDerivacion.getText().toString();
                 String repNumber = etReportNumber.getText().toString();
                 Integer requestReportNumber = 0;
                 if (!("".equals(repNumber))) {
                     requestReportNumber = Integer.valueOf(repNumber);
                 }
-                int id = 0;
+                int id;
 
-                if (TextUtils.isEmpty(drDescription) || TextUtils.isEmpty(drCode)) {
-                    showToast("Debe ingresar el " + TIPO_FINAL_SELECCIONADO);
-                } else {
-                    id = getIdByCode(drCode);
-                    if (id == -1) {
-                        showToast("El " + TIPO_FINAL_SELECCIONADO + " es inválido");
-                    } else {
+                boolean serviceWasDone = radioGroup.getCheckedRadioButtonId() == R.id.radio_final_si;
+                boolean codeOrDescriptionEmpty = TextUtils.isEmpty(drDescription) || TextUtils.isEmpty(drCode);
+                boolean derivationTimeEmpty = TextUtils.isEmpty(timePickerDerivation);
 
-                        Intent returnIntent = new Intent();
-
-                        if (radioGroup.getCheckedRadioButtonId() == R.id.radio_final_si) {
-
-                            Double copago = intent.getDoubleExtra("copago", 0);
-                            if (copago > 0) {
-                                if (radioGroupCopago.getCheckedRadioButtonId() == -1) {
-                                    showToast("Debe seleccionar si se cobró copago");
-                                    return;
-                                }
-                            }
-
-                            returnIntent.putExtra("idDiagnostico", id);
-                            if (radioGroupCopago.getCheckedRadioButtonId()
-                                    == R.id.radio_final_copago_no) {
-                                returnIntent.putExtra("copago", 1);
-                            }
-                        } else {
-                            returnIntent.putExtra("idMotivo", id);
-                        }
-
-                        returnIntent.putExtra("observaciones", observaciones);
-                        returnIntent.putExtra("requestReportNumber", requestReportNumber);
-                        setResult(RESULT_OK, returnIntent);
-                        finish();
+                if (serviceWasDone && serviceType == 0) {
+                    if (codeOrDescriptionEmpty) {
+                        showToast("Debe ingresar el " + TIPO_FINAL_SELECCIONADO);
+                        return;
                     }
                 }
+
+                if (!serviceWasDone && codeOrDescriptionEmpty) {
+                    showToast("Debe ingresar el " + TIPO_FINAL_SELECCIONADO);
+                    return;
+                }
+
+                if (serviceWasDone && serviceType == 1) {
+                    if (derivationTimeEmpty) {
+                        showToast("Debe ingresar el horario de derivación");
+                        return;
+                    }
+                }
+
+                id = getIdByCode(drCode);
+                if (id == -1) {
+                    showToast("El " + TIPO_FINAL_SELECCIONADO + " es inválido");
+                } else {
+
+                    Intent returnIntent = new Intent();
+
+                    if (serviceWasDone) {
+
+                        if (serviceType == 1) {
+                            returnIntent.putExtra("derivationTime",timePickerDerivation);
+                        }
+                        Double copago = intent.getDoubleExtra("copago", 0);
+                        if (copago > 0) {
+                            if (radioGroupCopago.getCheckedRadioButtonId() == -1) {
+                                showToast("Debe seleccionar si se cobró copago");
+                                return;
+                            }
+                        }
+
+                        returnIntent.putExtra("idDiagnostico", id);
+                        if (radioGroupCopago.getCheckedRadioButtonId()
+                                == R.id.radio_final_copago_no) {
+                            returnIntent.putExtra("copago", 1);
+                        }
+                    } else {
+                        returnIntent.putExtra("idMotivo", id);
+                    }
+
+                    returnIntent.putExtra("observaciones", observaciones);
+                    returnIntent.putExtra("requestReportNumber", requestReportNumber);
+                    setResult(RESULT_OK, returnIntent);
+                    finish();
+                }
             }
+
         });
     }
 
@@ -209,6 +229,8 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
                 searchTextView.setText("");
                 etDiagnosisReasonsCode.setText("");
                 etObservaciones.setText("");
+
+                etTimePickerDerivacion.setVisibility(View.GONE);
 
                 if (checkedId == R.id.radio_final_si) {
                     TIPO_FINAL_SELECCIONADO = "diagnóstico";
@@ -236,6 +258,12 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
                 adapter = new ArrayAdapter<String>(FinalServicioActivity.this,
                         android.R.layout.simple_spinner_dropdown_item, vDescripcion);
                 searchTextView.setAdapter(adapter);
+
+                if (serviceType == 1 && checkedId == R.id.radio_final_si) {
+                    searchTextView.setVisibility(View.GONE);
+                    etDiagnosisReasonsCode.setVisibility(View.GONE);
+                    etTimePickerDerivacion.setVisibility(View.VISIBLE);
+                }
 
             }
         });
