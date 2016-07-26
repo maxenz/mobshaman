@@ -1,6 +1,9 @@
 package com.paramedic.mobshaman.models;
 
 import android.graphics.Color;
+
+import com.google.android.gms.maps.model.LatLng;
+
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -446,5 +449,9 @@ public class Servicio implements Serializable{
 
         return triage;
 
+    }
+
+    public LatLng getLatLng() {
+     return new LatLng(Double.parseDouble(this.Latitud), Double.parseDouble(this.Longitud));
     }
 }

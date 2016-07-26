@@ -48,6 +48,7 @@ public class DetalleServicioFragment extends Fragment {
                 /** Voy a la actividad donde me muestra la ubicación del servicio **/
                 Intent intent = new Intent(getActivity(), MapaServicioActivity.class);
                 intent.putExtra("Servicio", serv);
+                intent.putExtra("mapActionType",0);
                 startActivity(intent);
                 break;
             default:

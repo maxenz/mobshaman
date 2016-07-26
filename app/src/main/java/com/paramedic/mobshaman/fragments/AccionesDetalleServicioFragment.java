@@ -18,6 +18,7 @@ import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.activities.CancelarServicioActivity;
 import com.paramedic.mobshaman.activities.FinalServicioActivity;
 import com.paramedic.mobshaman.activities.HistoriaClinicaActivity;
+import com.paramedic.mobshaman.activities.MapaServicioActivity;
 import com.paramedic.mobshaman.activities.ServiciosActivity;
 import com.paramedic.mobshaman.domain.Configuration;
 import com.paramedic.mobshaman.helpers.DialogHelper;
@@ -37,7 +38,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
     ProgressDialog pDialog;
     Servicio serv;
     Button btnLlegadaServicio, btnSalidaServicio, btnFinalServicio,
-            btnHistoriaClinica, btnCancelarServicio;
+            btnHistoriaClinica, btnCancelarServicio, btnDistanciaServicio;
     private Configuration configuration;
 
     @Override
@@ -94,7 +95,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
         doActionServicio(salidaServ,btnSalidaServicio,reqParams);
         doActionServicio(llegadaServ,btnLlegadaServicio,reqParams);
 
-        btnFinalServicio.setOnClickListener(new View.OnClickListener(){
+        btnFinalServicio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 doStartActivityForResult(FinalServicioActivity.class, 1);
@@ -113,7 +114,17 @@ public class AccionesDetalleServicioFragment extends Fragment {
         btnCancelarServicio.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                doStartActivityForResult(CancelarServicioActivity.class,2);
+                doStartActivityForResult(CancelarServicioActivity.class, 2);
+            }
+        });
+
+        btnDistanciaServicio.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(), MapaServicioActivity.class);
+                i.putExtra("Servicio", serv);
+                i.putExtra("mapActionType",1);
+                startActivity(i);
             }
         });
 
@@ -134,6 +145,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
         btnFinalServicio = (Button) myView.findViewById(R.id.btn_final_servicio);
         btnHistoriaClinica = (Button) myView.findViewById(R.id.btn_hc_paciente_servicio);
         btnCancelarServicio = (Button) myView.findViewById(R.id.btn_cancelacion_servicio);
+        btnDistanciaServicio =(Button) myView.findViewById(R.id.btn_distancia_servicio);
 
         if (serv.getFlgRename() == 1) {
             btnSalidaServicio.setText("Derivación");
