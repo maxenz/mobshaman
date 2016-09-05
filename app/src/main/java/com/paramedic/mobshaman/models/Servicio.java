@@ -1,8 +1,12 @@
 package com.paramedic.mobshaman.models;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.paramedic.mobshaman.helpers.Utils;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -58,6 +62,7 @@ public class Servicio implements Serializable{
     private String DerLongitud;
     private String Diagnostico;
     private String SintomasItems;
+    private float DistanceToIncident;
 
 
     public String getTelefono() {
@@ -437,14 +442,24 @@ public class Servicio implements Serializable{
         Institucion = institucion;
     }
 
+    public float getDistanceToIncident() {
+        return DistanceToIncident;
+    }
+
+    public void setDistanceToIncident(float distanceToIncident) {
+        DistanceToIncident = distanceToIncident;
+    }
+
     public LinkedList<TriageQuestion> getTriage() {
 
         LinkedList<TriageQuestion> triage = new LinkedList<TriageQuestion>();
-        String[] items = this.getSintomasItems().split("\\n\\r");
-        for (int i = 0; i < items.length; i++) {
-            String[] vTriage = items[i].split(":");
-            TriageQuestion tq = new TriageQuestion(vTriage[1], vTriage[0]);
-            triage.add(tq);
+        if (!Utils.empty(this.getSintomasItems())) {
+            String[] items = this.getSintomasItems().split("\\n\\r");
+            for (int i = 0; i < items.length; i++) {
+                String[] vTriage = items[i].split(":");
+                TriageQuestion tq = new TriageQuestion(vTriage[1], vTriage[0]);
+                triage.add(tq);
+            }
         }
 
         return triage;
@@ -454,4 +469,7 @@ public class Servicio implements Serializable{
     public LatLng getLatLng() {
      return new LatLng(Double.parseDouble(this.Latitud), Double.parseDouble(this.Longitud));
     }
+
+
+
 }

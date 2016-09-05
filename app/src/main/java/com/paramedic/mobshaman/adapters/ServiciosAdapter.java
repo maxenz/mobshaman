@@ -2,6 +2,7 @@ package com.paramedic.mobshaman.adapters;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
+import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,12 +48,19 @@ public class ServiciosAdapter extends ArrayAdapter<Servicio> {
         TextView tvDomicilio = (TextView) rowView.findViewById(R.id.domicilio);
         TextView tvHorario = (TextView) rowView.findViewById(R.id.horario);
         ImageView ivGrado = (ImageView) rowView.findViewById(R.id.imgGrado);
+        TextView tvDistanceToIncident = (TextView) rowView.findViewById(R.id.distance_to_incident);
 
         Servicio serv = serviciosArrayList.get(position);
 
         tvDatosGrales.setText(serv.getDatosGrales());
         tvDomicilio.setText(serv.getDomicilio());
         tvHorario.setText(serv.getHorario());
+        if (serv.getDistanceToIncident() == 0) {
+            tvDistanceToIncident.setText("No se pudo calcular la distancia.");
+        } else {
+            tvDistanceToIncident.setText(Float.toString(serv.getDistanceToIncident()));
+        }
+
 
         shape_grado = R.drawable.shape_grado;
 

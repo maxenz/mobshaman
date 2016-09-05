@@ -12,4 +12,9 @@ public final class Utils {
         Toast.makeText(ctx.getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
 
+    public static boolean empty( final String s ) {
+        // Null-safe, short-circuit evaluation.
+        return s == null || s.trim().isEmpty();
+    }
+
 }

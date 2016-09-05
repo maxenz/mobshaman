@@ -32,6 +32,7 @@
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.paramedic.mobshaman.permission.C2D_MESSAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:name=".application.MobShamanApplication"

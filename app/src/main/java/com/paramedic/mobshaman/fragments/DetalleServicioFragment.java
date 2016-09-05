@@ -67,6 +67,9 @@ public class DetalleServicioFragment extends Fragment {
 
         ExpandableListView elv = (ExpandableListView) myView.findViewById(R.id.service_components_list);
         elv.setAdapter(new ExpandableListAdapter());
+        elv.expandGroup(0);
+        elv.expandGroup(1);
+        elv.expandGroup(2);
 
         return myView;
     }

@@ -3,6 +3,7 @@ package com.paramedic.mobshaman.activities;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -114,6 +115,13 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
         btnFinalizarServicio = (Button) findViewById(R.id.btn_finalizar_servicio);
         titulo = (TextView) findViewById(R.id.txt_header_final_servicio);
         titulo.setText("Cierre del Servicio " + intent.getStringExtra("nroServicio"));
+
+        //Obligo mayusculas en observaciones y diagnostico/motivo de no realizacion
+
+        InputFilter[] capsFilter = new InputFilter[] {new InputFilter.AllCaps()};
+
+        etObservaciones.setFilters(capsFilter);
+        etDiagnosisReasonsCode.setFilters(capsFilter);
 
         searchTextView.setThreshold(1);
         searchTextView.setOnItemSelectedListener(this);
