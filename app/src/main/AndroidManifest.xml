@@ -68,6 +68,12 @@
         </activity>
 
         <activity
+            android:name=".activities.LoginActivity"
+            android:label="Inicio de Sesión"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <activity
             android:name=".activities.ConfigGeneralActivity"
             android:label="@string/title_activity_config_general"
             android:screenOrientation="portrait" >

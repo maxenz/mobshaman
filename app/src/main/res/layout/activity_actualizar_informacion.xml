@@ -52,4 +52,20 @@
         android:background="@drawable/sel_button_round"
         android:drawableLeft="@drawable/ic_action_av_download"/>
 
+    <Button
+        android:id="@+id/btn_logout"
+        android:layout_width="fill_parent"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"
+        android:padding="11dp"
+        android:textSize="@dimen/font_size_buttons"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textStyle="bold"
+        android:typeface="sans"
+        android:text="Cerrar Sesión"
+        android:textColor="@android:color/white"
+        android:background="@color/rojo"
+        android:drawableLeft="@drawable/logout"/>
+
 </LinearLayout>

@@ -19,5 +19,6 @@
     <string name="title_activity_cancelar_servicio">Cancelar Servicio</string>
     <string name="hello_world">Hello world!</string>
     <string name="solicita_nro_report">Solicita Nro. Report al cierre</string>
+    <string name="order_services">Ordenar los servicios</string>
 
 </resources>

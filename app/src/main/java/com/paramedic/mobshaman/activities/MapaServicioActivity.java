@@ -66,8 +66,11 @@ public class MapaServicioActivity extends ActionBarActivity implements OnMapRead
 
     @Override
     public void onDestroy() {
-        locManager.removeUpdates(locListener);
+        if (locManager != null) {
+            locManager.removeUpdates(locListener);
+        }
         super.onDestroy();
+
     }
 
 
@@ -165,6 +168,7 @@ public class MapaServicioActivity extends ActionBarActivity implements OnMapRead
 
             setMarker(origin, "Ubicacion actual");
             setMarker(serv.getLatLng(), serv.getDomicilio());
+
             String url = getDirectionsUrl(origin, serv.getLatLng());
 
             DownloadTask downloadTask = new DownloadTask();
@@ -333,6 +337,9 @@ public class MapaServicioActivity extends ActionBarActivity implements OnMapRead
 
             // Drawing polyline in the Google Map for the i-th route
             map.addPolyline(lineOptions);
+            map.animateCamera(CameraUpdateFactory.zoomTo(14.0f));
+
+
         }
     }
 

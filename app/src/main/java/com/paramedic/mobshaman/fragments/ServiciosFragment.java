@@ -11,16 +11,16 @@ import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
-
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.activities.DetalleServicioActivity;
-import com.paramedic.mobshaman.activities.ServiciosActivity;
 import com.paramedic.mobshaman.adapters.ServiciosAdapter;
 import com.paramedic.mobshaman.domain.Configuration;
 import com.paramedic.mobshaman.helpers.ServiciosHelper;
@@ -32,13 +32,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Console;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by maxo on 22/07/14.
  */
-public class ServiciosFragment extends ListFragment {
+public class ServiciosFragment extends ListFragment implements AdapterView.OnItemSelectedListener {
 
     ListView listView;
     private ProgressDialog pDialog;
@@ -50,6 +53,8 @@ public class ServiciosFragment extends ListFragment {
     private LocationManager locManager;
     private Location actualLocation;
     private LocationListener locListener;
+    private ArrayList<Servicio> services;
+    private Spinner spinnerOrderBy;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -67,25 +72,22 @@ public class ServiciosFragment extends ListFragment {
         //Nos registramos para recibir actualizaciones de la posición
         locListener = new LocationListener() {
             public void onLocationChanged(Location loc) {
-                actualLocation = null;
-                if (loc != null) {
+                if (loc != null && services != null) {
                     actualLocation = loc;
-                    Utils.showToast(getActivity(), "lat: " + Double.toString(actualLocation.getLatitude()) + " long:" + Double.toString(actualLocation.getLongitude()));
+                    updateServices();
                 }
 
             }
             public void onProviderDisabled(String provider){
-                Log.i("Mapa: ", "El gps fue deshabilitado");
             }
             public void onProviderEnabled(String provider){
-                Log.i("Mapa: ", "El gps fue habilitado");
             }
             public void onStatusChanged(String provider, int status, Bundle extras){
             }
         };
 
         locManager.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER, 3000, 1, locListener);
+                LocationManager.GPS_PROVIDER, 10000, 100, locListener);
 
 
         super.onActivityCreated(savedInstanceState);
@@ -103,6 +105,36 @@ public class ServiciosFragment extends ListFragment {
 
     }
 
+    @Override
+    public void onPause(){
+        locManager.removeUpdates(locListener);
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        locManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER, 10000, 100, locListener);
+        super.onResume();
+    }
+
+    private void updateServices() {
+
+        if (actualLocation != null) {
+            for (Servicio servicio : services) {
+                Location serviceLoc = new Location("service");
+                serviceLoc.setLatitude(Double.parseDouble(servicio.getLatitud()));
+                serviceLoc.setLongitude(Double.parseDouble(servicio.getLongitud()));
+                servicio.setDistanceToIncident(actualLocation.distanceTo(serviceLoc)/1000);
+            }
+        }
+
+        orderBy(spinnerOrderBy.getSelectedItemId());
+
+        servAdapter = new ServiciosAdapter(getActivity(), services, ServiciosFragment.this);
+        setListAdapter(servAdapter);
+    }
+
     private void initializeComponents() {
 
         configuration = Configuration.getInstance(this.getActivity());
@@ -118,10 +150,40 @@ public class ServiciosFragment extends ListFragment {
         pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         pDialog.setCancelable(true);
 
+        // --> Seteo spinner para ordenar servicios
+        // Spinner element
+        spinnerOrderBy = (Spinner) getActivity().findViewById(R.id.spinner_orderby_services);
+
+        // Spinner click listener
+        spinnerOrderBy.setOnItemSelectedListener(this);
+
+        // Spinner Drop down elements
+        List<String> categories = new ArrayList<String>();
+        categories.add("Cronológicamente");
+        categories.add("Distancia al servicio");
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, categories);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spinnerOrderBy.setAdapter(dataAdapter);
+
         /** Obtengo datos de shared preferences de la configuración general **/
         URL_REST_SERVICIOS = configuration.getUrl() + URL_SERVICE_PARAMETERS
                 + configuration.getMobile() + "&licencia=" + configuration.getLicense();
 
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        orderBy(id);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
     }
 
     @Override
@@ -185,26 +247,9 @@ public class ServiciosFragment extends ListFragment {
             public void onSuccess(int statusCode, Header[] headers, JSONArray servicios) {
 
                 try {
-                    ArrayList<Servicio> listaServicios =
+                    services =
                             ServiciosHelper.getArrayListServicioFromJSONArray(servicios);
-                    if (actualLocation != null) {
-                        Utils.showToast(getActivity(),"lat: " + Double.toString(actualLocation.getLatitude()) + " long:" + Double.toString(actualLocation.getLongitude()));
-                    } else {
-                        Utils.showToast(getActivity(),"nulo");
-                    }
-
-//                    if (actualLocation != null) {
-//                        for (Servicio servicio : listaServicios) {
-//                            Location serviceLoc = new Location("service");
-//                            serviceLoc.setLatitude(Double.parseDouble(servicio.getLatitud()));
-//                            serviceLoc.setLongitude(Double.parseDouble(servicio.getLongitud()));
-//
-//                            servicio.setDistanceToIncident(actualLocation.distanceTo(serviceLoc)/1000);
-//                        }
-//                    }
-
-                    servAdapter = new ServiciosAdapter(getActivity(), listaServicios, ServiciosFragment.this);
-                    setListAdapter(servAdapter);
+                    updateServices();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -255,6 +300,57 @@ public class ServiciosFragment extends ListFragment {
                 pDialog.dismiss();
             }
         });
+    }
+
+    public void orderBy(long orderType) {
+        if (services != null) {
+            if (orderType == 0) {
+
+                // --> Cronologico
+                Collections.sort(services, new Comparator<Servicio>() {
+                    public int compare(Servicio s1, Servicio s2) {
+                        if (s1.getIncidentDateTime().equals(s2.getIncidentDateTime())) {
+                            return 0;
+                        }
+                        return s1.getIncidentDateTime().before(s2.getIncidentDateTime())  ? -1 : 1;
+                    }
+                });
+
+            } else {
+                if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    if (actualLocation != null) {
+                        // --> Distancia al incidente
+                        Collections.sort(services, new Comparator<Servicio>() {
+                            public int compare(Servicio s1, Servicio s2) {
+                                if (s1.getDistanceToIncident() == s2.getDistanceToIncident()) {
+                                    return 0;
+                                }
+                                return s1.getDistanceToIncident() > s2.getDistanceToIncident() ? 1 : -1;
+                            }
+                        });
+                    } else {
+                        showToast("No se puede obtener su ubicación");
+                    }
+
+                } else {
+                    showToast("Para ordenar por distancia, debe tener el gps habilitado.");
+                }
+
+            }
+
+            // --> Por currentViaje
+            Collections.sort(services, new Comparator<Servicio>() {
+                public int compare(Servicio s1, Servicio s2) {
+                    if (s1.getCurrentViaje() == s2.getCurrentViaje()) {
+                        return 0;
+                    }
+                    return s1.getCurrentViaje() > s2.getCurrentViaje()  ? -1 : 1;
+                }
+            });
+
+            servAdapter = new ServiciosAdapter(getActivity(), services, ServiciosFragment.this);
+            setListAdapter(servAdapter);
+        }
     }
 
 }

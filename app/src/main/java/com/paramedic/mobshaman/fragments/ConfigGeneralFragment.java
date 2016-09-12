@@ -48,6 +48,8 @@ public class ConfigGeneralFragment extends Fragment {
 
         configuration = Configuration.getInstance(this.getActivity());
 
+        setValues();
+
         /** Si hago click en registrar movil.. **/
         btnRegistrarMovil.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -113,5 +115,14 @@ public class ConfigGeneralFragment extends Fragment {
         if (url == "") return false;
         if (url.length() < 10) return false;
         return true;
+    }
+
+    private void setValues() {
+        if (configuration != null) {
+            etNroMovilRegistro.setText(configuration.getMobile());
+            etNroLicencia.setText(configuration.getLicense());
+            etUrlregistro.setText(configuration.getUrl());
+            checkboxSolicitaReport.setChecked(configuration.isRequestReportNumber());
+        }
     }
 }

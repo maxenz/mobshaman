@@ -9,6 +9,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.paramedic.mobshaman.helpers.Utils;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -63,7 +66,7 @@ public class Servicio implements Serializable{
     private String Diagnostico;
     private String SintomasItems;
     private float DistanceToIncident;
-
+    private String HorLlamada;
 
     public String getTelefono() {
         return Telefono;
@@ -468,6 +471,17 @@ public class Servicio implements Serializable{
 
     public LatLng getLatLng() {
      return new LatLng(Double.parseDouble(this.Latitud), Double.parseDouble(this.Longitud));
+    }
+
+    public Date getIncidentDateTime() {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+        Date date = null;
+        try {
+            date = fmt.parse(this.HorLlamada);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
     }
 
 

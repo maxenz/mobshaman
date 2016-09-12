@@ -14,6 +14,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.domain.Configuration;
+import com.paramedic.mobshaman.managers.SessionManager;
 import com.paramedic.mobshaman.rest.ServiciosRestClient;
 
 import org.apache.http.Header;
@@ -28,9 +29,10 @@ import java.util.ArrayList;
 public class ActualizarInformacionActivity extends ActionBarActivity {
 
     ProgressDialog pDialog;
-    Button btnActualizarMotivos, btnActualizarDiagnosticos;
+    Button btnActualizarMotivos, btnActualizarDiagnosticos, btnLogout;
     TextView tvVersion;
     private Configuration configuration;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +48,9 @@ public class ActualizarInformacionActivity extends ActionBarActivity {
 
         btnActualizarDiagnosticos = (Button) findViewById(R.id.btn_actualizar_diagnosticos);
         btnActualizarMotivos = (Button) findViewById(R.id.btn_actualizar_motivos_no_realizacion);
+        btnLogout = (Button) findViewById(R.id.btn_logout);
         tvVersion = (TextView) findViewById(R.id.tv_version_system);
+        session = new SessionManager(getApplicationContext());
 
         String URL_DIAGNOSTICOS = configuration.getUrl() + "/api/diagnosis?licencia="
                 + configuration.getLicense();
@@ -64,6 +68,14 @@ public class ActualizarInformacionActivity extends ActionBarActivity {
         String versionName = getPackageManager()
                 .getPackageInfo(this.getPackageName(), 0).versionName;
         tvVersion.setText("Versión del sistema: " + versionName);
+
+        btnLogout.setOnClickListener(new View.OnClickListener(){
+            @Override
+        public void onClick(View view) {
+                session.logoutUser();
+            }
+        });
+
     } catch(Exception exception) {
         //No se encontro la version
     }

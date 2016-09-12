@@ -3,16 +3,23 @@
     android:layout_height="fill_parent"
     android:fillViewport="true"
     xmlns:android="http://schemas.android.com/apk/res/android">
-<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical">
 
-    <fragment
+    <LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:name="com.paramedic.mobshaman.fragments.ServiciosFragment"
-        android:id="@+id/serviciosFragment"
-        />
-</LinearLayout>
-    </ScrollView>
+        android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/spinner_orderby_services"
+            android:layout_width="fill_parent"
+            android:layout_marginTop="10dp"
+            android:layout_height="50dp"
+            android:prompt="@string/order_services"/>
+
+        <fragment
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:name="com.paramedic.mobshaman.fragments.ServiciosFragment"
+            android:id="@+id/serviciosFragment" />
+    </LinearLayout>
+</ScrollView>

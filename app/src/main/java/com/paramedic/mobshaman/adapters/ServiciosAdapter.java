@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.fragments.ServiciosFragment;
+import com.paramedic.mobshaman.helpers.Utils;
 import com.paramedic.mobshaman.models.Servicio;
 import java.util.ArrayList;
 
@@ -56,9 +57,10 @@ public class ServiciosAdapter extends ArrayAdapter<Servicio> {
         tvDomicilio.setText(serv.getDomicilio());
         tvHorario.setText(serv.getHorario());
         if (serv.getDistanceToIncident() == 0) {
-            tvDistanceToIncident.setText("No se pudo calcular la distancia.");
+            tvDistanceToIncident.setText("Sin distancia.");
         } else {
-            tvDistanceToIncident.setText(Float.toString(serv.getDistanceToIncident()));
+            Float distance = Utils.round(serv.getDistanceToIncident(), 2);
+            tvDistanceToIncident.setText(String.valueOf(distance) + " km.");
         }
 
 
