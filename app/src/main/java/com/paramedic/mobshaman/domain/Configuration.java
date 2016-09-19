@@ -15,6 +15,7 @@ public class Configuration {
     private static String mobile;
     private static String license;
     private static boolean requestReportNumber;
+    private static String gestionUrl;
 
     //endregion
 
@@ -27,6 +28,7 @@ public class Configuration {
         this.mobile = sp.getString("mobile","");
         this.license = sp.getString("license","");
         this.requestReportNumber = sp.getBoolean("requestReportNumber",false);
+        this.gestionUrl = "http://paramedicapps.com.ar:57771/android/login?";
 
     }
 
@@ -65,6 +67,8 @@ public class Configuration {
     public void setRequestReportNumber(boolean requestReportNumber) {
         this.requestReportNumber = requestReportNumber;
     }
+
+    public String getGestionUrl() { return gestionUrl;}
 
     //endregion
 

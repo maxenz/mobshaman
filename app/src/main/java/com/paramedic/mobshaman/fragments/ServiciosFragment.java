@@ -25,6 +25,7 @@ import com.paramedic.mobshaman.adapters.ServiciosAdapter;
 import com.paramedic.mobshaman.domain.Configuration;
 import com.paramedic.mobshaman.helpers.ServiciosHelper;
 import com.paramedic.mobshaman.helpers.Utils;
+import com.paramedic.mobshaman.managers.SessionManager;
 import com.paramedic.mobshaman.models.Servicio;
 import com.paramedic.mobshaman.rest.ServiciosRestClient;
 import org.apache.http.Header;
@@ -55,9 +56,12 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
     private LocationListener locListener;
     private ArrayList<Servicio> services;
     private Spinner spinnerOrderBy;
+    SessionManager session;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+
+        session = new SessionManager(getActivity().getApplicationContext());
 
         locManager =
                 (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -96,11 +100,16 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
 
         initializeComponents();
 
-        try {
-            getServicios(URL_REST_SERVICIOS ,"Actualizando Servicios...",null);
-        } catch (Exception e) {
-            Toast.makeText(getActivity().getApplicationContext(), "Error en la conexión con el servidor",
-                    Toast.LENGTH_LONG).show();
+
+        if (session.isLoggedIn()) {
+            try {
+                getServicios(URL_REST_SERVICIOS ,"Actualizando Servicios...",null);
+            } catch (Exception e) {
+                Toast.makeText(getActivity().getApplicationContext(), "Error en la conexión con el servidor",
+                        Toast.LENGTH_LONG).show();
+            }
+        } else {
+            session.checkLogin();
         }
 
     }
@@ -303,54 +312,59 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
     }
 
     public void orderBy(long orderType) {
-        if (services != null) {
-            if (orderType == 0) {
+        try {
+            if (services != null) {
+                if (orderType == 0) {
 
-                // --> Cronologico
+                    // --> Cronologico
+                    Collections.sort(services, new Comparator<Servicio>() {
+                        public int compare(Servicio s1, Servicio s2) {
+                            if (s1.getIncidentDateTime().equals(s2.getIncidentDateTime())) {
+                                return 0;
+                            }
+                            return s1.getIncidentDateTime().before(s2.getIncidentDateTime())  ? -1 : 1;
+                        }
+                    });
+
+                } else {
+                    if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                        if (actualLocation != null) {
+                            // --> Distancia al incidente
+                            Collections.sort(services, new Comparator<Servicio>() {
+                                public int compare(Servicio s1, Servicio s2) {
+                                    if (s1.getDistanceToIncident() == s2.getDistanceToIncident()) {
+                                        return 0;
+                                    }
+                                    return s1.getDistanceToIncident() > s2.getDistanceToIncident() ? 1 : -1;
+                                }
+                            });
+                        } else {
+                            showToast("No se puede obtener su ubicación");
+                        }
+
+                    } else {
+                        showToast("Para ordenar por distancia, debe tener el gps habilitado.");
+                    }
+
+                }
+
+                // --> Por currentViaje
                 Collections.sort(services, new Comparator<Servicio>() {
                     public int compare(Servicio s1, Servicio s2) {
-                        if (s1.getIncidentDateTime().equals(s2.getIncidentDateTime())) {
+                        if (s1.getCurrentViaje() == s2.getCurrentViaje()) {
                             return 0;
                         }
-                        return s1.getIncidentDateTime().before(s2.getIncidentDateTime())  ? -1 : 1;
+                        return s1.getCurrentViaje() > s2.getCurrentViaje()  ? -1 : 1;
                     }
                 });
 
-            } else {
-                if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    if (actualLocation != null) {
-                        // --> Distancia al incidente
-                        Collections.sort(services, new Comparator<Servicio>() {
-                            public int compare(Servicio s1, Servicio s2) {
-                                if (s1.getDistanceToIncident() == s2.getDistanceToIncident()) {
-                                    return 0;
-                                }
-                                return s1.getDistanceToIncident() > s2.getDistanceToIncident() ? 1 : -1;
-                            }
-                        });
-                    } else {
-                        showToast("No se puede obtener su ubicación");
-                    }
-
-                } else {
-                    showToast("Para ordenar por distancia, debe tener el gps habilitado.");
-                }
-
+                servAdapter = new ServiciosAdapter(getActivity(), services, ServiciosFragment.this);
+                setListAdapter(servAdapter);
             }
-
-            // --> Por currentViaje
-            Collections.sort(services, new Comparator<Servicio>() {
-                public int compare(Servicio s1, Servicio s2) {
-                    if (s1.getCurrentViaje() == s2.getCurrentViaje()) {
-                        return 0;
-                    }
-                    return s1.getCurrentViaje() > s2.getCurrentViaje()  ? -1 : 1;
-                }
-            });
-
-            servAdapter = new ServiciosAdapter(getActivity(), services, ServiciosFragment.this);
-            setListAdapter(servAdapter);
+        } catch(Exception ex) {
+            showToast("Error: no se pudieron ordenar los incidentes.");
         }
+
     }
 
 }

@@ -11,7 +11,7 @@ import com.paramedic.mobshaman.managers.SessionManager;
 
 public class ServiciosActivity extends ActionBarActivity {
 
-    SessionManager session;
+
 
 
     @Override
@@ -19,9 +19,6 @@ public class ServiciosActivity extends ActionBarActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_servicios);
-
-        session = new SessionManager(getApplicationContext());
-        session.checkLogin();
 
     }
 

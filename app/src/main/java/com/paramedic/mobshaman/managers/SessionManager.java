@@ -2,12 +2,22 @@ package com.paramedic.mobshaman.managers;
 
 import java.util.HashMap;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.paramedic.mobshaman.activities.LoginActivity;
+import com.paramedic.mobshaman.activities.ServiciosActivity;
+import com.paramedic.mobshaman.domain.Configuration;
+import com.paramedic.mobshaman.helpers.Utils;
+import com.paramedic.mobshaman.rest.ServiciosRestClient;
+
+import org.apache.http.Header;
+import org.json.JSONObject;
 
 public class SessionManager {
 	// Shared Preferences
@@ -32,7 +42,7 @@ public class SessionManager {
 	public static final String KEY_NAME = "name";
 	
 	// Email address (make variable public to access from outside)
-	public static final String KEY_EMAIL = "email";
+	public static final String KEY_PASSWORD = "password";
 	
 	// Constructor
 	public SessionManager(Context context){
@@ -52,7 +62,7 @@ public class SessionManager {
 		editor.putString(KEY_NAME, name);
 		
 		// Storing email in pref
-		editor.putString(KEY_EMAIL, email);
+		editor.putString(KEY_PASSWORD, email);
 		
 		// commit changes
 		editor.commit();
@@ -91,7 +101,7 @@ public class SessionManager {
 		user.put(KEY_NAME, pref.getString(KEY_NAME, null));
 		
 		// user email id
-		user.put(KEY_EMAIL, pref.getString(KEY_EMAIL, null));
+		user.put(KEY_PASSWORD, pref.getString(KEY_PASSWORD, null));
 		
 		// return user
 		return user;
@@ -124,4 +134,31 @@ public class SessionManager {
 	public boolean isLoggedIn(){
 		return pref.getBoolean(IS_LOGIN, false);
 	}
+
+    public void validateSerial() {
+
+        Configuration configuration = Configuration.getInstance(_context);
+        String url = configuration.getGestionUrl();
+        url += "user=" + this.getUserDetails().get("KEY_NAME") + "&";
+        url += "password=" + this.getUserDetails().get("PASSWORD")+ "&";
+        url += "log=" + "pruebalog";
+
+        ServiciosRestClient.get(url, null, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject loginData) {
+
+                try {
+                    if (loginData.has("Error")) {
+                       logoutUser();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+        });
+    }
 }
