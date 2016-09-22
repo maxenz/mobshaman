@@ -39,7 +39,7 @@ public class SessionManager {
 	private static final String IS_LOGIN = "IsLoggedIn";
 	
 	// User name (make variable public to access from outside)
-	public static final String KEY_NAME = "name";
+	public static final String KEY_NAME = "user";
 	
 	// Email address (make variable public to access from outside)
 	public static final String KEY_PASSWORD = "password";
@@ -135,30 +135,5 @@ public class SessionManager {
 		return pref.getBoolean(IS_LOGIN, false);
 	}
 
-    public void validateSerial() {
 
-        Configuration configuration = Configuration.getInstance(_context);
-        String url = configuration.getGestionUrl();
-        url += "user=" + this.getUserDetails().get("KEY_NAME") + "&";
-        url += "password=" + this.getUserDetails().get("PASSWORD")+ "&";
-        url += "log=" + "pruebalog";
-
-        ServiciosRestClient.get(url, null, new JsonHttpResponseHandler() {
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject loginData) {
-
-                try {
-                    if (loginData.has("Error")) {
-                       logoutUser();
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-
-        });
-    }
 }

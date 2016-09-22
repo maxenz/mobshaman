@@ -38,6 +38,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by maxo on 22/07/14.
@@ -103,7 +105,7 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
 
         if (session.isLoggedIn()) {
             try {
-                getServicios(URL_REST_SERVICIOS ,"Actualizando Servicios...",null);
+                getServicios(URL_REST_SERVICIOS, "Actualizando Servicios...", null);
             } catch (Exception e) {
                 Toast.makeText(getActivity().getApplicationContext(), "Error en la conexión con el servidor",
                         Toast.LENGTH_LONG).show();
@@ -113,6 +115,7 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
         }
 
     }
+
 
     @Override
     public void onPause(){
@@ -142,6 +145,34 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
 
         servAdapter = new ServiciosAdapter(getActivity(), services, ServiciosFragment.this);
         setListAdapter(servAdapter);
+        validateSerial();
+    }
+
+    public void validateSerial() {
+
+        Configuration configuration = Configuration.getInstance(this.getActivity());
+        String url = configuration.getGestionUrl();
+        url += "user=" + session.getUserDetails().get("user") + "&";
+        url += "password=" + session.getUserDetails().get("password")+ "&";
+        url += "log=" + Utils.getPhoneInformation();
+
+        ServiciosRestClient.get(url, null, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject loginData) {
+
+                try {
+                    if (loginData.has("Error")) {
+                        session.logoutUser();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+        });
     }
 
     private void initializeComponents() {

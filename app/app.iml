@@ -77,7 +77,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-gcm/7.3.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-location/7.3.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-maps/7.3.0/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.onesignal/OneSignal/2.6.1/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.onesignal/OneSignal/2.6.2/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jacoco" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/javaResources" />
@@ -106,7 +106,7 @@
     <orderEntry type="library" exported="" name="maskededittext" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-19.1.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-base-7.3.0" level="project" />
+    <orderEntry type="library" exported="" name="OneSignal-2.6.2" level="project" />
     <orderEntry type="library" exported="" name="play-services-gcm-7.3.0" level="project" />
-    <orderEntry type="library" exported="" name="OneSignal-2.6.1" level="project" />
   </component>
 </module>
