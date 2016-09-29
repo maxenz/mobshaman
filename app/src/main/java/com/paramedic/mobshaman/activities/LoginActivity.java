@@ -16,12 +16,18 @@ import com.paramedic.mobshaman.helpers.ServiciosHelper;
 import com.paramedic.mobshaman.helpers.Utils;
 import com.paramedic.mobshaman.managers.AlertLoginDialogManager;
 import com.paramedic.mobshaman.managers.SessionManager;
+import com.paramedic.mobshaman.models.LoginResponse;
+import com.paramedic.mobshaman.rest.ApiClient;
 import com.paramedic.mobshaman.rest.ServiciosRestClient;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends Activity {
 
@@ -70,65 +76,54 @@ public class LoginActivity extends Activity {
         }
 	}
 
-	public void loginRequest(String username, String password) {
+	public void loginRequest(String username, final String password) {
 
-        final String pass = password;
-		String url = configuration.getGestionUrl();
-		url += "user=" + username + "&";
-		url += "password=" + password + "&";
-		url += "log=" + Utils.getPhoneInformation();
-
-		ServiciosRestClient.get(url, null, new JsonHttpResponseHandler() {
-
+        ApiClient sac = new ApiClient(this, configuration.getGestionUrl());
+        progressDialog.setMessage("Iniciando sesión...");
+        progressDialog.show();
+        sac.getLoginCall(username, password).enqueue(new Callback<LoginResponse>() {
             @Override
-            public void onStart() {
-                progressDialog.setMessage("Iniciando sesión...");
-                progressDialog.show();
-            }
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                progressDialog.dismiss();
+                int code = response.code();
+                if (code == 200) {
+                    LoginResponse lr = response.body();
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString,
-                                  Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                Utils.showToast(LoginActivity.this, "Error en la red, intente nuevamente.");
-            }
+                    try {
+                        if (lr.getError()) {
+                            alert.showAlertDialog(LoginActivity.this, "Error de inicio de sesión...", "Usuario y/o password incorrecto/s.", false);
+                            return;
+                        }
+                        String serial = lr.getSerial();
+                        String url = lr.getAndroidUrl();
+                        session.createLoginSession(serial, password);
+                        configuration.setUrl(url);
+                        configuration.setLicense(serial);
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable,
-                                  JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                Utils.showToast(LoginActivity.this, "Error en la red, intente nuevamente.");
-            }
+                        Intent i = new Intent(getApplicationContext(), ServiciosActivity.class);
+                        startActivity(i);
+                        finish();
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject loginData) {
-
-                try {
-                    if (loginData.has("Error")) {
-                        alert.showAlertDialog(LoginActivity.this, "Error de inicio de sesión...", "Usuario y/o password incorrecto/s.", false);
-                        return;
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    String serial = loginData.get("Serial").toString();
-                    String url = loginData.get("AndroidUrl").toString();
-                    session.createLoginSession(serial, pass);
-                    configuration.setUrl(url);
-                    configuration.setLicense(serial);
 
-                    Intent i = new Intent(getApplicationContext(), ServiciosActivity.class);
-                    startActivity(i);
-                    finish();
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } else {
+                    Toast.makeText(LoginActivity.this, "Error: " + String.valueOf(code), Toast.LENGTH_LONG).show();
                 }
+
+
             }
 
             @Override
-            public void onFinish() {
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
                 progressDialog.dismiss();
             }
 
-		});
+        });
+
+
 	}
 
 	}

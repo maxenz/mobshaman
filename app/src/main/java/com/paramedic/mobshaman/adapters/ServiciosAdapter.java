@@ -84,12 +84,7 @@ public class ServiciosAdapter extends ArrayAdapter<Servicio> {
             public void onClick(View v)
             {
 
-             fragment.ID_SERVICIO_SELECCIONADO = v.getId();
-             String urlDetalle = fragment.configuration.getUrl() + "/api/services/"
-                     + fragment.ID_SERVICIO_SELECCIONADO + "?idMovil=" +
-                     fragment.configuration.getMobile() + "&licencia=" +
-                     fragment.configuration.getLicense();
-             fragment.getDetalleServicio(urlDetalle,"Cargando servicio...",null);
+             fragment.getDetalleServicio(v.getId());
 
             }
         });

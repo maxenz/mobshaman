@@ -1,5 +1,8 @@
 package com.paramedic.mobshaman.activities;
 
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -10,9 +13,6 @@ import com.paramedic.mobshaman.fragments.AdminPasswordDialogFragment;
 import com.paramedic.mobshaman.managers.SessionManager;
 
 public class ServiciosActivity extends ActionBarActivity {
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +37,7 @@ public class ServiciosActivity extends ActionBarActivity {
 
         switch (id) {
             case R.id.action_settings:
+
                 AdminPasswordDialogFragment admFrg = new AdminPasswordDialogFragment();
                 admFrg.show(this.getSupportFragmentManager(),"ConfiguracionGeneral");
                 break;

@@ -9,7 +9,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,34 +16,26 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.activities.DetalleServicioActivity;
 import com.paramedic.mobshaman.adapters.ServiciosAdapter;
 import com.paramedic.mobshaman.domain.Configuration;
-import com.paramedic.mobshaman.helpers.ServiciosHelper;
-import com.paramedic.mobshaman.helpers.Utils;
 import com.paramedic.mobshaman.managers.SessionManager;
+import com.paramedic.mobshaman.models.LoginResponse;
 import com.paramedic.mobshaman.models.Servicio;
-import com.paramedic.mobshaman.rest.ServiciosRestClient;
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.sql.Date;
+import com.paramedic.mobshaman.rest.ApiClient;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by maxo on 22/07/14.
  */
-public class ServiciosFragment extends ListFragment implements AdapterView.OnItemSelectedListener {
+public class ServiciosFragment extends ListFragment implements AdapterView.OnItemSelectedListener{
 
     ListView listView;
     private ProgressDialog pDialog;
@@ -52,7 +43,6 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
     public String NRO_MOVIL, URL_REST, URL_REST_SERVICIOS;
     public int ID_SERVICIO_SELECCIONADO = 0;
     public Configuration configuration;
-    private static final String URL_SERVICE_PARAMETERS = "/api/services?idMovil=";
     private LocationManager locManager;
     private Location actualLocation;
     private LocationListener locListener;
@@ -105,7 +95,7 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
 
         if (session.isLoggedIn()) {
             try {
-                getServicios(URL_REST_SERVICIOS, "Actualizando Servicios...", null);
+                getServicios();
             } catch (Exception e) {
                 Toast.makeText(getActivity().getApplicationContext(), "Error en la conexión con el servidor",
                         Toast.LENGTH_LONG).show();
@@ -115,7 +105,6 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
         }
 
     }
-
 
     @Override
     public void onPause(){
@@ -146,33 +135,6 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
         servAdapter = new ServiciosAdapter(getActivity(), services, ServiciosFragment.this);
         setListAdapter(servAdapter);
         validateSerial();
-    }
-
-    public void validateSerial() {
-
-        Configuration configuration = Configuration.getInstance(this.getActivity());
-        String url = configuration.getGestionUrl();
-        url += "user=" + session.getUserDetails().get("user") + "&";
-        url += "password=" + session.getUserDetails().get("password")+ "&";
-        url += "log=" + Utils.getPhoneInformation();
-
-        ServiciosRestClient.get(url, null, new JsonHttpResponseHandler() {
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject loginData) {
-
-                try {
-                    if (loginData.has("Error")) {
-                        session.logoutUser();
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-
-        });
     }
 
     private void initializeComponents() {
@@ -211,9 +173,6 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
         // attaching data adapter to spinner
         spinnerOrderBy.setAdapter(dataAdapter);
 
-        /** Obtengo datos de shared preferences de la configuración general **/
-        URL_REST_SERVICIOS = configuration.getUrl() + URL_SERVICE_PARAMETERS
-                + configuration.getMobile() + "&licencia=" + configuration.getLicense();
 
     }
 
@@ -236,7 +195,7 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
         int id = item.getItemId();
         switch (id) {
             case R.id.action_refresh:
-                getServicios(URL_REST_SERVICIOS ,"Actualizando Servicios...",null);
+                getServicios();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -252,94 +211,6 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
 
     private void showToast(String mensaje) {
         Toast.makeText(getActivity().getApplicationContext(), mensaje, Toast.LENGTH_LONG).show();
-    }
-
-    public void getServicios(String URL, final String dialogMessage, RequestParams rp) {
-
-        if (!configuration.IsValid()) {
-            Toast.makeText(getActivity(),"La aplicación no fue configurada para su uso.",
-                    Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        ServiciosRestClient.get(URL, rp, new JsonHttpResponseHandler() {
-
-            @Override
-            public void onStart() {
-                showLoadingMessage(dialogMessage);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString,
-                                  Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                showToast("Error en la red. Intente nuevamente ");
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable,
-                                  JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                showToast("Error en la red. Intente nuevamente ");
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray servicios) {
-
-                try {
-                    services =
-                            ServiciosHelper.getArrayListServicioFromJSONArray(servicios);
-                    updateServices();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFinish() {
-                pDialog.dismiss();
-            }
-        });
-    }
-
-    public void getDetalleServicio(String URL, final String dialogMessage, RequestParams rp) {
-
-        ServiciosRestClient.get(URL, rp, new JsonHttpResponseHandler() {
-
-            @Override
-            public void onStart() {
-                showLoadingMessage(dialogMessage);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString,
-                                  Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                showToast("Error en la red. Intente nuevamente ");
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable,
-                                  JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                showToast("Error en la red. Intente nuevamente ");
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject servicio) {
-
-                Intent intent = new Intent(getActivity(), DetalleServicioActivity.class);
-                intent.putExtra("Servicio", ServiciosHelper.getServicioFromJSONObject(servicio));
-                startActivity(intent);
-
-            }
-
-            @Override
-            public void onFinish() {
-                pDialog.dismiss();
-            }
-        });
     }
 
     public void orderBy(long orderType) {
@@ -395,6 +266,106 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
         } catch(Exception ex) {
             showToast("Error: no se pudieron ordenar los incidentes.");
         }
+
+    }
+
+    private void getServicios() {
+
+        String dialogMessage = "Cargando incidentes...";
+        if (!configuration.IsValid()) {
+            Toast.makeText(getActivity(),"La aplicación no fue configurada para su uso.",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        showLoadingMessage(dialogMessage);
+
+        ApiClient sac = new ApiClient(getActivity(), configuration.getUrl());
+
+        sac.getServicesCall().enqueue(new Callback<ArrayList<Servicio>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Servicio>> call, Response<ArrayList<Servicio>> response) {
+                int code = response.code();
+                if (code == 200) {
+                    services = response.body();
+                    updateServices();
+                } else {
+                    Toast.makeText(getActivity(), "Error: " + String.valueOf(code), Toast.LENGTH_LONG).show();
+                }
+                pDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Servicio>> call, Throwable t) {
+                pDialog.dismiss();
+
+            }
+
+        });
+
+
+    }
+
+    public void getDetalleServicio(int serviceId) {
+
+        String dialogMessage = "Cargando incidente...";
+
+        showLoadingMessage(dialogMessage);
+
+        ApiClient sac = new ApiClient(getActivity(), configuration.getUrl());
+
+        sac.getServiceCall(String.valueOf(serviceId)).enqueue(new Callback<Servicio>() {
+            @Override
+            public void onResponse(Call<Servicio> call, Response<Servicio> response) {
+                int code = response.code();
+                if (code == 200) {
+                    Servicio service = response.body();
+                    Intent intent = new Intent(getActivity(), DetalleServicioActivity.class);
+                    intent.putExtra("Servicio", service);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), "Error: " + String.valueOf(code), Toast.LENGTH_LONG).show();
+                }
+                pDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<Servicio> call, Throwable t) {
+                pDialog.dismiss();
+
+            }
+
+            ;
+        });
+    }
+
+    public void validateSerial() {
+
+        ApiClient sac = new ApiClient(getActivity(), configuration.getGestionUrl());
+
+        String user = session.getUserDetails().get("user");
+        String password = session.getUserDetails().get("password");
+
+        sac.getLoginCall(user, password).enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                int code = response.code();
+                if (code == 200) {
+                    LoginResponse lr = response.body();
+                    if (lr.getError()) {
+                        session.logoutUser();
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "Error: " + String.valueOf(code), Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+            }
+
+        });
 
     }
 

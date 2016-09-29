@@ -28,7 +28,7 @@ public class Configuration {
         this.mobile = sp.getString("mobile","");
         this.license = sp.getString("license","");
         this.requestReportNumber = sp.getBoolean("requestReportNumber",false);
-        this.gestionUrl = "http://paramedicapps.com.ar:57771/android/login?";
+        this.gestionUrl = "http://paramedicapps.com.ar:57771/";
 
     }
 
