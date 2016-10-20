@@ -71,6 +71,7 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
                 if (i == EditorInfo.IME_NULL && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
                     setDiagnosisReasonsDescription();
                 }
+                etObservaciones.requestFocus();
                 return true;
             }
         });
@@ -129,24 +130,25 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
 
         etReportNumber.setVisibility(configuration.isRequestReportNumber() ? View.VISIBLE : View.GONE);
 
-         etTimePickerDerivacion = (EditText) findViewById(R.id.et_time_picker_derivacion);
-        SetTime fromTime = new SetTime(etTimePickerDerivacion, this);
+        etTimePickerDerivacion = (EditText) findViewById(R.id.et_time_picker_derivacion);
 
     }
 
     private void setDiagnosisReasonsDescription() {
         String code = etDiagnosisReasonsCode.getText().toString();
+
         if (TextUtils.isEmpty(code)) {
             searchTextView.setText(null);
             return;
         }
-            String description = getDescriptionByCode(code);
-            searchTextView.setText(description);
-            if (description == null) {
-                etDiagnosisReasonsCode.setText(null);
-                showToast("El código de " + TIPO_FINAL_SELECCIONADO + " es inválido.");
-            }
-            etObservaciones.requestFocus();
+
+        String description = getDescriptionByCode(code);
+        searchTextView.setText(description);
+        if (description == null) {
+            etDiagnosisReasonsCode.setText(null);
+            showToast("El código de " + TIPO_FINAL_SELECCIONADO + " es inválido.");
+        }
+        //etObservaciones.requestFocus();
 
     }
 
@@ -365,6 +367,5 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
     private void showToast(String mensaje) {
         Toast.makeText(getApplicationContext(), mensaje, Toast.LENGTH_LONG).show();
     }
-
 
 }
