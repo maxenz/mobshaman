@@ -363,6 +363,7 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
+                Toast.makeText(getActivity(), "Error: " + String.valueOf(t.getMessage()), Toast.LENGTH_LONG).show();
             }
 
         });

@@ -9,11 +9,17 @@ import com.paramedic.mobshaman.helpers.Utils;
 import com.paramedic.mobshaman.managers.SessionManager;
 import com.paramedic.mobshaman.models.LoginResponse;
 import com.paramedic.mobshaman.models.Servicio;
+import com.paramedic.mobshaman.rest.interfaces.FilesUploadAPI;
 import com.paramedic.mobshaman.rest.interfaces.GestionAPI;
 import com.paramedic.mobshaman.rest.interfaces.ServicesAPI;
 
+import java.io.File;
 import java.util.ArrayList;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -67,6 +73,31 @@ public class ApiClient {
         GestionAPI gestionAPI = retrofit.create(GestionAPI.class);
 
         Call<LoginResponse> call = gestionAPI.login(user, password, log);
+
+        return call;
+
+    }
+
+    public Call<ResponseBody> postImageCall (File file) {
+
+        FilesUploadAPI service = retrofit.create(FilesUploadAPI.class);
+
+        // create RequestBody instance from file
+        RequestBody requestFile =
+                RequestBody.create(MediaType.parse("multipart/form-data"), file);
+
+        // MultipartBody.Part is used to send also the actual file name
+        MultipartBody.Part body =
+                MultipartBody.Part.createFormData("picture", file.getName(), requestFile);
+
+        // add another part within the multipart request
+        String descriptionString = "Imagen adjunta incidente";
+        RequestBody description =
+                RequestBody.create(
+                        MediaType.parse("multipart/form-data"), descriptionString);
+
+        // finally, execute the request
+        Call<ResponseBody> call = service.upload(description, body);
 
         return call;
 

@@ -3,6 +3,8 @@ package com.paramedic.mobshaman.rest.interfaces;
 import com.paramedic.mobshaman.models.Servicio;
 import java.util.ArrayList;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.Call;
 import retrofit2.http.Query;
@@ -20,6 +22,5 @@ public interface ServicesAPI {
                               @Query("idMovil") String idMovil,
                               @Query("licencia") String licencia
     );
-
 
 }

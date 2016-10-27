@@ -7,10 +7,14 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <!-- External storage for caching. -->
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
     <!-- My Location -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+
     <!-- Maps API needs OpenGL ES 2.0. -->
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -72,7 +76,6 @@
             android:label="Inicio de Sesión"
             android:screenOrientation="portrait" >
         </activity>
-
         <activity
             android:name=".activities.ConfigGeneralActivity"
             android:label="@string/title_activity_config_general"

@@ -1,45 +1,72 @@
 package com.paramedic.mobshaman.fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.activities.CancelarServicioActivity;
+import com.paramedic.mobshaman.activities.DetalleServicioActivity;
 import com.paramedic.mobshaman.activities.FinalServicioActivity;
 import com.paramedic.mobshaman.activities.HistoriaClinicaActivity;
 import com.paramedic.mobshaman.activities.MapaServicioActivity;
 import com.paramedic.mobshaman.activities.ServiciosActivity;
 import com.paramedic.mobshaman.domain.Configuration;
 import com.paramedic.mobshaman.helpers.DialogHelper;
+import com.paramedic.mobshaman.helpers.Utils;
 import com.paramedic.mobshaman.interfaces.AlertListener;
 import com.paramedic.mobshaman.models.AccionesRestModel;
+import com.paramedic.mobshaman.models.LoginResponse;
 import com.paramedic.mobshaman.models.Servicio;
+import com.paramedic.mobshaman.rest.ApiClient;
 import com.paramedic.mobshaman.rest.ServiciosRestClient;
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+
 /**
  * Created by soporte on 23/07/2014.
  */
-public class AccionesDetalleServicioFragment extends Fragment {
+public class AccionesDetalleServicioFragment extends BaseFragment {
 
     ProgressDialog pDialog;
     Servicio serv;
     Button btnLlegadaServicio, btnSalidaServicio, btnFinalServicio,
-            btnHistoriaClinica, btnCancelarServicio, btnDistanciaServicio;
+            btnHistoriaClinica, btnCancelarServicio, btnDistanciaServicio, btnAttachImage;
     private Configuration configuration;
+    static final int REQUEST_TAKE_PHOTO = 11111;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -56,9 +83,28 @@ public class AccionesDetalleServicioFragment extends Fragment {
 
     }
 
+    public AccionesDetalleServicioFragment(){
+        super();
+    }
+
+    /**
+     * Static factory method
+     * @param sectionNumber
+     * @return
+     */
+    public static AccionesDetalleServicioFragment newInstance(int sectionNumber) {
+        AccionesDetalleServicioFragment fragment = new AccionesDetalleServicioFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        fragment.setArguments(args);
+        return fragment;
+
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View myView = inflater.inflate(R.layout.fragment_acciones_detalle_servicio,container,false);
+        View myView = inflater.inflate(R.layout.fragment_acciones_detalle_servicio, container, false);
 
         configuration = Configuration.getInstance(this.getActivity());
 
@@ -102,7 +148,14 @@ public class AccionesDetalleServicioFragment extends Fragment {
             }
         });
 
-        btnHistoriaClinica.setOnClickListener(new View.OnClickListener(){
+        btnAttachImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dispatchTakePictureIntent();
+            }
+        });
+
+        btnHistoriaClinica.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getActivity(), HistoriaClinicaActivity.class);
@@ -111,19 +164,19 @@ public class AccionesDetalleServicioFragment extends Fragment {
             }
         });
 
-        btnCancelarServicio.setOnClickListener(new View.OnClickListener(){
+        btnCancelarServicio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 doStartActivityForResult(CancelarServicioActivity.class, 2);
             }
         });
 
-        btnDistanciaServicio.setOnClickListener(new View.OnClickListener(){
+        btnDistanciaServicio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getActivity(), MapaServicioActivity.class);
                 i.putExtra("Servicio", serv);
-                i.putExtra("mapActionType",1);
+                i.putExtra("mapActionType", 1);
                 startActivity(i);
             }
         });
@@ -133,7 +186,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
     private void doStartActivityForResult(Class clase,int reqCode ) {
         Intent i = new Intent(getActivity(), clase);
         i.putExtra("nroServicio", serv.getNroServicio());
-        i.putExtra("copago",serv.getCoPago());
+        i.putExtra("copago", serv.getCoPago());
         i.putExtra("serviceType", serv.getClasificacionId());
         startActivityForResult(i, reqCode);
     }
@@ -145,7 +198,8 @@ public class AccionesDetalleServicioFragment extends Fragment {
         btnFinalServicio = (Button) myView.findViewById(R.id.btn_final_servicio);
         btnHistoriaClinica = (Button) myView.findViewById(R.id.btn_hc_paciente_servicio);
         btnCancelarServicio = (Button) myView.findViewById(R.id.btn_cancelacion_servicio);
-        btnDistanciaServicio =(Button) myView.findViewById(R.id.btn_distancia_servicio);
+        btnDistanciaServicio = (Button) myView.findViewById(R.id.btn_distancia_servicio);
+        btnAttachImage = (Button) myView.findViewById(R.id.btn_attach_image);
 
         if (serv.getFlgRename() == 1) {
             btnSalidaServicio.setText("Derivación");
@@ -154,8 +208,8 @@ public class AccionesDetalleServicioFragment extends Fragment {
 
         toggleButton(btnLlegadaServicio,serv.getHabLlegada());
         toggleButton(btnSalidaServicio,serv.getHabSalida());
-        toggleButton(btnFinalServicio,serv.getHabFinal());
-        toggleButton(btnCancelarServicio,serv.getHabCancelacion());
+        toggleButton(btnFinalServicio, serv.getHabFinal());
+        toggleButton(btnCancelarServicio, serv.getHabCancelacion());
 
         pDialog = new ProgressDialog(getActivity());
         pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -180,7 +234,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
 
     private void doActionServicio(final AccionesRestModel accServ, Button btn,
                                   final RequestParams rp) {
-        setActionListener(btn,accServ.getTituloAlertDialog(),
+        setActionListener(btn, accServ.getTituloAlertDialog(),
                 accServ.getMensajeAlertDialog(),
                 new AlertListener() {
                     @Override
@@ -204,7 +258,7 @@ public class AccionesDetalleServicioFragment extends Fragment {
     public void doAsyncTaskPostServicio(String url, final String dialogMessage,
                                          RequestParams rp) throws JSONException{
 
-            ServiciosRestClient.post(url,rp, new JsonHttpResponseHandler() {
+            ServiciosRestClient.post(url, rp, new JsonHttpResponseHandler() {
 
                 @Override
                 public void onStart() {
@@ -246,11 +300,11 @@ public class AccionesDetalleServicioFragment extends Fragment {
     private void setActionListener(Button btnAction, final String title,
                                    final String messageDialog, final AlertListener alertListener) {
 
-        btnAction.setOnClickListener(new View.OnClickListener(){
+        btnAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DialogHelper dg = new DialogHelper();
-                dg.getConfirmDialog(getActivity(),title,messageDialog,"Si","No",false, alertListener);
+                dg.getConfirmDialog(getActivity(), title, messageDialog, "Si", "No", false, alertListener);
             }
         });
     }
@@ -281,8 +335,8 @@ public class AccionesDetalleServicioFragment extends Fragment {
                 } else {
                     showToast("No se finalizó el servicio");
                 }
+            break;
 
-                break;
             //CANCELACION DEL SERVICIO
             case 2:
                 if(resultCode == getActivity().RESULT_OK) {
@@ -301,10 +355,151 @@ public class AccionesDetalleServicioFragment extends Fragment {
                 } else {
                     showToast("No se canceló el servicio");
                 }
-                break;
+            break;
+
+            case REQUEST_TAKE_PHOTO:
+                try {
+                    DetalleServicioActivity activity = (DetalleServicioActivity)getActivity();
+                    File f = new File(activity.getCurrentPhotoPath());
+                    uploadPhoto(f);;
+                } catch (Exception ex) {
+                    showToast(ex.getMessage());
+                }
+
+
+            break;
 
         }
 
     }
+
+    /**
+     * Start the camera by dispatching a camera intent.
+     */
+    protected void dispatchTakePictureIntent() {
+
+        // Check if there is a camera.
+        Context context = getActivity();
+        PackageManager packageManager = context.getPackageManager();
+        if(packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA) == false){
+            Toast.makeText(getActivity(), "This device does not have a camera.", Toast.LENGTH_SHORT)
+                    .show();
+            return;
+        }
+
+        // Camera exists? Then proceed...
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        // Ensure that there's a camera activity to handle the intent
+        DetalleServicioActivity activity = (DetalleServicioActivity)getActivity();
+        if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
+            // Create the File where the photo should go.
+            // If you don't do this, you may get a crash in some devices.
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                Toast toast = Toast.makeText(activity, "There was a problem saving the photo...", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri fileUri = Uri.fromFile(photoFile);
+                activity.setCapturedImageURI(fileUri);
+                activity.setCurrentPhotoPath(fileUri.getPath());
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        activity.getCapturedImageURI());
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
+        }
+    }
+
+    protected File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        DetalleServicioActivity activity = (DetalleServicioActivity)getActivity();
+        activity.setCurrentPhotoPath("file:" + image.getAbsolutePath());
+        return image;
+    }
+
+    /**
+     * Add the picture to the photo gallery.
+     * Must be called on all camera images or they will
+     * disappear once taken.
+     */
+    protected void addPhotoToGallery() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        DetalleServicioActivity activity = (DetalleServicioActivity)getActivity();
+        File f = new File(activity.getCurrentPhotoPath());
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.getActivity().sendBroadcast(mediaScanIntent);
+    }
+
+    /**
+     * Scale the photo down and fit it to our image views.
+     *
+     * "Drastically increases performance" to set images using this technique.
+     * Read more:http://developer.android.com/training/camera/photobasics.html
+     */
+    private void setFullImageFromFilePath(String imagePath, ImageView imageView) {
+        // Get the dimensions of the View
+        int targetW = imageView.getWidth();
+        int targetH = imageView.getHeight();
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(imagePath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
+        imageView.setImageBitmap(bitmap);
+    }
+
+    private void uploadPhoto(File file) {
+        ApiClient sac = new ApiClient(getActivity(), configuration.getUrl());
+
+        sac.postImageCall(file).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                int code = response.code();
+                if (code == 200) {
+                    ResponseBody rb = response.body();
+                } else {
+                    Toast.makeText(getActivity(), "Error: " + String.valueOf(code), Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getActivity(), "Error: " + String.valueOf(t.getMessage()), Toast.LENGTH_LONG).show();
+            }
+
+        });
+    }
+
+
 
 }
