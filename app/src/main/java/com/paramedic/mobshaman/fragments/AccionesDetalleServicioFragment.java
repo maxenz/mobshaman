@@ -1,6 +1,5 @@
 package com.paramedic.mobshaman.fragments;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,13 +7,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,10 +30,8 @@ import com.paramedic.mobshaman.activities.MapaServicioActivity;
 import com.paramedic.mobshaman.activities.ServiciosActivity;
 import com.paramedic.mobshaman.domain.Configuration;
 import com.paramedic.mobshaman.helpers.DialogHelper;
-import com.paramedic.mobshaman.helpers.Utils;
 import com.paramedic.mobshaman.interfaces.AlertListener;
 import com.paramedic.mobshaman.models.AccionesRestModel;
-import com.paramedic.mobshaman.models.LoginResponse;
 import com.paramedic.mobshaman.models.Servicio;
 import com.paramedic.mobshaman.rest.ApiClient;
 import com.paramedic.mobshaman.rest.ServiciosRestClient;
@@ -54,7 +48,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 
 /**
  * Created by soporte on 23/07/2014.
@@ -434,20 +427,6 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
     }
 
     /**
-     * Add the picture to the photo gallery.
-     * Must be called on all camera images or they will
-     * disappear once taken.
-     */
-    protected void addPhotoToGallery() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        DetalleServicioActivity activity = (DetalleServicioActivity)getActivity();
-        File f = new File(activity.getCurrentPhotoPath());
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.getActivity().sendBroadcast(mediaScanIntent);
-    }
-
-    /**
      * Scale the photo down and fit it to our image views.
      *
      * "Drastically increases performance" to set images using this technique.
@@ -478,22 +457,28 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
     }
 
     private void uploadPhoto(File file) {
+
         ApiClient sac = new ApiClient(getActivity(), configuration.getUrl());
+
+        //ApiClient sac = new ApiClient(getActivity(), "http://192.168.56.2/wapimobile/");
+        pDialog.setMessage("Enviando imagen...");
+        pDialog.show();
 
         sac.postImageCall(file).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 int code = response.code();
+                pDialog.dismiss();
                 if (code == 200) {
-                    ResponseBody rb = response.body();
+                    Toast.makeText(getActivity(), "La imagen se envió correctamente.", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getActivity(), "Error: " + String.valueOf(code), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Error: " + String.valueOf(response.body()), Toast.LENGTH_LONG).show();
                 }
-
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                pDialog.dismiss();
                 Toast.makeText(getActivity(), "Error: " + String.valueOf(t.getMessage()), Toast.LENGTH_LONG).show();
             }
 

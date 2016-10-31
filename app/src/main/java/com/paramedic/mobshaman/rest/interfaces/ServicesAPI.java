@@ -19,7 +19,7 @@ public interface ServicesAPI {
 
     @GET("api/services/{serviceId}")
     Call<Servicio> getService(@Path("serviceId") String serviceId,
-                              @Query("idMovil") String idMovil,
+                              @Query("idMovil")  String idMovil,
                               @Query("licencia") String licencia
     );
 

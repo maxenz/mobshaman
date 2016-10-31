@@ -118,6 +118,7 @@ public class LoginActivity extends Activity {
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, "Error: " + String.valueOf(t.getMessage()), Toast.LENGTH_LONG).show();
                 progressDialog.dismiss();
             }
 

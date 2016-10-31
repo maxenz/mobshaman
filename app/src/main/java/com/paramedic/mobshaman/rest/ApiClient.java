@@ -15,6 +15,7 @@ import com.paramedic.mobshaman.rest.interfaces.ServicesAPI;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -90,14 +91,16 @@ public class ApiClient {
         MultipartBody.Part body =
                 MultipartBody.Part.createFormData("picture", file.getName(), requestFile);
 
-        // add another part within the multipart request
-        String descriptionString = "Imagen adjunta incidente";
-        RequestBody description =
+        RequestBody mobileNumber =
                 RequestBody.create(
-                        MediaType.parse("multipart/form-data"), descriptionString);
+                        MediaType.parse("multipart/form-data"), configuration.getMobile());
+
+        RequestBody license =
+                RequestBody.create(
+                        MediaType.parse("multipart/form-data"), configuration.getLicense());
 
         // finally, execute the request
-        Call<ResponseBody> call = service.upload(description, body);
+        Call<ResponseBody> call = service.upload(mobileNumber, body, license);
 
         return call;
 
