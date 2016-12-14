@@ -18,6 +18,7 @@ public interface FilesUploadAPI {
         @POST("api/uploadImages")
         Call<ResponseBody> upload(@Part("mobileNumber") RequestBody mobileNumber,
                                   @Part MultipartBody.Part file,
-                                  @Part("license") RequestBody license);
+                                  @Part("license") RequestBody license,
+                                  @Part("incidentId") RequestBody incidentId);
 
 }

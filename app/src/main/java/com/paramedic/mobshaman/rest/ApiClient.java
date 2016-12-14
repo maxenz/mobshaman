@@ -79,7 +79,7 @@ public class ApiClient {
 
     }
 
-    public Call<ResponseBody> postImageCall (File file) {
+    public Call<ResponseBody> postImageCall (File file, String incidentId) {
 
         FilesUploadAPI service = retrofit.create(FilesUploadAPI.class);
 
@@ -88,19 +88,23 @@ public class ApiClient {
                 RequestBody.create(MediaType.parse("multipart/form-data"), file);
 
         // MultipartBody.Part is used to send also the actual file name
-        MultipartBody.Part body =
+        MultipartBody.Part pBody =
                 MultipartBody.Part.createFormData("picture", file.getName(), requestFile);
 
-        RequestBody mobileNumber =
+        RequestBody pMobileNumber =
                 RequestBody.create(
                         MediaType.parse("multipart/form-data"), configuration.getMobile());
 
-        RequestBody license =
+        RequestBody pLicense =
                 RequestBody.create(
                         MediaType.parse("multipart/form-data"), configuration.getLicense());
 
+        RequestBody pIncidentId =
+                RequestBody.create(
+                        MediaType.parse("multipart/form-data"), incidentId);
+
         // finally, execute the request
-        Call<ResponseBody> call = service.upload(mobileNumber, body, license);
+        Call<ResponseBody> call = service.upload(pMobileNumber, pBody, pLicense, pIncidentId);
 
         return call;
 

@@ -92,7 +92,6 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
 
         initializeComponents();
 
-
         if (session.isLoggedIn()) {
             try {
                 getServicios();

@@ -41,6 +41,7 @@ public class DetalleServicioActivity extends ActionBarActivity {
     // Required for camera operations in order to save the image file on resume.
     private String mCurrentPhotoPath = null;
     private Uri mCapturedImageURI = null;
+    private boolean mIsFinishingService = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,31 +50,21 @@ public class DetalleServicioActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_detalle_servicio);
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-       // mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mDetalleServicioPagerAdapter = new DetalleServicioPagerAdapter(getSupportFragmentManager(),this);
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-       // mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setAdapter(mDetalleServicioPagerAdapter);
 
-        //Toast.makeText(this,serv.getCliente(),Toast.LENGTH_LONG).show();
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(mDetalleServicioPagerAdapter);
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.detalle_servicio, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         switch (id) {
 
@@ -127,6 +118,14 @@ public class DetalleServicioActivity extends ActionBarActivity {
 
     public void setCapturedImageURI(Uri mCapturedImageURI) {
         this.mCapturedImageURI = mCapturedImageURI;
+    }
+
+    public boolean getIsFinishingService() {
+        return mIsFinishingService;
+    }
+
+    public void setIsFinishingService(boolean isFinishingService) {
+        this.mIsFinishingService = isFinishingService;
     }
 
 }

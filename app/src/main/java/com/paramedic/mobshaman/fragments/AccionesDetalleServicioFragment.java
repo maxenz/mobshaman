@@ -1,5 +1,6 @@
 package com.paramedic.mobshaman.fragments;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -59,6 +60,7 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
     Button btnLlegadaServicio, btnSalidaServicio, btnFinalServicio,
             btnHistoriaClinica, btnCancelarServicio, btnDistanciaServicio, btnAttachImage;
     private Configuration configuration;
+    private RequestParams finishRequestParams;
     static final int REQUEST_TAKE_PHOTO = 11111;
 
     @Override
@@ -144,7 +146,7 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
         btnAttachImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dispatchTakePictureIntent();
+                dispatchTakePictureIntent(false);
             }
         });
 
@@ -185,6 +187,8 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
     }
 
     private void initializeUI(View myView) {
+
+        finishRequestParams = new RequestParams();
 
         btnLlegadaServicio = (Button) myView.findViewById(R.id.btn_llegada_servicio);
         btnSalidaServicio = (Button) myView.findViewById(R.id.btn_salida_servicio);
@@ -302,6 +306,14 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
         });
     }
 
+    private void finishIncident() {
+        try {
+            doAsyncTaskPostServicio(configuration.getUrl() + "/actions/setFinalServicio","Finalizando servicio...", finishRequestParams);
+        } catch (JSONException e) {
+            showToast(e.getMessage());
+        }
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         switch (requestCode) {
@@ -309,22 +321,19 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
             //FINAL DEL SERVICIO
             case 1:
                 if(resultCode == getActivity().RESULT_OK){
-                    RequestParams rp = new RequestParams();
-                    rp.add("reportNumber", String.valueOf(data.getIntExtra("requestReportNumber",0)));
-                    rp.add("licencia",configuration.getLicense());
-                    rp.add("movil",configuration.getMobile());
-                    rp.add("viajeID", String.valueOf(serv.getIdServicio()));
-                    rp.add("motivoID", String.valueOf(data.getIntExtra("idMotivo", 0)));
-                    rp.add("diagnosticoID", String.valueOf(data.getIntExtra("idDiagnostico", 0)));
-                    rp.add("observaciones", data.getStringExtra("observaciones"));
-                    rp.add("copago", String.valueOf(data.getIntExtra("copago",0)));
-                    rp.add("derivationTime", String.valueOf(data.getStringExtra("derivationTime")));
 
-                    try {
-                        doAsyncTaskPostServicio(configuration.getUrl() + "/actions/setFinalServicio","Finalizando servicio...",rp);
-                    } catch (JSONException e) {
-                        showToast(e.getMessage());
-                    }
+                    finishRequestParams.add("reportNumber", String.valueOf(data.getIntExtra("requestReportNumber",0)));
+                    finishRequestParams.add("licencia",configuration.getLicense());
+                    finishRequestParams.add("movil",configuration.getMobile());
+                    finishRequestParams.add("viajeID", String.valueOf(serv.getIdServicio()));
+                    finishRequestParams.add("motivoID", String.valueOf(data.getIntExtra("idMotivo", 0)));
+                    finishRequestParams.add("diagnosticoID", String.valueOf(data.getIntExtra("idDiagnostico", 0)));
+                    finishRequestParams.add("observaciones", data.getStringExtra("observaciones"));
+                    finishRequestParams.add("copago", String.valueOf(data.getIntExtra("copago",0)));
+                    finishRequestParams.add("derivationTime", String.valueOf(data.getStringExtra("derivationTime")));
+
+                    showUploadPhotoPopup(true);
+
                 } else {
                     showToast("No se finalizó el servicio");
                 }
@@ -351,14 +360,16 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
             break;
 
             case REQUEST_TAKE_PHOTO:
-                try {
-                    DetalleServicioActivity activity = (DetalleServicioActivity)getActivity();
-                    File f = new File(activity.getCurrentPhotoPath());
-                    uploadPhoto(f);;
-                } catch (Exception ex) {
-                    showToast(ex.getMessage());
+                if (resultCode != 0) {
+                    try {
+                        DetalleServicioActivity activity = (DetalleServicioActivity)getActivity();
+                        File f = new File(activity.getCurrentPhotoPath());
+                        boolean isFinishingService = activity.getIsFinishingService();
+                        uploadPhoto(f, isFinishingService);
+                    } catch (Exception ex) {
+                        showToast(ex.getMessage());
+                    }
                 }
-
 
             break;
 
@@ -369,7 +380,7 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
     /**
      * Start the camera by dispatching a camera intent.
      */
-    protected void dispatchTakePictureIntent() {
+    protected void dispatchTakePictureIntent(boolean isFinishingService) {
 
         // Check if there is a camera.
         Context context = getActivity();
@@ -401,8 +412,10 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
                 Uri fileUri = Uri.fromFile(photoFile);
                 activity.setCapturedImageURI(fileUri);
                 activity.setCurrentPhotoPath(fileUri.getPath());
+                activity.setIsFinishingService(isFinishingService);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                         activity.getCapturedImageURI());
+
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
             }
         }
@@ -426,51 +439,27 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
         return image;
     }
 
-    /**
-     * Scale the photo down and fit it to our image views.
-     *
-     * "Drastically increases performance" to set images using this technique.
-     * Read more:http://developer.android.com/training/camera/photobasics.html
-     */
-    private void setFullImageFromFilePath(String imagePath, ImageView imageView) {
-        // Get the dimensions of the View
-        int targetW = imageView.getWidth();
-        int targetH = imageView.getHeight();
 
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(imagePath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
-        imageView.setImageBitmap(bitmap);
-    }
-
-    private void uploadPhoto(File file) {
+    private void uploadPhoto(File file, final boolean isFinishingService) {
 
         ApiClient sac = new ApiClient(getActivity(), configuration.getUrl());
 
-        //ApiClient sac = new ApiClient(getActivity(), "http://192.168.56.2/wapimobile/");
+        //ApiClient sac = new ApiClient(getActivity(), "http://192.168.56.2/wapimobileforcache/");
         pDialog.setMessage("Enviando imagen...");
         pDialog.show();
 
-        sac.postImageCall(file).enqueue(new Callback<ResponseBody>() {
+        sac.postImageCall(file, String.valueOf(serv.getIdServicio())).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 int code = response.code();
                 pDialog.dismiss();
                 if (code == 200) {
-                    Toast.makeText(getActivity(), "La imagen se envió correctamente.", Toast.LENGTH_LONG).show();
+                    if (isFinishingService) {
+                        finishIncident();
+                    } else {
+                        Toast.makeText(getActivity(), "La imagen se envió correctamente.", Toast.LENGTH_LONG).show();
+                    }
+
                 } else {
                     Toast.makeText(getActivity(), "Error: " + String.valueOf(response.body()), Toast.LENGTH_LONG).show();
                 }
@@ -485,6 +474,29 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
         });
     }
 
+    private void showUploadPhotoPopup(final boolean isFinishingService) {
+        AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+        adb.setTitle("Adjuntar imagen");
+        adb.setMessage("¿Desea adjuntar una imagen al incidente?");
+        adb.setPositiveButton("Si", new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int id)
+            {
+                dispatchTakePictureIntent(isFinishingService);
+            }
+        });
+        adb.setNegativeButton("No", new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int id)
+            {
+                if (isFinishingService) {
+                    finishIncident();
+                }
+                dialog.cancel();
+            }
+        });
 
+        adb.show();
+    }
 
 }
