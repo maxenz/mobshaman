@@ -190,6 +190,104 @@
         android:visibility="gone"
         android:hint="Nro. de reporte"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_pregunta_final_grabar_audio"
+            android:text="¿Desea grabar un mensaje de voz?"
+            android:layout_marginLeft="8dp"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:textSize="17sp"
+            android:paddingTop="12dp"/>
+
+        <RadioGroup
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/radio_group_final_voice_message"
+            android:layout_alignParentRight="true"
+            android:paddingTop="6dp"
+            android:layout_alignParentEnd="true">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Si"
+                android:id="@+id/radio_final_voice_message_yes" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No"
+                android:id="@+id/radio_final_voice_message_no" />
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/content_final_audio_record"
+        android:visibility="gone">
+
+        <ImageButton
+            android:id="@+id/btn_final_start_stop_audio"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:src="@drawable/ic_record_voice_over_white_24dp" />
+
+        <ImageButton
+            android:id="@+id/btn_final_play_pause_audio"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:src="@drawable/ic_play_circle_outline_white_24dp" />
+
+        <ImageButton
+            android:id="@+id/btn_final_restart_audio"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:src="@drawable/ic_settings_backup_restore_white_24dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_marginTop="20dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_final_recording_audio"
+            android:layout_marginLeft="8dp"
+            android:textStyle="bold"
+            android:typeface="sans"
+            android:textSize="17sp"
+            android:paddingTop="12dp"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:id="@+id/sep_title_final_servicio_audio"
+        android:layout_height="1dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/verde_color"
+        android:layout_marginBottom="20dp"/>
+
     <Button
         android:id="@+id/btn_finalizar_servicio"
         android:layout_width="wrap_content"
@@ -205,5 +303,6 @@
         android:background="@drawable/sel_button_round"
         android:drawableLeft="@drawable/ic_action_llegada"
         android:visibility="gone"/>
+
 
 </LinearLayout>
