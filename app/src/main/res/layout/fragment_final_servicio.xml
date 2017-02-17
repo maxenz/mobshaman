@@ -256,14 +256,6 @@
             android:textColor="@android:color/white"
             android:src="@drawable/ic_play_circle_outline_white_24dp" />
 
-        <ImageButton
-            android:id="@+id/btn_final_restart_audio"
-            android:layout_width="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:src="@drawable/ic_settings_backup_restore_white_24dp" />
-
         <TextView
             android:layout_width="0dp"
             android:layout_weight="5"

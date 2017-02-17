@@ -60,11 +60,11 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
     private String audioOutputFile = null;
     private ImageButton btnStartStopRecordingAudio;
     private ImageButton btnPlayPauseRecordingAudio;
-    private ImageButton btnRestartRecordingAudio;
     private TextView txtViewRecordingAudio;
 
     private boolean isRecordingAudio;
     private boolean isPlayingAudio;
+    private boolean audioPlayerHasDatasource;
 
     //endregion
 
@@ -434,14 +434,15 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
             }
         });
 
-        audioPlayer = new MediaPlayer();
+    }
 
+    private void setAudioPlayerListener() {
         audioPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
                 if (mediaPlayer != null) {
                     mediaPlayer.stop();
-                    mediaPlayer.release();
+                    isPlayingAudio = false;
                     btnPlayPauseRecordingAudio.setImageResource(R.drawable.ic_play_circle_outline_white_24dp);
                 }
             }
@@ -477,10 +478,11 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
     private void startRecordingAudio() {
         try {
             isRecordingAudio = true;
+            audioPlayerHasDatasource = false;
 
-            if (audioRecorder == null) {
-                setAudioRecorder();
-            }
+            setAudioRecorder();
+            audioPlayer = new MediaPlayer();
+            setAudioPlayerListener();
 
             audioRecorder.prepare();
             audioRecorder.start();
@@ -505,8 +507,6 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
         try {
             isRecordingAudio = false;
             audioRecorder.stop();
-            audioRecorder.release();
-            audioRecorder  = null;
 
             btnStartStopRecordingAudio.setImageResource(R.drawable.ic_record_voice_over_white_24dp);
             txtViewRecordingAudio.setText("Grabación finalizada.");
@@ -526,8 +526,12 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
     private void playAudio() {
         try{
             isPlayingAudio = true;
-            //audioPlayer = new MediaPlayer();
-            audioPlayer.setDataSource(audioOutputFile);
+
+            if (!audioPlayerHasDatasource) {
+                audioPlayer.setDataSource(audioOutputFile);
+                audioPlayerHasDatasource = true;
+            }
+
             audioPlayer.prepare();
             audioPlayer.start();
 
@@ -545,8 +549,6 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
             isPlayingAudio = false;
             if (audioPlayer != null) {
                 audioPlayer.stop();
-                audioPlayer.release();
-                audioPlayer = null;
                 btnPlayPauseRecordingAudio.setImageResource(R.drawable.ic_play_circle_outline_white_24dp);
                 txtViewRecordingAudio.setText("Audio pausado.");
             }
