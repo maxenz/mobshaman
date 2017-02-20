@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -39,12 +36,11 @@ import com.paramedic.mobshaman.rest.ServiciosRestClient;
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -331,6 +327,10 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
                     finishRequestParams.add("observaciones", data.getStringExtra("observaciones"));
                     finishRequestParams.add("copago", String.valueOf(data.getIntExtra("copago",0)));
                     finishRequestParams.add("derivationTime", String.valueOf(data.getStringExtra("derivationTime")));
+
+                    try {
+                        finishRequestParams.put("audio", new File(String.valueOf(data.getStringExtra("audio"))));
+                    } catch(FileNotFoundException e) {}
 
                     showUploadPhotoPopup(true);
 

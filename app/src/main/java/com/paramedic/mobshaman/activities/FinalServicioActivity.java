@@ -27,8 +27,6 @@ import android.widget.Toast;
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.domain.Configuration;
 import com.paramedic.mobshaman.helpers.FileHelper;
-import com.paramedic.mobshaman.helpers.SetTime;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -248,6 +246,14 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
 
                     returnIntent.putExtra("observaciones", observaciones);
                     returnIntent.putExtra("requestReportNumber", requestReportNumber);
+
+                    // --> Audio
+                    if (radioGroupAudioRecord.getCheckedRadioButtonId() == R.id.radio_final_voice_message_yes) {
+                        if (audioPlayerHasDatasource) {
+                            returnIntent.putExtra("audio", audioOutputFile);
+                        }
+                    }
+
                     setResult(RESULT_OK, returnIntent);
                     finish();
                 }
@@ -261,10 +267,12 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
 
+                txtViewRecordingAudio.setText("");
                 if (i == R.id.radio_final_voice_message_yes) {
                     layout_audio_record.setVisibility(View.VISIBLE);
                 } else {
                     layout_audio_record.setVisibility(View.GONE);
+                    btnFinalizarServicio.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -339,14 +347,10 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
     }
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-    }
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {}
 
     @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-    }
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {}
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
@@ -408,13 +412,13 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
         Toast.makeText(getApplicationContext(), mensaje, Toast.LENGTH_LONG).show();
     }
 
-//region Audio Record
+    //region Audio Record
 
     private void initializeAudioProperties() {
 
         txtViewRecordingAudio = (TextView) findViewById(R.id.txt_final_recording_audio);
         audioOutputFile = Environment.getExternalStorageDirectory()
-                .getAbsolutePath() + "/pruebita-" + String.valueOf(new Date().getTime()) + ".3gpp";
+                .getAbsolutePath() + "/" + String.valueOf(new Date().getTime()) + ".3gpp";
 
         setAudioRecorder();
 
@@ -434,6 +438,9 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
             }
         });
 
+        btnPlayPauseRecordingAudio.setEnabled(false);
+        radioGroupAudioRecord.check(R.id.radio_final_voice_message_no);
+
     }
 
     private void setAudioPlayerListener() {
@@ -444,6 +451,7 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
                     mediaPlayer.stop();
                     isPlayingAudio = false;
                     btnPlayPauseRecordingAudio.setImageResource(R.drawable.ic_play_circle_outline_white_24dp);
+                    txtViewRecordingAudio.setText("");
                 }
             }
         });
@@ -496,6 +504,8 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
         }
 
         txtViewRecordingAudio.setText("Grabando...");
+        btnFinalizarServicio.setVisibility(View.GONE);
+        btnPlayPauseRecordingAudio.setEnabled(false);
         btnStartStopRecordingAudio.setImageResource(R.drawable.ic_stop_white_24dp);
 
         Toast.makeText(getApplicationContext(), "Comenzó a grabarse el audio.",
@@ -508,8 +518,11 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
             isRecordingAudio = false;
             audioRecorder.stop();
 
+            btnFinalizarServicio.setVisibility(View.VISIBLE);
+            btnPlayPauseRecordingAudio.setEnabled(true);
             btnStartStopRecordingAudio.setImageResource(R.drawable.ic_record_voice_over_white_24dp);
             txtViewRecordingAudio.setText("Grabación finalizada.");
+            btnFinalizarServicio.setEnabled(true);
 
             Toast.makeText(getApplicationContext(), "La grabación ha finalizado correctamente.",
                     Toast.LENGTH_SHORT).show();
@@ -558,6 +571,6 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
         }
     }
 
-//endregion
+    //endregion
 
 }

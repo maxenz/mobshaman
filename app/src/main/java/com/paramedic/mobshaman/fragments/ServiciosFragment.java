@@ -40,8 +40,6 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
     ListView listView;
     private ProgressDialog pDialog;
     private ServiciosAdapter servAdapter;
-    public String NRO_MOVIL, URL_REST, URL_REST_SERVICIOS;
-    public int ID_SERVICIO_SELECCIONADO = 0;
     public Configuration configuration;
     private LocationManager locManager;
     private Location actualLocation;
@@ -171,8 +169,6 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
 
         // attaching data adapter to spinner
         spinnerOrderBy.setAdapter(dataAdapter);
-
-
     }
 
     @Override
@@ -265,7 +261,6 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
         } catch(Exception ex) {
             showToast("Error: no se pudieron ordenar los incidentes.");
         }
-
     }
 
     private void getServicios() {
@@ -301,7 +296,6 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
             }
 
         });
-
 
     }
 
