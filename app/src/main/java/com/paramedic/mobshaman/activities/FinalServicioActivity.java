@@ -63,6 +63,7 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
     private boolean isRecordingAudio;
     private boolean isPlayingAudio;
     private boolean audioPlayerHasDatasource;
+    private boolean hasAnyAudioRecorded = false;
 
     //endregion
 
@@ -249,7 +250,7 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
 
                     // --> Audio
                     if (radioGroupAudioRecord.getCheckedRadioButtonId() == R.id.radio_final_voice_message_yes) {
-                        if (audioPlayerHasDatasource) {
+                        if (hasAnyAudioRecorded) {
                             returnIntent.putExtra("audio", audioOutputFile);
                         }
                     }
@@ -487,6 +488,7 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
         try {
             isRecordingAudio = true;
             audioPlayerHasDatasource = false;
+            hasAnyAudioRecorded = true;
 
             setAudioRecorder();
             audioPlayer = new MediaPlayer();
