@@ -20,5 +20,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="solicita_nro_report">Solicita Nro. Report al cierre</string>
     <string name="order_services">Ordenar los servicios</string>
+    <string name="solicita_imagen_adjunta_al_cierre">Solicita imagen adjunta al cierre</string>
 
 </resources>

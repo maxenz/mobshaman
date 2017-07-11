@@ -27,6 +27,8 @@ import android.widget.Toast;
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.domain.Configuration;
 import com.paramedic.mobshaman.helpers.FileHelper;
+import com.paramedic.mobshaman.helpers.SetTime;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,7 +41,7 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
     EditText etObservaciones = null;
     EditText etReportNumber = null;
     EditText etDiagnosisReasonsCode = null;
-    EditText etTimePickerDerivacion = null;
+    EditText etTimePickerTiempoDemoraDerivacion = null;
     Button btnFinalizarServicio = null;
     ArrayAdapter<String> adapter;
     String TIPO_FINAL_SELECCIONADO = "";
@@ -117,6 +119,7 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
         });
 
 
+        SetTime derivationTimer = new SetTime(etTimePickerTiempoDemoraDerivacion, this);
     }
 
     private void initializeUI() {
@@ -155,7 +158,7 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
 
         etReportNumber.setVisibility(configuration.isRequestReportNumber() ? View.VISIBLE : View.GONE);
 
-        etTimePickerDerivacion = (EditText) findViewById(R.id.et_time_picker_derivacion);
+        etTimePickerTiempoDemoraDerivacion = (EditText) findViewById(R.id.et_time_picker_tiempo_demora_derivacion);
 
     }
 
@@ -185,7 +188,7 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
                 String drDescription = searchTextView.getText().toString();
                 String drCode = etDiagnosisReasonsCode.getText().toString();
                 String observaciones = etObservaciones.getText().toString();
-                String timePickerDerivation = etTimePickerDerivacion.getText().toString();
+                String timePickerDerivation = etTimePickerTiempoDemoraDerivacion.getText().toString();
                 String repNumber = etReportNumber.getText().toString();
                 Integer requestReportNumber = 0;
                 if (!("".equals(repNumber))) {
@@ -211,53 +214,55 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
 
                 if (serviceWasDone && serviceType == 1) {
                     if (derivationTimeEmpty) {
-                        showToast("Debe ingresar el horario de derivación");
+                        showToast("Debe ingresar el tiempo de demora de la derivación");
                         return;
                     }
                 }
 
                 id = getIdByCode(drCode);
-                if (id == -1) {
+
+                if (id == -1 && ((serviceType == 1 && !serviceWasDone) || serviceType == 0)) {
                     showToast("El " + TIPO_FINAL_SELECCIONADO + " es inválido");
-                } else {
-
-                    Intent returnIntent = new Intent();
-
-                    if (serviceWasDone) {
-
-                        if (serviceType == 1) {
-                            returnIntent.putExtra("derivationTime",timePickerDerivation);
-                        }
-                        Double copago = intent.getDoubleExtra("copago", 0);
-                        if (copago > 0) {
-                            if (radioGroupCopago.getCheckedRadioButtonId() == -1) {
-                                showToast("Debe seleccionar si se cobró copago");
-                                return;
-                            }
-                        }
-
-                        returnIntent.putExtra("idDiagnostico", id);
-                        if (radioGroupCopago.getCheckedRadioButtonId()
-                                == R.id.radio_final_copago_no) {
-                            returnIntent.putExtra("copago", 1);
-                        }
-                    } else {
-                        returnIntent.putExtra("idMotivo", id);
-                    }
-
-                    returnIntent.putExtra("observaciones", observaciones);
-                    returnIntent.putExtra("requestReportNumber", requestReportNumber);
-
-                    // --> Audio
-                    if (radioGroupAudioRecord.getCheckedRadioButtonId() == R.id.radio_final_voice_message_yes) {
-                        if (hasAnyAudioRecorded) {
-                            returnIntent.putExtra("audio", audioOutputFile);
-                        }
-                    }
-
-                    setResult(RESULT_OK, returnIntent);
-                    finish();
+                    return;
                 }
+
+                Intent returnIntent = new Intent();
+
+                if (serviceWasDone) {
+
+                    if (serviceType == 1) {
+                        returnIntent.putExtra("derivationTime",timePickerDerivation);
+                    }
+                    Double copago = intent.getDoubleExtra("copago", 0);
+                    if (copago > 0) {
+                        if (radioGroupCopago.getCheckedRadioButtonId() == -1) {
+                            showToast("Debe seleccionar si se cobró copago");
+                            return;
+                        }
+                    }
+
+                    returnIntent.putExtra("idDiagnostico", id);
+                    if (radioGroupCopago.getCheckedRadioButtonId()
+                            == R.id.radio_final_copago_no) {
+                        returnIntent.putExtra("copago", 1);
+                    }
+                } else {
+                    returnIntent.putExtra("idMotivo", id);
+                }
+
+                returnIntent.putExtra("observaciones", observaciones);
+                returnIntent.putExtra("requestReportNumber", requestReportNumber);
+
+                // --> Audio
+                if (radioGroupAudioRecord.getCheckedRadioButtonId() == R.id.radio_final_voice_message_yes) {
+                    if (hasAnyAudioRecorded) {
+                        returnIntent.putExtra("audio", audioOutputFile);
+                    }
+                }
+
+                setResult(RESULT_OK, returnIntent);
+                finish();
+
             }
 
         });
@@ -289,7 +294,7 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
                 etDiagnosisReasonsCode.setText("");
                 etObservaciones.setText("");
 
-                etTimePickerDerivacion.setVisibility(View.GONE);
+                etTimePickerTiempoDemoraDerivacion.setVisibility(View.GONE);
 
                 if (checkedId == R.id.radio_final_si) {
                     TIPO_FINAL_SELECCIONADO = "diagnóstico";
@@ -321,7 +326,7 @@ implements AdapterView.OnItemClickListener, OnItemSelectedListener{
                 if (serviceType == 1 && checkedId == R.id.radio_final_si) {
                     searchTextView.setVisibility(View.GONE);
                     etDiagnosisReasonsCode.setVisibility(View.GONE);
-                    etTimePickerDerivacion.setVisibility(View.VISIBLE);
+                    etTimePickerTiempoDemoraDerivacion.setVisibility(View.VISIBLE);
                 }
 
             }

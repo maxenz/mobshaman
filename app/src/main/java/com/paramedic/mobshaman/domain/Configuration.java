@@ -15,6 +15,7 @@ public class Configuration {
     private static String mobile;
     private static String license;
     private static boolean requestReportNumber;
+    private static boolean requestAttachImage;
     private static String gestionUrl;
 
     //endregion
@@ -28,6 +29,7 @@ public class Configuration {
         this.mobile = sp.getString("mobile","");
         this.license = sp.getString("license","");
         this.requestReportNumber = sp.getBoolean("requestReportNumber",false);
+        this.requestAttachImage = sp.getBoolean("requestAttachImage", false);
         this.gestionUrl = "http://paramedicapps.com.ar:57771/";
 
     }
@@ -64,8 +66,16 @@ public class Configuration {
         return requestReportNumber;
     }
 
+    public boolean isRequestAttachImage() {
+        return requestAttachImage;
+    }
+
     public void setRequestReportNumber(boolean requestReportNumber) {
         this.requestReportNumber = requestReportNumber;
+    }
+
+    public void setRequestAttachImage(boolean requestAttachImage) {
+        this.requestAttachImage = requestAttachImage;
     }
 
     public String getGestionUrl() { return gestionUrl;}

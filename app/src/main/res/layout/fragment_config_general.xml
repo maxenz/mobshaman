@@ -72,6 +72,12 @@
         android:layout_marginBottom="10dp"
         android:text="@string/solicita_nro_report" />
 
+    <CheckBox android:id="@+id/checkbox_attach_image_config"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="@string/solicita_imagen_adjunta_al_cierre" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

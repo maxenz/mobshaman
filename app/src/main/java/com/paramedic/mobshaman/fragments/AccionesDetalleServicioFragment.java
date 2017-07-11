@@ -332,7 +332,11 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
                         finishRequestParams.put("audio", new File(String.valueOf(data.getStringExtra("audio"))));
                     } catch(FileNotFoundException e) {}
 
-                    showUploadPhotoPopup(true);
+                    if (configuration.isRequestAttachImage()) {
+                        showUploadPhotoPopup(true);
+                    } else {
+                        finishIncident();
+                    }
 
                 } else {
                     showToast("No se finalizó el servicio");

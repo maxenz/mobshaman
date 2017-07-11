@@ -28,9 +28,9 @@ public class ConfigGeneralFragment extends Fragment {
 
     EditText etNroMovilRegistro, etUrlregistro, etNroLicencia;
     Button btnRegistrarMovil;
-    CheckBox checkboxSolicitaReport;
+    CheckBox checkboxSolicitaReport, checkboxAttachImage;
     String  url, nroLicencia, nroMovil;
-    Boolean solicitaNroReport;
+    Boolean solicitaNroReport, solicitaAttachImage;
     private Configuration configuration;
 
     @Override
@@ -45,6 +45,7 @@ public class ConfigGeneralFragment extends Fragment {
         btnRegistrarMovil = (Button) myView.findViewById(R.id.btn_registrar_movil);
         etNroLicencia = (EditText) myView.findViewById(R.id.et_registro_licencia);
         checkboxSolicitaReport = (CheckBox) myView.findViewById(R.id.checkbox_nro_report);
+        checkboxAttachImage = (CheckBox) myView.findViewById(R.id.checkbox_attach_image_config);
 
         configuration = Configuration.getInstance(this.getActivity());
 
@@ -61,6 +62,7 @@ public class ConfigGeneralFragment extends Fragment {
                 url = etUrlregistro.getText().toString();
                 nroLicencia = etNroLicencia.getText().toString();
                 solicitaNroReport = checkboxSolicitaReport.isChecked();
+                solicitaAttachImage = checkboxAttachImage.isChecked();
 
                 if (!IsConfigurationValid()) {
 
@@ -78,12 +80,14 @@ public class ConfigGeneralFragment extends Fragment {
                         editor.putString("mobile", nroMovil.toString().trim());
                         editor.putString("license", nroLicencia);
                         editor.putBoolean("requestReportNumber", solicitaNroReport);
+                        editor.putBoolean("requestAttachImage", solicitaAttachImage);
                         editor.commit();
 
                         configuration.setUrl(url);
                         configuration.setMobile(nroMovil.toString().trim());
                         configuration.setLicense(nroLicencia);
                         configuration.setRequestReportNumber(solicitaNroReport);
+                        configuration.setRequestAttachImage(solicitaAttachImage);
 
                         // --> Registro el equipo para las push notifications con nro movil y licencia
 
@@ -123,6 +127,7 @@ public class ConfigGeneralFragment extends Fragment {
             etNroLicencia.setText(configuration.getLicense());
             etUrlregistro.setText(configuration.getUrl());
             checkboxSolicitaReport.setChecked(configuration.isRequestReportNumber());
+            checkboxAttachImage.setChecked(configuration.isRequestAttachImage());
         }
     }
 }

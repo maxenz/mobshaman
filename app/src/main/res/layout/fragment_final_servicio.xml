@@ -159,9 +159,9 @@
         android:layout_marginRight="10dp"
         android:typeface="sans"
         android:textStyle="bold"
-        android:id="@+id/et_time_picker_derivacion"
+        android:id="@+id/et_time_picker_tiempo_demora_derivacion"
         android:visibility="gone"
-        android:hint="Horario derivación"/>
+        android:hint="Tiempo de demora"/>
 
     <EditText
         android:layout_width="match_parent"
