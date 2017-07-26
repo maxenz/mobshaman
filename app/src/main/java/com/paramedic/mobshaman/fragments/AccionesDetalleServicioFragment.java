@@ -165,10 +165,22 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
         btnDistanciaServicio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getActivity(), MapaServicioActivity.class);
-                i.putExtra("Servicio", serv);
-                i.putExtra("mapActionType", 1);
-                startActivity(i);
+                try {
+                    String whereToGo = String.format(
+                            "google.navigation:q=%s,%s&mode=d",
+                            serv.getLatitud(),
+                            serv.getLongitud());
+                    Uri gmmIntentUri = Uri.parse(whereToGo);
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+                    if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                        startActivity(mapIntent);
+                    } else {
+                        showToast("Debe instalar Google Maps en su teléfono para utilizar este servicio.");
+                    }
+                } catch (Exception ex) {
+                    showToast("No se pudo iniciar el servicio de distancia de servicio.");
+                }
             }
         });
 
