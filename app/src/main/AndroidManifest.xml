@@ -103,6 +103,11 @@
             android:name=".activities.CancelarServicioActivity"
             android:label="@string/title_activity_cancelar_servicio" >
         </activity>
+        <activity
+            android:name=".activities.AccessTimeActivity"
+            android:label="@string/title_activity_access_time"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

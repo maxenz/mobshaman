@@ -1,25 +1,20 @@
-<ScrollView
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:fillViewport="true"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:orientation="vertical">
 
-    <LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    <Spinner
+        android:id="@+id/spinner_orderby_services"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical">
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:prompt="@string/order_services" />
 
-        <Spinner
-            android:id="@+id/spinner_orderby_services"
-            android:layout_width="fill_parent"
-            android:layout_marginTop="10dp"
-            android:layout_height="50dp"
-            android:prompt="@string/order_services"/>
+    <fragment
+        android:id="@+id/serviciosFragment"
+        android:name="com.paramedic.mobshaman.fragments.ServiciosFragment"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+</LinearLayout>
 
-        <fragment
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:name="com.paramedic.mobshaman.fragments.ServiciosFragment"
-            android:id="@+id/serviciosFragment" />
-    </LinearLayout>
-</ScrollView>
+

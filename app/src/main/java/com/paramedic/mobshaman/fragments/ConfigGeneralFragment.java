@@ -15,22 +15,16 @@ import android.widget.Toast;
 import com.paramedic.mobshaman.R;
 import com.paramedic.mobshaman.activities.ServiciosActivity;
 import com.paramedic.mobshaman.domain.Configuration;
-import org.json.JSONArray;
 import org.json.JSONObject;
-
 import com.onesignal.OneSignal;
 
-
-/**
- * Created by Maximiliano Poggio on 28/07/2014.
- */
 public class ConfigGeneralFragment extends Fragment {
 
     EditText etNroMovilRegistro, etUrlregistro, etNroLicencia;
     Button btnRegistrarMovil;
-    CheckBox checkboxSolicitaReport, checkboxAttachImage, checkboxEnableServiceCancelation;
+    CheckBox checkboxSolicitaReport, checkboxAttachImage, checkboxEnableServiceCancelation, checkboxEnableEntryExit;
     String  url, nroLicencia, nroMovil;
-    Boolean solicitaNroReport, solicitaAttachImage, enableServiceCancelation;
+    Boolean solicitaNroReport, solicitaAttachImage, enableServiceCancelation, enableEntryExit;
     private Configuration configuration;
 
     @Override
@@ -47,6 +41,7 @@ public class ConfigGeneralFragment extends Fragment {
         checkboxSolicitaReport = (CheckBox) myView.findViewById(R.id.checkbox_nro_report);
         checkboxAttachImage = (CheckBox) myView.findViewById(R.id.checkbox_attach_image_config);
         checkboxEnableServiceCancelation = (CheckBox) myView.findViewById(R.id.checkbox_enable_service_cancelation);
+        checkboxEnableEntryExit = (CheckBox) myView.findViewById(R.id.checkbox_enable_entry_exit);
 
         configuration = Configuration.getInstance(this.getActivity());
 
@@ -65,6 +60,7 @@ public class ConfigGeneralFragment extends Fragment {
                 solicitaNroReport = checkboxSolicitaReport.isChecked();
                 solicitaAttachImage = checkboxAttachImage.isChecked();
                 enableServiceCancelation = checkboxEnableServiceCancelation.isChecked();
+                enableEntryExit = checkboxEnableEntryExit.isChecked();
 
                 if (!IsConfigurationValid()) {
 
@@ -84,6 +80,7 @@ public class ConfigGeneralFragment extends Fragment {
                         editor.putBoolean("requestReportNumber", solicitaNroReport);
                         editor.putBoolean("requestAttachImage", solicitaAttachImage);
                         editor.putBoolean("enableServiceCancelation", enableServiceCancelation);
+                        editor.putBoolean("enableEntryExit", enableEntryExit);
                         editor.commit();
 
                         configuration.setUrl(url);
@@ -92,6 +89,7 @@ public class ConfigGeneralFragment extends Fragment {
                         configuration.setRequestReportNumber(solicitaNroReport);
                         configuration.setRequestAttachImage(solicitaAttachImage);
                         configuration.setEnableServiceCancelation(enableServiceCancelation);
+                        configuration.setEnableEntryExit(enableEntryExit);
 
                         // --> Registro el equipo para las push notifications con nro movil y licencia
 
@@ -133,6 +131,7 @@ public class ConfigGeneralFragment extends Fragment {
             checkboxSolicitaReport.setChecked(configuration.isRequestReportNumber());
             checkboxAttachImage.setChecked(configuration.isRequestAttachImage());
             checkboxEnableServiceCancelation.setChecked(configuration.enabledServiceCancelation());
+            checkboxEnableEntryExit.setChecked(configuration.enabledEntryExit());
         }
     }
 }

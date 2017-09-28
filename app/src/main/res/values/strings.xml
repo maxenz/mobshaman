@@ -22,5 +22,15 @@
     <string name="order_services">Ordenar los servicios</string>
     <string name="solicita_imagen_adjunta_al_cierre">Solicita imagen adjunta al cierre</string>
     <string name="enable_service_cancelation">Habilitar cancelación de servicio</string>
+    <string name="title_activity_access_time">Ingreso</string>
+    <string name="nro_de_legajo">Nro. de legajo</string>
+    <string name="pin">PIN</string>
+    <string name="access_time_in">Ingreso</string>
+    <string name="access_time_exit">Salida</string>
+    <string name="access_time_entry">Ingreso</string>
+    <string name="access_time_register_entry_exit">Registrar ingreso</string>
+    <string name="access_time_register_entry">Registrar ingreso</string>
+    <string name="access_time_register_exit">Registrar salida</string>
+    <string name="enable_service_entry_exit">Habilitar ingreso/salida</string>
 
 </resources>

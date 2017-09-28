@@ -117,7 +117,6 @@ public class ServiciosFragment extends ListFragment implements AdapterView.OnIte
     }
 
     private void updateServices() {
-
         if (actualLocation != null) {
             for (Servicio servicio : services) {
                 Location serviceLoc = new Location("service");
