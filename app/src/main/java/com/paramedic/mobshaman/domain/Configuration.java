@@ -16,6 +16,7 @@ public class Configuration {
     private static String license;
     private static boolean requestReportNumber;
     private static boolean requestAttachImage;
+    private static boolean enableServiceCancelation;
     private static String gestionUrl;
 
     //endregion
@@ -31,6 +32,7 @@ public class Configuration {
         this.requestReportNumber = sp.getBoolean("requestReportNumber",false);
         this.requestAttachImage = sp.getBoolean("requestAttachImage", false);
         this.gestionUrl = "http://paramedicapps.com.ar:57771/";
+        this.enableServiceCancelation = sp.getBoolean("enableServiceCancelation", false);
 
     }
 
@@ -70,12 +72,20 @@ public class Configuration {
         return requestAttachImage;
     }
 
+    public boolean enabledServiceCancelation() {
+        return enableServiceCancelation;
+    }
+
     public void setRequestReportNumber(boolean requestReportNumber) {
         this.requestReportNumber = requestReportNumber;
     }
 
     public void setRequestAttachImage(boolean requestAttachImage) {
         this.requestAttachImage = requestAttachImage;
+    }
+
+    public void setEnableServiceCancelation(boolean enableServiceCancelation) {
+        this.enableServiceCancelation = enableServiceCancelation;
     }
 
     public String getGestionUrl() { return gestionUrl;}

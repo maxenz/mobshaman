@@ -28,9 +28,9 @@ public class ConfigGeneralFragment extends Fragment {
 
     EditText etNroMovilRegistro, etUrlregistro, etNroLicencia;
     Button btnRegistrarMovil;
-    CheckBox checkboxSolicitaReport, checkboxAttachImage;
+    CheckBox checkboxSolicitaReport, checkboxAttachImage, checkboxEnableServiceCancelation;
     String  url, nroLicencia, nroMovil;
-    Boolean solicitaNroReport, solicitaAttachImage;
+    Boolean solicitaNroReport, solicitaAttachImage, enableServiceCancelation;
     private Configuration configuration;
 
     @Override
@@ -46,6 +46,7 @@ public class ConfigGeneralFragment extends Fragment {
         etNroLicencia = (EditText) myView.findViewById(R.id.et_registro_licencia);
         checkboxSolicitaReport = (CheckBox) myView.findViewById(R.id.checkbox_nro_report);
         checkboxAttachImage = (CheckBox) myView.findViewById(R.id.checkbox_attach_image_config);
+        checkboxEnableServiceCancelation = (CheckBox) myView.findViewById(R.id.checkbox_enable_service_cancelation);
 
         configuration = Configuration.getInstance(this.getActivity());
 
@@ -63,6 +64,7 @@ public class ConfigGeneralFragment extends Fragment {
                 nroLicencia = etNroLicencia.getText().toString();
                 solicitaNroReport = checkboxSolicitaReport.isChecked();
                 solicitaAttachImage = checkboxAttachImage.isChecked();
+                enableServiceCancelation = checkboxEnableServiceCancelation.isChecked();
 
                 if (!IsConfigurationValid()) {
 
@@ -81,6 +83,7 @@ public class ConfigGeneralFragment extends Fragment {
                         editor.putString("license", nroLicencia);
                         editor.putBoolean("requestReportNumber", solicitaNroReport);
                         editor.putBoolean("requestAttachImage", solicitaAttachImage);
+                        editor.putBoolean("enableServiceCancelation", enableServiceCancelation);
                         editor.commit();
 
                         configuration.setUrl(url);
@@ -88,6 +91,7 @@ public class ConfigGeneralFragment extends Fragment {
                         configuration.setLicense(nroLicencia);
                         configuration.setRequestReportNumber(solicitaNroReport);
                         configuration.setRequestAttachImage(solicitaAttachImage);
+                        configuration.setEnableServiceCancelation(enableServiceCancelation);
 
                         // --> Registro el equipo para las push notifications con nro movil y licencia
 
@@ -128,6 +132,7 @@ public class ConfigGeneralFragment extends Fragment {
             etUrlregistro.setText(configuration.getUrl());
             checkboxSolicitaReport.setChecked(configuration.isRequestReportNumber());
             checkboxAttachImage.setChecked(configuration.isRequestAttachImage());
+            checkboxEnableServiceCancelation.setChecked(configuration.enabledServiceCancelation());
         }
     }
 }

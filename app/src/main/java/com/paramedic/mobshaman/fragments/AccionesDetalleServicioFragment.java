@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.paramedic.mobshaman.R;
@@ -33,14 +34,17 @@ import com.paramedic.mobshaman.models.AccionesRestModel;
 import com.paramedic.mobshaman.models.Servicio;
 import com.paramedic.mobshaman.rest.ApiClient;
 import com.paramedic.mobshaman.rest.ServiciosRestClient;
+
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -74,12 +78,13 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
 
     }
 
-    public AccionesDetalleServicioFragment(){
+    public AccionesDetalleServicioFragment() {
         super();
     }
 
     /**
      * Static factory method
+     *
      * @param sectionNumber
      * @return
      */
@@ -117,20 +122,20 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
 
         RequestParams reqParams = new RequestParams();
         reqParams.put("licencia", configuration.getLicense());
-        reqParams.put("movil",configuration.getMobile());
+        reqParams.put("movil", configuration.getMobile());
         reqParams.put("viajeID", serv.getIdServicio());
 
         AccionesRestModel salidaServ = new AccionesRestModel("Salida del servicio",
-                "¿Seguro que desea dar salida al servicio?","Salida de servicio cancelada",
+                "¿Seguro que desea dar salida al servicio?", "Salida de servicio cancelada",
                 configuration.getUrl() + "/actions/setSalidaMovil", "Dando salida al servicio...");
 
         AccionesRestModel llegadaServ = new AccionesRestModel("Llegada del servicio",
-                "¿Seguro que desea dar llegada al servicio?","Llegada de servicio cancelada",
+                "¿Seguro que desea dar llegada al servicio?", "Llegada de servicio cancelada",
                 configuration.getUrl() + "/actions/setLlegadaMovil", "Dando llegada al servicio...");
 
 
-        doActionServicio(salidaServ,btnSalidaServicio,reqParams);
-        doActionServicio(llegadaServ,btnLlegadaServicio,reqParams);
+        doActionServicio(salidaServ, btnSalidaServicio, reqParams);
+        doActionServicio(llegadaServ, btnLlegadaServicio, reqParams);
 
         btnFinalServicio.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,12 +160,17 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
             }
         });
 
-        btnCancelarServicio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                doStartActivityForResult(CancelarServicioActivity.class, 2);
-            }
-        });
+
+        if (configuration.enabledServiceCancelation()) {
+            btnCancelarServicio.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    doStartActivityForResult(CancelarServicioActivity.class, 2);
+                }
+            });
+        } else {
+            btnCancelarServicio.setVisibility(View.GONE);
+        }
 
         btnDistanciaServicio.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,7 +196,7 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
 
     }
 
-    private void doStartActivityForResult(Class clase,int reqCode ) {
+    private void doStartActivityForResult(Class clase, int reqCode) {
         Intent i = new Intent(getActivity(), clase);
         i.putExtra("nroServicio", serv.getNroServicio());
         i.putExtra("copago", serv.getCoPago());
@@ -211,8 +221,8 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
             btnLlegadaServicio.setText("Internación");
         }
 
-        toggleButton(btnLlegadaServicio,serv.getHabLlegada());
-        toggleButton(btnSalidaServicio,serv.getHabSalida());
+        toggleButton(btnLlegadaServicio, serv.getHabLlegada());
+        toggleButton(btnSalidaServicio, serv.getHabSalida());
         toggleButton(btnFinalServicio, serv.getHabFinal());
         toggleButton(btnCancelarServicio, serv.getHabCancelacion());
 
@@ -227,7 +237,8 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
 
     private void toggleButton(Button btn, int habilitado) {
         boolean isEnabled = habilitado == 1 ? true : false;
-        if (!isEnabled) btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.disabled_button_round));
+        if (!isEnabled)
+            btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.disabled_button_round));
         btn.setEnabled(isEnabled);
         btn.setClickable(isEnabled);
     }
@@ -261,44 +272,44 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
     }
 
     public void doAsyncTaskPostServicio(String url, final String dialogMessage,
-                                         RequestParams rp) throws JSONException{
+                                        RequestParams rp) throws JSONException {
 
-            ServiciosRestClient.post(url, rp, new JsonHttpResponseHandler() {
+        ServiciosRestClient.post(url, rp, new JsonHttpResponseHandler() {
 
-                @Override
-                public void onStart() {
-                    showLoadingMessage(dialogMessage);
+            @Override
+            public void onStart() {
+                showLoadingMessage(dialogMessage);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                showToast("Error en la red. Intente nuevamente ");
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                showToast("Error en la red. Intente nuevamente ");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+
+                    showToast(response.getString("Message"));
+                    startActivity(new Intent(getActivity(), ServiciosActivity.class));
+
+                } catch (JSONException e) {
+                    showToast(e.getMessage());
                 }
+            }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    showToast("Error en la red. Intente nuevamente ");
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    showToast("Error en la red. Intente nuevamente ");
-                }
-
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-
-                        showToast(response.getString("Message"));
-                        startActivity(new Intent(getActivity(), ServiciosActivity.class));
-
-                    } catch (JSONException e) {
-                        showToast(e.getMessage());
-                    }
-                }
-
-                @Override
-                public void onFinish() {
-                    pDialog.dismiss();
-                }
-            });
+            @Override
+            public void onFinish() {
+                pDialog.dismiss();
+            }
+        });
 
     }
 
@@ -316,7 +327,7 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
 
     private void finishIncident() {
         try {
-            doAsyncTaskPostServicio(configuration.getUrl() + "/actions/setFinalServicio","Finalizando servicio...", finishRequestParams);
+            doAsyncTaskPostServicio(configuration.getUrl() + "/actions/setFinalServicio", "Finalizando servicio...", finishRequestParams);
         } catch (JSONException e) {
             showToast(e.getMessage());
         }
@@ -328,21 +339,22 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
 
             //FINAL DEL SERVICIO
             case 1:
-                if(resultCode == getActivity().RESULT_OK){
+                if (resultCode == getActivity().RESULT_OK) {
 
-                    finishRequestParams.add("reportNumber", String.valueOf(data.getIntExtra("requestReportNumber",0)));
-                    finishRequestParams.add("licencia",configuration.getLicense());
-                    finishRequestParams.add("movil",configuration.getMobile());
+                    finishRequestParams.add("reportNumber", String.valueOf(data.getIntExtra("requestReportNumber", 0)));
+                    finishRequestParams.add("licencia", configuration.getLicense());
+                    finishRequestParams.add("movil", configuration.getMobile());
                     finishRequestParams.add("viajeID", String.valueOf(serv.getIdServicio()));
                     finishRequestParams.add("motivoID", String.valueOf(data.getIntExtra("idMotivo", 0)));
                     finishRequestParams.add("diagnosticoID", String.valueOf(data.getIntExtra("idDiagnostico", 0)));
                     finishRequestParams.add("observaciones", data.getStringExtra("observaciones"));
-                    finishRequestParams.add("copago", String.valueOf(data.getIntExtra("copago",0)));
+                    finishRequestParams.add("copago", String.valueOf(data.getIntExtra("copago", 0)));
                     finishRequestParams.add("derivationTime", String.valueOf(data.getStringExtra("derivationTime")));
 
                     try {
                         finishRequestParams.put("audio", new File(String.valueOf(data.getStringExtra("audio"))));
-                    } catch(FileNotFoundException e) {}
+                    } catch (FileNotFoundException e) {
+                    }
 
                     if (configuration.isRequestAttachImage()) {
                         showUploadPhotoPopup(true);
@@ -353,32 +365,32 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
                 } else {
                     showToast("No se finalizó el servicio");
                 }
-            break;
+                break;
 
             //CANCELACION DEL SERVICIO
             case 2:
-                if(resultCode == getActivity().RESULT_OK) {
+                if (resultCode == getActivity().RESULT_OK) {
                     String motivoCancelacion = data.getStringExtra("motivoCancelacion");
                     RequestParams rp = new RequestParams();
-                    rp.add("licencia",configuration.getLicense());
-                    rp.add("movil",configuration.getMobile());
+                    rp.add("licencia", configuration.getLicense());
+                    rp.add("movil", configuration.getMobile());
                     rp.add("viajeID", String.valueOf(serv.getIdServicio()));
-                    rp.add("observaciones",motivoCancelacion);
+                    rp.add("observaciones", motivoCancelacion);
                     try {
                         doAsyncTaskPostServicio(configuration.getUrl() + "/actions/setCancelacionServicio",
-                                "Cancelando servicio...",rp);
+                                "Cancelando servicio...", rp);
                     } catch (JSONException e) {
                         showToast(e.getMessage());
                     }
                 } else {
                     showToast("No se canceló el servicio");
                 }
-            break;
+                break;
 
             case REQUEST_TAKE_PHOTO:
                 if (resultCode != 0) {
                     try {
-                        DetalleServicioActivity activity = (DetalleServicioActivity)getActivity();
+                        DetalleServicioActivity activity = (DetalleServicioActivity) getActivity();
                         File f = new File(activity.getCurrentPhotoPath());
                         boolean isFinishingService = activity.getIsFinishingService();
                         uploadPhoto(f, isFinishingService);
@@ -387,7 +399,7 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
                     }
                 }
 
-            break;
+                break;
 
         }
 
@@ -401,7 +413,7 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
         // Check if there is a camera.
         Context context = getActivity();
         PackageManager packageManager = context.getPackageManager();
-        if(packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA) == false){
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA) == false) {
             Toast.makeText(getActivity(), "This device does not have a camera.", Toast.LENGTH_SHORT)
                     .show();
             return;
@@ -411,7 +423,7 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         // Ensure that there's a camera activity to handle the intent
-        DetalleServicioActivity activity = (DetalleServicioActivity)getActivity();
+        DetalleServicioActivity activity = (DetalleServicioActivity) getActivity();
         if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
             // Create the File where the photo should go.
             // If you don't do this, you may get a crash in some devices.
@@ -450,7 +462,7 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
         );
 
         // Save a file: path for use with ACTION_VIEW intents
-        DetalleServicioActivity activity = (DetalleServicioActivity)getActivity();
+        DetalleServicioActivity activity = (DetalleServicioActivity) getActivity();
         activity.setCurrentPhotoPath("file:" + image.getAbsolutePath());
         return image;
     }
@@ -494,17 +506,13 @@ public class AccionesDetalleServicioFragment extends BaseFragment {
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
         adb.setTitle("Adjuntar imagen");
         adb.setMessage("¿Desea adjuntar una imagen al incidente?");
-        adb.setPositiveButton("Si", new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int id)
-            {
+        adb.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
                 dispatchTakePictureIntent(isFinishingService);
             }
         });
-        adb.setNegativeButton("No", new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int id)
-            {
+        adb.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
                 if (isFinishingService) {
                     finishIncident();
                 }
