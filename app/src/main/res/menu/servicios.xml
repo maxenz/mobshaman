@@ -5,19 +5,23 @@
 
     <item android:id="@+id/action_access_time"
         app:showAsAction="always"
+        android:title="@string/services_menu_label_ingreso"
         android:icon="@drawable/ic_action_access_time"
         />
 
     <item android:id="@+id/action_refresh"
         app:showAsAction="always"
-        android:icon="@drawable/ic_action_update"
+        android:title="@string/services_menu_label_update_data"
+        android:icon="@drawable/ic_action_refresh"
     />
     <item android:id="@+id/action_settings"
         app:showAsAction="always"
-        android:icon="@drawable/ic_action_key"
+        android:title="@string/services_menu_label_configuration"
+        android:icon="@drawable/ic_action_settings"
         />
     <item android:id="@+id/action_actualizar_parametros"
         app:showAsAction="always"
+        android:title="@string/services_menu_label_update_parameters"
         android:icon="@drawable/ic_action_download"
         />
 

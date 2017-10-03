@@ -32,5 +32,9 @@
     <string name="access_time_register_entry">Registrar ingreso</string>
     <string name="access_time_register_exit">Registrar salida</string>
     <string name="enable_service_entry_exit">Habilitar ingreso/salida</string>
+    <string name="services_menu_label_ingreso">Ingreso</string>
+    <string name="services_menu_label_update_data">Actualizar datos</string>
+    <string name="services_menu_label_configuration">Configuración</string>
+    <string name="services_menu_label_update_parameters">Actualización de parámetros</string>
 
 </resources>
