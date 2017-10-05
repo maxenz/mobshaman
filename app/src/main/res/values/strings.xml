@@ -37,4 +37,42 @@
     <string name="services_menu_label_configuration">Configuración</string>
     <string name="services_menu_label_update_parameters">Actualización de parámetros</string>
 
+    <!-- COSAS PARA TESTING MATERIAL -->
+    <string name="action_search">Search</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="openDrawer">open_drawer</string>
+    <string name="closeDrawer">close_drawer</string>
+
+    <!-- Navigation Drawer menu labels -->
+    <string name="nav_services">Servicios</string>
+    <string name="nav_settings">Configuración</string>
+    <string name="nav_entry_exit">Ingreso / Salida</string>
+    <string name="nav_logout">Cerrar sesión</string>
+    <string name="nav_about_us">Acerca de nosotros</string>
+
+    <!-- Toolbar titles when navigation menu item is selected -->
+    <string-array name="nav_item_activity_titles">
+        <item>Servicios</item>
+        <item>Configuración</item>
+        <item>Ingreso / Salida</item>
+        <item>Cerrar sesión</item>
+        <item>Acerca de nosotros</item>
+    </string-array>
+
+    <string name="activity_title_about_us">About Us</string>
+    <string name="activity_title_privacy_policy">Privacy Policy</string>
+    <string name="action_clear_all">Clear All</string>
+    <string name="action_logout">Logout</string>
+    <string name="action_mark_all_read">Mark All as Read</string>
+    <string name="privacy_policy">Privacy Policy</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nav_info">Información</string>
+
+
 </resources>
