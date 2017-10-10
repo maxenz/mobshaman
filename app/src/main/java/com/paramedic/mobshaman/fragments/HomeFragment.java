@@ -1,129 +1,83 @@
 package com.paramedic.mobshaman.fragments;
-
+import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
-
+import android.widget.ImageView;
+import android.widget.TextView;
 import com.paramedic.mobshaman.R;
-import com.paramedic.mobshaman.adapters.CustomAdapter;
 
 /**
- * Demonstrates the use of {@link RecyclerView} with a {@link LinearLayoutManager} and a
- * {@link GridLayoutManager}.
+ * Provides UI for the view with Cards.
  */
 public class HomeFragment extends Fragment {
-
-    private static final String TAG = "RecyclerViewFragment";
-    private static final String KEY_LAYOUT_MANAGER = "layoutManager";
-    private static final int SPAN_COUNT = 2;
-    private static final int DATASET_COUNT = 60;
-
-    private enum LayoutManagerType {
-        GRID_LAYOUT_MANAGER,
-        LINEAR_LAYOUT_MANAGER
-    }
-
-    protected LayoutManagerType mCurrentLayoutManagerType;
-
-    protected RadioButton mLinearLayoutRadioButton;
-    protected RadioButton mGridLayoutRadioButton;
-
-    protected RecyclerView mRecyclerView;
-    protected CustomAdapter mAdapter;
-    protected RecyclerView.LayoutManager mLayoutManager;
-    protected String[] mDataset;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Initialize dataset, this data would usually come from a local content provider or
-        // remote server.
-        initDataset();
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
-        rootView.setTag(TAG);
-
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
-
-        // LinearLayoutManager is used here, this will layout the elements in a similar fashion
-        // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
-        // elements are laid out.
-        mLayoutManager = new LinearLayoutManager(getActivity());
-
-        mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-
-        if (savedInstanceState != null) {
-            // Restore saved layout manager type.
-            mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
-                    .getSerializable(KEY_LAYOUT_MANAGER);
-        }
-        setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
-
-        mAdapter = new CustomAdapter(mDataset);
-        // Set CustomAdapter as the adapter for RecyclerView.
-        mRecyclerView.setAdapter(mAdapter);
-
-        return rootView;
+        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
+                R.layout.recycler_view, container, false);
+        ContentAdapter adapter = new ContentAdapter(recyclerView.getContext());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        return recyclerView;
     }
 
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView serviceNumber, serviceAddress;
+        public ImageView ambulancePicture;
+        public View cardBorderTop;
+        public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
+            super(inflater.inflate(R.layout.item_card, parent, false));
+            serviceNumber = (TextView) itemView.findViewById(R.id.card_service_number);
+            serviceAddress = (TextView) itemView.findViewById(R.id.card_service_address);
+            ambulancePicture = (ImageView) itemView.findViewById(R.id.card_ambulance_image);
+            cardBorderTop = itemView.findViewById(R.id.card_service_border_top_color);
+        }
+    }
     /**
-     * Set RecyclerView's LayoutManager to the one given.
-     *
-     * @param layoutManagerType Type of layout manager to switch to.
+     * Adapter to display recycler view.
      */
-    public void setRecyclerViewLayoutManager(LayoutManagerType layoutManagerType) {
-        int scrollPosition = 0;
-
-        // If a layout manager has already been set, get current scroll position.
-        if (mRecyclerView.getLayoutManager() != null) {
-            scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
-                    .findFirstCompletelyVisibleItemPosition();
+    public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
+        // Set numbers of List in RecyclerView.
+        private static final int LENGTH = 18;
+        private final Drawable[] mAmbulancePictures;
+        public ContentAdapter(Context context) {
+            Resources resources = context.getResources();
+            TypedArray a = resources.obtainTypedArray(R.array.ambulances);
+            mAmbulancePictures = new Drawable[a.length()];
+            for (int i = 0; i < mAmbulancePictures.length; i++) {
+                mAmbulancePictures[i] = a.getDrawable(i);
+            }
+            a.recycle();
         }
 
-        switch (layoutManagerType) {
-            case GRID_LAYOUT_MANAGER:
-                mLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
-                mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER;
-                break;
-            case LINEAR_LAYOUT_MANAGER:
-                mLayoutManager = new LinearLayoutManager(getActivity());
-                mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-                break;
-            default:
-                mLayoutManager = new LinearLayoutManager(getActivity());
-                mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
         }
 
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.scrollToPosition(scrollPosition);
-    }
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            holder.serviceNumber.setText("Incidente AB0");
+            holder.serviceAddress.setText("Av. Alvarez Thomas 1235, Capital Federal");
+            holder.ambulancePicture.setImageDrawable(mAmbulancePictures[position % mAmbulancePictures.length]);
+            holder.cardBorderTop.setBackgroundColor(ContextCompat.getColor(holder.cardBorderTop.getContext(), R.color.ambulance_green));
+//            holder.name.setText(mPlaces[position % mPlaces.length]);
+//            holder.description.setText(mPlaceDesc[position % mPlaceDesc.length]);
+        }
 
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        // Save currently selected layout manager.
-        savedInstanceState.putSerializable(KEY_LAYOUT_MANAGER, mCurrentLayoutManagerType);
-        super.onSaveInstanceState(savedInstanceState);
-    }
-
-    /**
-     * Generates Strings for RecyclerView's adapter. This data would usually come
-     * from a local content provider or remote server.
-     */
-    private void initDataset() {
-        mDataset = new String[DATASET_COUNT];
-        for (int i = 0; i < DATASET_COUNT; i++) {
-            mDataset[i] = "This is element #" + i;
+        @Override
+        public int getItemCount() {
+            return LENGTH;
         }
     }
 }
