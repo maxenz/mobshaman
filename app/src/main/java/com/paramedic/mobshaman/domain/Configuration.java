@@ -25,7 +25,6 @@ public class Configuration {
     //region Constructors
 
     private Configuration(Context context) {
-
         SharedPreferences sp = context.getSharedPreferences("configuration", Context.MODE_PRIVATE);
         this.url = sp.getString("url","");
         this.mobile = sp.getString("mobile","");
@@ -35,7 +34,6 @@ public class Configuration {
         this.gestionUrl = "http://paramedicapps.com.ar:57771/";
         this.enableServiceCancelation = sp.getBoolean("enableServiceCancelation", false);
         this.enableEntryExit = sp.getBoolean("enableEntryExit", false);
-
     }
 
     //endregion

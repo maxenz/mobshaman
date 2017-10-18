@@ -36,5 +36,6 @@
     <string name="services_menu_label_update_data">Actualizar datos</string>
     <string name="services_menu_label_configuration">Configuración</string>
     <string name="services_menu_label_update_parameters">Actualización de parámetros</string>
+    <string name="dni">DNI</string>
 
 </resources>

@@ -1,7 +1,9 @@
 package com.paramedic.mobshaman.helpers;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Build;
+import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 import java.math.BigDecimal;
@@ -39,6 +41,11 @@ public final class Utils {
         stringBuilder.append(manufacturer);
         stringBuilder.append(model);
         return stringBuilder.toString();
+    }
+
+    public static String getPhoneNumber(Context ctx) {
+        TelephonyManager tMgr =(TelephonyManager)ctx.getSystemService(Context.TELEPHONY_SERVICE);
+        return tMgr.getLine1Number();
     }
 
 }

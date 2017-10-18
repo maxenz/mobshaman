@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <EditText
-        android:id="@+id/et_access_time_file_number"
+        android:id="@+id/et_access_time_legajo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -17,13 +17,13 @@
         android:typeface="sans" />
 
     <EditText
-        android:id="@+id/et_access_time_pin"
+        android:id="@+id/et_access_time_dni"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="20dp"
-        android:hint="@string/pin"
+        android:hint="@string/dni"
         android:inputType="number"
         android:textStyle="bold"
         android:typeface="sans" />
